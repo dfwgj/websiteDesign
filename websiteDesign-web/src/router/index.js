@@ -14,6 +14,15 @@ const routes = [
             title: '示例页面',
             freeAuth: true
         }
+    },
+    {
+        path: '/Mmain',
+        name: 'Mmain',
+        component: () => import('../pages/manager/main.vue'),
+        meta: {
+            title: '示例页面',
+            freeAuth: true
+        }
     }
 ];
 
