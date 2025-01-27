@@ -1,12 +1,13 @@
 <template>
-    <i class="iconfont" :class="[iconclass, extraclass]" :style="{ fontSize: size + 'px', color:color}"></i>
+    <i class="iconfont" :class="[iconclass, extraclass]" :style="{ fontSize: size + 'px', color: color }"></i>
 </template>
 
 <script>
 var map = {
-    qianbi: 'icon-qianbi',
-    yuanpan: 'icon-yuanpan',
-    shangchuan: 'icon-shangchuan',
+    caidan: 'icon-caidan',
+    jiandao: 'icon-jiandao',
+    jiandao1: 'icon-jiandao1',
+    jiandao2: 'icon-jiandao2'
 };
 export default {
     props: {
@@ -20,7 +21,7 @@ export default {
         },
         size: {
             type: String,
-            default: "24" // 默认大小为 24px
+            default: '24' // 默认大小为 24px
         },
         color: {
             type: String,
@@ -36,5 +37,5 @@ export default {
 </script>
 
 <style scoped>
-@import '//at.alicdn.com/t/c/font_4804862_osodv3rz2v.css';
+@import '//at.alicdn.com/t/c/font_4818762_y0u9rhgqjlj.css';
 </style>
