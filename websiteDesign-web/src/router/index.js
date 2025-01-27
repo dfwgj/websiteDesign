@@ -3,17 +3,21 @@ import { createRouter, createWebHistory } from 'vue-router';
 const routes = [
     {
         path: '/',
-        name: '',
-        redirect: '/demo'
-    },
-    {
-        path: '/demo',
-        name: 'demo',
-        component: () => import('../pages/demo/demo.vue'),
+        name: 'header',
+        component: () => import('../pages/user/header.vue'),
         meta: {
             title: '示例页面',
             freeAuth: true
-        }
+        },
+        children: [{
+            path: 'home',
+            name: 'home',
+            component: () => import('../pages/user/demo.vue'),
+            meta: {
+                title: '示例页面',
+                freeAuth: true
+            }
+        }]
     },
     {
         path: '/Mmain',
