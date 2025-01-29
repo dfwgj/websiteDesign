@@ -30,6 +30,12 @@ export class UserService {
     const user = await this.userDao.findStudentIdById(studentId);
     return user;
   }
+  // 通过账号邮箱密码查找用户
+  async findAccount(field: string, value: string) {
+    // 从数据库中查询用户信息
+    const user = await this.userDao.findAccount(field, value);
+    return user;
+  }
   // 删除用户
   async deleteUser(userId: UserDTO['userId']) {
     // 从数据库中删除用户信息

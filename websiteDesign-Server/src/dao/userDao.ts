@@ -33,7 +33,7 @@ export class UserDao {
   }
 
 
-  
+
   //通过学号查找用户
   async findStudentIdById(studentId: UserDTO['studentId']) {
     const sql = `
@@ -50,6 +50,22 @@ export class UserDao {
     return await query(sql, sqlParams, false); // 设置 throwOnEmptyResult 为 false
   }
 
+
+  //通过账号邮箱密码查找用户
+  async findAccount(field: string, value: string) {
+    const sql = `
+      SELECT
+        COUNT(*) AS count
+      FROM 
+        user
+      WHERE 
+        ${field} = ?
+    `;
+    const sqlParams = [value];
+    const result = await query(sql, sqlParams, false); // 设置 throwOnEmptyResult 为 false
+    return result[0].count;
+  }
+
   //删除用户
   async delUser(userId: UserDTO['userId']) {
     const sql = `
@@ -64,8 +80,7 @@ export class UserDao {
     return await query(sql, sqlParams);
   }
   //上传图片
-  async uploadImg(url: string){
-    console.log("666",this.ctx.state.user);
+  async uploadImg(url: string) {
     const userId = this.ctx.state.user.userId;
     const sql = `
     UPDATE
@@ -75,7 +90,7 @@ export class UserDao {
       WHERE
         user_id = ?
     `;
-    const sqlParams = [url,userId];
+    const sqlParams = [url, userId];
     await query(sql, sqlParams);
     return url;
   }
