@@ -56,3 +56,7 @@ export class ContestDTO {
     @Rule(RuleType.array())
     direction:ContestDirectionDTO[];
 }
+export class startContestDTO {
+    @Rule(requiredString.min(1).max(200))
+    id:string;
+}

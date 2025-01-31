@@ -79,19 +79,4 @@ export class UserDao {
     const sqlParams = [userId];
     return await query(sql, sqlParams);
   }
-  //上传图片
-  async uploadImg(url: string) {
-    const userId = this.ctx.state.user.userId;
-    const sql = `
-    UPDATE
-        user
-      SET
-        avatar = ?
-      WHERE
-        user_id = ?
-    `;
-    const sqlParams = [url, userId];
-    await query(sql, sqlParams);
-    return url;
-  }
 }

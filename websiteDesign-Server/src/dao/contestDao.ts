@@ -5,11 +5,21 @@ import { Caching } from '@midwayjs/cache-manager';
 import { Context } from '@midwayjs/koa';
 import { uuidv7 } from 'uuidv7';
 import { pinyin } from 'pinyin-pro';
+import { CachingFactory, MidwayCache } from "@midwayjs/cache-manager";
+import { InjectClient } from "@midwayjs/core";
 @Provide()
 export class ContestDao {
     @Inject()
     ctx: Context;
-
+    //查找是否有比赛
+    async checkContest(field: string, value: string) {
+        const sql = `
+        SELECT COUNT(*) AS count FROM contest_information WHERE  ${field} = ?
+        `;
+        const sqlParams = [value];
+        const result = await query(sql, sqlParams, false); // 设置 throwOnEmptyResult 为 false
+        return result[0].count;
+    }
     //添加比赛信息
     async createContest(contestDto: ContestDTO) {
         const { name, topic, introduce, doubleKnots, organizers, contractors, year } = contestDto;
@@ -108,11 +118,11 @@ export class ContestDao {
         await query(sql2, sqlParams2);
         return true;
     }
-    @Caching('redis','contestList')
-    //获取比赛信息
-    async getContestList() {
+    //用户获取比赛信息
+    @Caching('redis', 'contestList')
+    async getContest() {
         const sql = `
-    SELECT id, name, topic, introduce, double_knots, organizers, contractors, year, created_at
+    SELECT id, name, topic, introduce, double_knots, qr_link AS qrLink, organizers, contractors, year, created_at
     FROM contest_information
     WHERE valid_flag = 1
     `;
@@ -201,8 +211,52 @@ export class ContestDao {
                 return contest;
             });
             // 等待所有比赛数据加载完成
-            const completeContests = await Promise.all(contestPromises);
-            return completeContests;
+            return await Promise.all(contestPromises);
         }
     }
-}
+    //管理员获取比赛列表
+    async getAllContest() {
+        const sql = `
+        SELECT 
+        id, 
+        name, 
+        valid_flag AS status, 
+        created_at AS createdAt
+        FROM contest_information
+        `;
+        const sqlParams = [];
+        return await query(sql, sqlParams);
+    }
+    //管理员启动该比赛
+    @InjectClient(CachingFactory, 'redis')
+    cache: MidwayCache; //redis缓存
+    async startContest(id: string) {
+        // 更新所有记录的 valid_flag 为 0
+        const sql1 = `
+        UPDATE contest_information SET valid_flag = 0
+        `;
+        await query(sql1, []);
+        // 更新指定记录的 valid_flag 为 1
+        const sql2 = `
+        UPDATE contest_information SET valid_flag = 1 WHERE id = ?
+        `;
+        const sqlParams = [id];
+        await query(sql2, sqlParams);
+        await this.cache.del('contestList');
+        return true;
+    }
+    //上传图片
+    async uploadImg(url: string, id: string) {
+        const sql = `
+    UPDATE
+        contest_information
+    SET
+        qr_link = ?
+    WHERE
+        id = ?
+    `;
+        const sqlParams = [url, id];
+        await query(sql, sqlParams);
+        return url;
+    }
+} 
