@@ -17,7 +17,7 @@ export class TeamController {
     teamService: TeamService;
     /**
       * @name registerTeam 报名比赛
-      * @description POST /auth/registerTeam
+      * @description POST /team/registerTeam
       * @param {object} teamDTO - 队伍信息
       * @returns {boolean}  是否成功
       */
