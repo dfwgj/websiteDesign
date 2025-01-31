@@ -66,7 +66,7 @@ export class JwtMiddleware {
   }
   // 配置忽略鉴权的路由地址
   public match(ctx: Context): boolean {
-    const ignoreRoutes = ['/api/auth/login', '/api/auth/register', '/info'];
+    const ignoreRoutes = ['/api/auth/login', '/api/auth/register', '/info','/api/contest/getContestList'];
     const ignore = ignoreRoutes.some(route => ctx.path.indexOf(route) !== -1);
     return !ignore;
   }

@@ -4,6 +4,7 @@ import {
     UseGuard,
     Post,
     Body,
+    Get,
 } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { ContestService } from '../service/api.contest.service';
@@ -26,5 +27,14 @@ export class ContestController {
     @Post('/createContest')
     async createContest(@Body() contestDto: ContestDTO): Promise<object> {
       return await this.contestService.createContest(contestDto);
+    }
+    /**
+      * @name getContestList 获取比赛列表
+      * @description GET /contest/getContestList
+      * @returns {object}  比赛列表
+      */
+    @Get('/getContestList')
+    async getContestList(): Promise<object> {
+      return await this.contestService.getContestList();
     }
 }

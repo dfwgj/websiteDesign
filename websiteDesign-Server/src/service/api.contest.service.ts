@@ -49,4 +49,8 @@ export class ContestService {
             return data;
         }
     }
+    //获取比赛信息
+    async getContestList() {
+        return await this.contestDao.getContestList();
+    }
 }
