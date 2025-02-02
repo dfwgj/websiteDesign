@@ -19,6 +19,8 @@ export class ContestDateDTO{
     finalPlace:string;
 } 
 export class ContestAwardsDTO{
+    @Rule(RuleType.string().min(1).max(200))
+    id:string;
     @Rule(RuleType.string().min(1).max(16))
     name:string;
     @Rule(RuleType.string().min(1).max(16))
@@ -29,6 +31,8 @@ export class ContestAwardsDTO{
     model:string;
 }
 export class ContestDirectionDTO{
+    @Rule(RuleType.string().min(1).max(200))
+    id:string;
     @Rule(RuleType.string().min(1).max(16))
     name:string;
     @Rule(RuleType.string().min(1).max(400))
@@ -56,7 +60,35 @@ export class ContestDTO {
     @Rule(RuleType.array())
     direction:ContestDirectionDTO[];
 }
+export class ContestInfoDTO {
+    @Rule(RuleType.string().min(1).max(32))
+    name:string;
+    @Rule(RuleType.string().min(1).max(64))
+    topic:string;
+    @Rule(RuleType.string().min(1).max(400))
+    introduce:string;
+    @Rule(RuleType.string().min(1).max(64))
+    doubleKnots:string;
+    @Rule(RuleType.string().min(1).max(64))
+    organizers:string;
+    @Rule(RuleType.string().min(1).max(64))
+    contractors:string;
+    @Rule(RuleType.string().min(1).max(4))
+    year:string;
+}
 export class startContestDTO {
     @Rule(requiredString.min(1).max(200))
     id:string;
+}
+export class updateContestDTO {
+    @Rule(requiredString.min(1).max(200))
+    id:string;
+    @Rule(RuleType.object())
+    info:ContestInfoDTO;
+    @Rule(RuleType.object())
+    date:ContestDateDTO;
+    @Rule(RuleType.array())
+    awards:ContestAwardsDTO[];
+    @Rule(RuleType.array())
+    direction:ContestDirectionDTO[];
 }

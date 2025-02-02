@@ -1,6 +1,6 @@
 import { Inject, Provide } from '@midwayjs/core';
 import { query } from '../dbConnPool/mariadb'; // 引入查询函数
-import { ContestDTO, ContestDateDTO, ContestAwardsDTO, ContestDirectionDTO } from '../dto/contest';
+import { ContestDTO, ContestDateDTO, ContestAwardsDTO, ContestDirectionDTO, ContestInfoDTO } from '../dto/contest';
 import { Caching } from '@midwayjs/cache-manager';
 import { Context } from '@midwayjs/koa';
 import { uuidv7 } from 'uuidv7';
@@ -159,6 +159,7 @@ export class ContestDao {
                 // 获取比赛奖项
                 const awardsSql = `
         SELECT 
+            c.id,
             c.name,
             c.prize,
             c.amount,
@@ -177,6 +178,7 @@ export class ContestDao {
                     contest.awards = [];
                 } else {
                     contest.awards = awardsData.map(award => ({
+                        id: award.id,
                         name: award.name,
                         prize: award.prize,
                         amount: award.amount,
@@ -187,6 +189,7 @@ export class ContestDao {
                 // 获取比赛方向
                 const directionSql = `
         SELECT 
+            id,
             name,
             txt,
             item_code AS directionCode      
@@ -203,6 +206,7 @@ export class ContestDao {
                     contest.direction = [];
                 } else {
                     contest.direction = directionData.map(direction => ({
+                        id: direction.id,
                         name: direction.name,
                         txt: direction.txt,
                         directionCode: direction.directionCode
@@ -226,6 +230,105 @@ export class ContestDao {
         `;
         const sqlParams = [];
         return await query(sql, sqlParams);
+    }
+    //管理员获取单一比赛信息
+    async getContestInfo(id: string) {
+        const sql = `
+        SELECT id, name, topic, introduce, double_knots, qr_link AS qrLink, organizers, contractors, year, created_at
+        FROM contest_information
+        WHERE id = ?
+        `;
+        const sqlParams = [id];
+        const contest = await query(sql, sqlParams, false);
+        // 为每个比赛补充 date、awards 和 direction 信息
+        if (!contest) {
+            return [];
+        } else {
+            const contestPromises = contest.map(async (contest) => {
+                const contestId = contest.id;
+                // 获取比赛时间
+                const dateSql = `
+            SELECT spot_date, spot_place, submission_date, submission_place, preliminary_date, preliminary_place, final_date, final_place
+            FROM contest_process
+            WHERE contest_id = ? AND valid_flag = 1
+            `;
+                const dateSqlParams = [contestId];
+                const [dateData] = await query(dateSql, dateSqlParams, false);
+                if (!dateData) {
+                    contest.date = {};
+                } else {
+                    contest.date = {
+                        spotDate: dateData.spot_date,
+                        spotPlace: dateData.spot_place,
+                        submissionDate: dateData.submission_date,
+                        submissionPlace: dateData.submission_place,
+                        preliminaryDate: dateData.preliminary_date,
+                        preliminaryPlace: dateData.preliminary_place,
+                        finalDate: dateData.final_date,
+                        finalPlace: dateData.final_place
+                    };
+                }
+                // 获取比赛奖项
+                const awardsSql = `
+            SELECT 
+                c.id,
+                c.name,
+                c.prize,
+                c.amount,
+                c.model,
+                m.item_label AS modelValue
+            FROM 
+                contest_awards c
+            LEFT JOIN
+            sys_dict_item m ON c.model = m.item_code AND m.dict_code = 'MODEL'
+            WHERE 
+                c.contest_id = ? AND c.valid_flag = 1
+            `;
+                const awardsSqlParams = [contestId];
+                const awardsData = await query(awardsSql, awardsSqlParams, false);
+                if (!awardsData) {
+                    contest.awards = [];
+                } else {
+                    contest.awards = awardsData.map(award => ({
+                        id: award.id,
+                        name: award.name,
+                        prize: award.prize,
+                        amount: award.amount,
+                        model: award.model,
+                        modelValue: award.modelValue
+                    }));
+                }
+                // 获取比赛方向
+                const directionSql = `
+            SELECT 
+                id,
+                name,
+                txt,
+                item_code AS directionCode      
+            FROM 
+                contest_direction
+            LEFT JOIN
+            sys_dict_item d ON name = d.item_label AND d.dict_code = 'DIRECTION'
+            WHERE 
+                contest_id = ? AND valid_flag = 1
+            `;
+                const directionSqlParams = [contestId];
+                const directionData = await query(directionSql, directionSqlParams, false);
+                if (!directionData) {
+                    contest.direction = [];
+                } else {
+                    contest.direction = directionData.map(direction => ({
+                        id: direction.id,
+                        name: direction.name,
+                        txt: direction.txt,
+                        directionCode: direction.directionCode
+                    }));
+                }
+                return contest;
+            });
+            // 等待所有比赛数据加载完成
+            return await Promise.all(contestPromises);
+        }
     }
     //管理员启动该比赛
     @InjectClient(CachingFactory, 'redis')
@@ -258,5 +361,113 @@ export class ContestDao {
         const sqlParams = [url, id];
         await query(sql, sqlParams);
         return url;
+    }
+    //修改比赛主体信息
+    async updateContestInfo(id: string, contestInfoDto: ContestInfoDTO) {
+        const setClause = [];
+        const sqlParams = [];
+        for (const [key, value] of Object.entries(contestInfoDto)) {
+            setClause.push(`${key} = ?`);
+            sqlParams.push(value);
+        }
+        sqlParams.push(id);
+        const sql = `
+        UPDATE
+        contest_information
+        SET ${setClause.join(', ')}
+        WHERE id = ?
+        `;
+        await query(sql, sqlParams);
+        return true;
+    }
+    //修改比赛时间信息
+    async updateContestDate(contestId: string, contestDateDto: ContestDateDTO) {
+        const setClause = [];
+        const sqlParams = [];
+        for (const [key, value] of Object.entries(contestDateDto)) {
+            const snakeKey = this.camelToSnake(key);
+            setClause.push(`${snakeKey} = ?`);
+            sqlParams.push(value);
+        }
+        sqlParams.push(contestId);
+        const sql = `
+        UPDATE
+        contest_process
+        SET ${setClause.join(', ')}
+        WHERE contest_id = ?
+        `;
+        await query(sql, sqlParams);
+        return true;
+    }
+    // 修改比赛奖项信息（支持部分字段更新）
+    async updateContestAwards(contestId: string, contestAwardsDto: ContestAwardsDTO[]) {
+        const allowedFields = ['name', 'prize', 'amount', 'model']; // 允许修改的字段白名单
+        for (const dto of contestAwardsDto) {
+            // 过滤有效字段
+            const validUpdates = Object.entries(dto).filter(
+                ([key, value]) => allowedFields.includes(key) && value !== undefined
+            );
+            // 检查是否有有效更新字段
+            if (validUpdates.length === 0) {
+                throw new Error(`奖项ID ${dto.id} 未提供有效修改字段`);
+            }
+            // 构建动态SET语句
+            const setClause = validUpdates
+                .map(([key]) => `${key} = ?`)
+                .join(', ');
+            // 提取参数值（按字段顺序）
+            const params = validUpdates.map(([_, value]) => value);
+            // 添加用户ID和WHERE条件参数
+            params.push(dto.id, contestId);
+            const sql = `
+            UPDATE contest_awards
+            SET 
+                ${setClause}
+            WHERE 
+                id = ? 
+                AND contest_id = ?
+                AND valid_flag = 1`;
+            await query(sql, params);
+        }
+        return true;
+    }
+    // 修改比赛方向描述信息（支持部分字段更新）
+    async updateContestDirection(contestId: string, contestDirectionDto: ContestDirectionDTO[]) {
+        const allowedFields = ['txt']; // 允许修改的字段白名单
+        const updatePromises = [];
+        for (const dto of contestDirectionDto) {
+            // 过滤有效字段
+            const validUpdates = Object.entries(dto).filter(
+                ([key, value]) => allowedFields.includes(key) && value !== undefined
+            );
+            // 检查是否有有效更新字段
+            if (validUpdates.length === 0) {
+                throw new Error(`方向ID ${dto.id} 未提供有效修改字段`);
+            }
+            // 构建动态SET语句
+            const setClause = validUpdates
+                .map(([key]) => `${key} = ?`)
+                .join(', ');
+            // 提取参数值（按字段顺序）
+            const params = validUpdates.map(([_, value]) => value);
+            // 添加用户ID和WHERE条件参数
+            params.push(dto.id, contestId);
+            const sql = `
+        UPDATE contest_direction
+        SET 
+            ${setClause}
+        WHERE 
+            id = ? 
+            AND contest_id = ?
+            AND valid_flag = 1`;
+            updatePromises.push(query(sql, params));
+        }
+        // 等待所有更新操作完成
+        await Promise.all(updatePromises);
+        return true;
+}
+    // 工具函数：驼峰命名转下划线命名
+    camelToSnake(str: string): string {
+        return str.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
     }
 } 
