@@ -11,40 +11,48 @@ import { CachingFactory, MidwayCache } from '@midwayjs/cache-manager';
 export class AuthDao {
   @Inject()
   userDao: UserDao;
-    // 新注册用户
-    async register(
-      name: UserDTO['name'],
-      studentId: UserDTO['studentId'],
-      college: UserDTO['college'],
-      grade: UserDTO['grade'],
-      major: UserDTO['major'],
-      phone: UserDTO['phone'],
-      email: UserDTO['email'],
-      hashPassword: UserDTO['hashPassword']
-    ) {
-      const userId = uuidv7();
-      const sql = `
+  // 新注册用户
+  async register(
+    name: UserDTO['name'],
+    studentId: UserDTO['studentId'],
+    college: UserDTO['college'],
+    grade: UserDTO['grade'],
+    major: UserDTO['major'],
+    phone: UserDTO['phone'],
+    email: UserDTO['email'],
+    hashPassword: UserDTO['hashPassword']
+  ) {
+    const userId = uuidv7();
+    const sql = `
         INSERT INTO user
           ( user_id, name, student_id, college, grade, major, phone, email, password, created_at)
           VALUES ( ?,?, ?, ?, ?, ?, ?, ?, ?, NOW())
       `;
-      const sqlParams = [userId, name, studentId, college, grade, major, phone, email, hashPassword];
-      await query(sql, sqlParams);
-      return "注册成功";
-    }
+    const sqlParams = [userId, name, studentId, college, grade, major, phone, email, hashPassword];
+    await query(sql, sqlParams);
+    return "注册成功";
+  }
   // 登录验证
   async login(studentId: LoginDTO['studentId']) {
     const sql = `
     SELECT
-        user_id AS userId,
-        student_id AS studentId,
-        is_deleted AS deleted,
-        is_admin AS role,
-        password AS passwordHash
+        u.user_id AS userId,
+        u.student_id AS studentId,
+        u.team_id AS teamId,
+        u.is_admin AS role,
+        u.password AS passwordHash,
+        u.name,
+        c.item_label AS college,
+        u.grade,
+        u.major,
+        u.phone,
+        u.email
     FROM
-        user
+        user u
+    LEFT JOIN
+        sys_dict_item c ON u.college = c.item_code AND c.dict_code = 'COLLEGE'
     WHERE
-        student_id = ?
+        u.student_id = ?AND u.valid_flag = 1
 `;
     const sqlParams = [studentId];
     return (await query(sql, sqlParams))[0];
