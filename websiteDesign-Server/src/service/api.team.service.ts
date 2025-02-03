@@ -18,4 +18,12 @@ export class TeamService {
     async registerTeam(name: TeamDTO['name'], model: TeamDTO['model'], direction: TeamDTO['direction'], players: TeamDTO['players']) {
         return await this.teamDao.registerTeam(name, model, direction, players);
     }
+    //管理员获取队伍信息
+    async getTeam(){
+        return await this.teamDao.getTeam();
+    }
+    //管理员获取队伍成员信息
+    async getTeamPlayers(teamId: string){
+        return await this.teamDao.getTeamPlayers(teamId);
+    }
 }
