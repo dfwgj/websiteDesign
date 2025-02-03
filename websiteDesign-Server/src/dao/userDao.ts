@@ -1,10 +1,10 @@
 import { Inject, Provide } from '@midwayjs/core';
 import { query } from '../dbConnPool/mariadb'; // 引入查询函数
-import { UserDTO } from '../dto/user';
+import { UserDTO, UpdateUserDTO } from '../dto/user';
 import { Caching } from '@midwayjs/cache-manager';
 import { Context } from '@midwayjs/koa';
-//import{CachingFactory, MidwayCache}from "@midwayjs/cache-manager";
-//import{InjectClient} from "@midwayjs/core";
+import { CachingFactory, MidwayCache } from "@midwayjs/cache-manager";
+import { InjectClient } from "@midwayjs/core";
 @Provide()
 export class UserDao {
   @Inject()
@@ -12,24 +12,33 @@ export class UserDao {
   //通过id查找用户
   @Caching('redis', ctx => {
     if (ctx.methodArgs.length > 0) {
-      return `findUserId:${ctx.methodArgs[0]}`;
+      return `userId:${ctx.methodArgs[0]}`;
     }
     return null;
   })
   async findUserById(userId: UserDTO['userId']) {
     const sql = `
-      SELECT  
-        user_id AS userId,
-        student_id AS studentId,
-        is_admin AS role,
-        is_deleted AS deleted
-      FROM 
-        user
-      WHERE 
-        user_id = ? 
+     SELECT
+        u.user_id AS userId,
+        u.student_id AS studentId,
+        u.team_id AS teamId,
+        u.is_admin AS role,
+        u.password AS passwordHash,
+        u.name,
+        c.item_label AS college,
+        u.grade,
+        u.major,
+        u.phone,
+        u.email
+    FROM
+        user u
+    LEFT JOIN
+        sys_dict_item c ON u.college = c.item_code AND c.dict_code = 'COLLEGE'
+    WHERE
+        u.user_id = ?AND u.valid_flag = 1
     `;
     const sqlParams = [userId];
-    return await query(sql, sqlParams);
+    return (await query(sql, sqlParams))[0];
   }
 
 
@@ -78,5 +87,29 @@ export class UserDao {
     `;
     const sqlParams = [userId];
     return await query(sql, sqlParams);
+  }
+  //更新用户信息
+  @InjectClient(CachingFactory, 'redis')
+  cache1: MidwayCache; //redis缓存
+  async updateUserInfo(updateUserDto: UpdateUserDTO) {
+    const userId = this.ctx.state.user.userId;
+    const setClause = [];
+    const sqlParams = [];
+    for (const [key, value] of Object.entries(updateUserDto)) {
+      setClause.push(`${key} = ?`);
+      sqlParams.push(value);
+    }
+    sqlParams.push(userId);
+    const sql = `
+    UPDATE
+      user
+    SET
+      ${setClause.join(', ')}
+      WHERE
+      user_id = ?
+  `;
+    await query(sql, sqlParams);
+    await this.cache1.del(`userId:${userId}`);
+    return true;
   }
 }

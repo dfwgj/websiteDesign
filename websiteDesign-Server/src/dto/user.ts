@@ -23,6 +23,18 @@ export class UserDTO {
   @Rule(RuleType.string().max(160))
   hashPassword: string;
 }
+export class UpdateUserDTO{
+  @Rule(RuleType.string().min(0).max(10))
+  college: string;
+  @Rule(RuleType.string().min(0).max(10))
+  major: string;
+  @Rule(RuleType.string().email())
+  email: string;
+  @Rule(RuleType.string().length(11))
+  phone: string;
+  @Rule(RuleType.string().min(6).max(16))
+  password: string;
+}
 export class LoginDTO extends PickDto(UserDTO, [
   'studentId',
   'password',

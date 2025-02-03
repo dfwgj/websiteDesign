@@ -399,6 +399,7 @@ export class ContestDao {
         await query(sql, sqlParams);
         return true;
     }
+
     // 修改比赛奖项信息（支持部分字段更新）
     async updateContestAwards(contestId: string, contestAwardsDto: ContestAwardsDTO[]) {
         const allowedFields = ['name', 'prize', 'amount', 'model']; // 允许修改的字段白名单
@@ -464,8 +465,9 @@ export class ContestDao {
         }
         // 等待所有更新操作完成
         await Promise.all(updatePromises);
+        await this.cache.del('contestList');
         return true;
-}
+    }
     // 工具函数：驼峰命名转下划线命名
     camelToSnake(str: string): string {
         return str.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
