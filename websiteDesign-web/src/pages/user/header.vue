@@ -2,9 +2,9 @@
     <!-- html代码 -->
     <LoadingSpinner @loading-complete="handleLoadingComplete" />
     <div class="h-full w-full bg-[#F7FFFF]">
-        <div class="hidden md:block">
-            <div class="w-full h-[10%] py-4 flex items-center">
-                <p class="flex w-[25%] justify-center text-3xl font-black text-[#71A9D7]">第十四届网站设计大赛</p>
+        <div class="hidden lg:block">
+            <div class="w-full h-[10vh] py-4 flex items-center">
+                <p class="flex w-[25%] justify-center text-2xl xl:text-3xl font-black text-[#71A9D7]">第十四届网站设计大赛</p>
                 <div class="flex-grow"></div>
                 <p class="flex w-[8%] justify-center text-lg text-[#5295CD]" @click="goHome">首页</p>
                 <p class="flex w-[8%] justify-center text-lg text-[#71A9D7]" @click="goDetail">大赛详细</p>
@@ -12,9 +12,9 @@
                 <p class="flex w-[8%] justify-center text-lg text-[#71A9D7]" @click="goSignup">报名</p>
             </div>
         </div>
-        <div class="md:hidden">
-            <div class="w-full h-[10%] py-4 flex items-center">
-                <p class="flex w-[60%] justify-center text-xl font-black text-[#71A9D7]">第十四届网站设计大赛</p>
+        <div class="lg:hidden">
+            <div class="w-full h-[10vh] py-4 flex items-center">
+                <p class="flex w-[60%] justify-center text-xl sm:text-2xl font-black text-[#71A9D7]">第十四届网站设计大赛</p>
                 <div class="flex-grow"></div>
                 <Icon type="caidan" extraclass="icon" size="25" color="#71A9D7" class="flex w-[15%] justify-center" @click="right = true"></Icon>
             </div>
@@ -28,7 +28,7 @@
                 </div>
             </var-popup>
         </div>
-        <div class="w-full h-[90%] flex justify-center items-center">
+        <div class="w-full h-[90vh]">
             <!--  style="background-image: url('src/assets/生工院标（中.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat" -->
             <router-view></router-view>
         </div>
