@@ -9,15 +9,26 @@ const routes = [
             title: '示例页面',
             freeAuth: true
         },
-        children: [{
-            path: 'home',
-            name: 'home',
-            component: () => import('../pages/user/demo.vue'),
-            meta: {
-                title: '示例页面',
-                freeAuth: true
+        children: [
+            {
+                path: 'home',
+                name: 'home',
+                component: () => import('../pages/user/demo.vue'),
+                meta: {
+                    title: '示例页面',
+                    freeAuth: true
+                }
+            },
+            {
+                path: 'resource',
+                name: 'CourseResourcesPage',
+                component: () => import('@/pages/user/courseResources.vue'),
+                meta: {
+                    title: '课程资料',
+                    freeAuth: true
+                }
             }
-        }]
+        ]
     },
     {
         path: '/Mmain',
