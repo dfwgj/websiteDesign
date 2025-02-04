@@ -151,7 +151,7 @@ export class TeamDao {
             u.captain_flag AS captain
         FROM
             user u
-            LEFT JOIN
+        LEFT JOIN
         sys_dict_item c ON u.college = c.item_code AND c.dict_code = 'COLLEGE'
         WHERE
             u.team_id = ? 
@@ -185,7 +185,7 @@ export class TeamDao {
     async delTeam(teamId: string) {
         const sql = `
         UPDATE team
-        JOIN user ON team.id = user.team_id
+        LEFT JOIN user ON team.id = user.team_id
         SET 
             team.valid_flag = 0,
             user.team_id = NULL,
