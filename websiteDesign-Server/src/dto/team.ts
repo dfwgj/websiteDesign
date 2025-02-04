@@ -14,3 +14,15 @@ export class TeamDTO {
     @Rule(RuleType.array())
     players: any;
 }
+export class TeamUpdateDTO {
+    @Rule(requiredString.min(1).max(200))
+    teamId: string;
+    @Rule(RuleType.string().min(0).max(16))
+    name: string;
+    @Rule(RuleType.string().min(0).max(16))
+    model: string;
+    @Rule(RuleType.string().min(0).max(16))
+    direction: string;
+    @Rule(RuleType.number().min(0).max(5))
+    stateFlag: number;
+}

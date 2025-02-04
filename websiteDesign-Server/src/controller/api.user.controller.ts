@@ -46,6 +46,9 @@ export class APIController {
       }
       return acc;
     }, {} as UpdateUserDTO);
+    if (Object.keys(filteredData).length === 0) {
+      throw new Error('更新数据为空');
+    }
     return await this.userService.updateUserInfo(filteredData);
   }
     /**

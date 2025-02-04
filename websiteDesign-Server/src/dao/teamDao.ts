@@ -1,6 +1,6 @@
 import { Inject, Provide } from '@midwayjs/core';
 import { query } from '../dbConnPool/mariadb'; // 引入查询函数
-import { TeamDTO } from '../dto/team';
+import { TeamDTO, TeamUpdateDTO } from '../dto/team';
 //import { Caching } from '@midwayjs/cache-manager';
 import { Context } from '@midwayjs/koa';
 import { uuidv7 } from 'uuidv7';
@@ -9,6 +9,20 @@ import { uuidv7 } from 'uuidv7';
 export class TeamDao {
     @Inject()
     ctx: Context;
+    //验证队伍是否存在
+    async findTeam(teamId: string) {
+        const sql = `
+        SELECT
+            COUNT(*) AS count
+        FROM 
+            team
+        WHERE 
+            id = ?;
+        `;
+        const sqlParams = [teamId];
+        const result = await query(sql, sqlParams, false); // 设置 throwOnEmptyResult 为 false
+        return result[0].count;
+    }
     //是否已经报名
     async isRegister(studentId: string) {
         const sql = `
@@ -102,7 +116,7 @@ export class TeamDao {
         return team;
     }
     //管理员获取队伍信息
-    async getTeam(){
+    async getTeam() {
         const sql = `
         SELECT
             t.id,
@@ -122,11 +136,11 @@ export class TeamDao {
         LEFT JOIN
         user u ON t.user_id = u.user_id
         `;
-        const result = await query(sql, [], false); 
+        const result = await query(sql, [], false);
         return result;
     }
     //管理员获取队伍成员信息
-    async getTeamPlayers(teamId: string){
+    async getTeamPlayers(teamId: string) {
         const sql = `
         SELECT
             u.user_id,
@@ -143,6 +157,48 @@ export class TeamDao {
             u.team_id = ? 
         `;
         const sqlParams = [teamId];
-        return  await query(sql, sqlParams);
+        return await query(sql, sqlParams);
+    }
+    //管理员更新队伍信息
+    async updateTeamInfo(teamUpdateDTO: TeamUpdateDTO) {
+        const teamId = teamUpdateDTO.teamId;
+        const setClause = [];
+        const sqlParams = [];
+        for (const [key, value] of Object.entries(teamUpdateDTO)) {
+            if (key === 'teamId') {
+                continue;
+            }
+            const snakeKey = this.camelToSnake(key);
+            setClause.push(`${snakeKey} = ?`);
+            sqlParams.push(value);
+        }
+        sqlParams.push(teamId);
+        const sql = `
+        UPDATE team
+        SET ${setClause.join(', ')}
+        WHERE id = ?
+        `;
+        await query(sql, sqlParams);
+        return true;
+    }
+    //管理员删除队伍信息
+    async delTeam(teamId: string) {
+        const sql = `
+        UPDATE team
+        JOIN user ON team.id = user.team_id
+        SET 
+            team.valid_flag = 0,
+            user.team_id = NULL,
+            user.captain_flag = 0
+        WHERE 
+            team.id = ? AND team.valid_flag = 1
+        `;
+        const sqlParams = [teamId];
+        await query(sql, sqlParams);
+        return true;
+    }
+    // 工具函数：驼峰命名转下划线命名
+    camelToSnake(str: string): string {
+        return str.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();
     }
 }
