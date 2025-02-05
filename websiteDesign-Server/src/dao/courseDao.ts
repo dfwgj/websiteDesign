@@ -24,6 +24,8 @@ export class CourseDao {
         const result = await query(sql, sqlParams);
         return result[0].count;
     }
+    @InjectClient(CachingFactory, 'redis')
+    cache: MidwayCache; //redis缓存
     //管理员新增课程
     async createCourse(courseDTO: CourseDTO) {
         const courseId = uuidv7();
@@ -34,10 +36,9 @@ export class CourseDao {
         VALUES (?,?,?,?,?,?,NOW())`;
         const sqlParams = [courseId, userId, courseDTO.name, courseDTO.link, courseDTO.description, courseDTO.type];
         await query(sql, sqlParams);
+        await this.cache.del('courseList');
         return true;
     }
-    @InjectClient(CachingFactory, 'redis')
-    cache: MidwayCache; //redis缓存
     //管理员更新课程
     async updateCourse(updateCourseDTO: UpdateCourseDTO) {
         const courseId = updateCourseDTO.courseId;
