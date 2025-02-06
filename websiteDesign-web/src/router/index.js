@@ -17,6 +17,15 @@ const routes = [
                 title: '示例页面',
                 freeAuth: true
             }
+        }],
+        children: [{
+            path: 'detail',
+            name: 'detail',
+            component: () => import('../pages/user/detail.vue'),
+            meta: {
+                title: '大赛简介',
+                freeAuth: true
+            }
         }]
     },
     {
