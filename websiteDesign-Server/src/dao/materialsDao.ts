@@ -97,12 +97,10 @@ export class MaterialsDao {
     const sql = `
     SELECT
         materials.id AS materialsId,
-        user.name AS userName,
         materials.name AS materialsName, 
         materials.link,
         materials.description,
         t.item_label AS type,
-        materials.created_at AS createdAt
         FROM
         materials
     LEFT JOIN
