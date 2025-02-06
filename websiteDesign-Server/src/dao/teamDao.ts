@@ -1,5 +1,5 @@
 import { Inject, Provide } from '@midwayjs/core';
-import { query } from '../dbConnPool/mariadb'; // 引入查询函数
+import { query, transaction } from '../dbConnPool/mariadb'; // 引入查询函数
 import { TeamDTO, TeamUpdateDTO } from '../dto/team';
 //import { Caching } from '@midwayjs/cache-manager';
 import { Context } from '@midwayjs/koa';
@@ -37,34 +37,44 @@ export class TeamDao {
         const result = await query(sql, sqlParams, false); // 设置 throwOnEmptyResult 为 false
         return result[0].count;
     }
-    //队伍报名
     async registerTeam(name: TeamDTO['name'], model: TeamDTO['model'], direction: TeamDTO['direction'], players: TeamDTO['players']) {
         const id = uuidv7();
         const userId = this.ctx.state.user.userId;
-        const sql = `
-        INSERT INTO team (id, user_id, name, model, direction, created_at)
-        VALUES (?, ?, ?, ?, ?, NOW())
-        `;
-        const sqlParams = [id, userId, name, model, direction];
-        await query(sql, sqlParams);
-        // 更新用户团队信息
-        const studentIds = players.map(player => player.studentId);
-        const sql2 = `
-        UPDATE user
-        SET team_id = ?
-        WHERE student_id IN (?)
-        `;
-        const sqlParams2 = [id, studentIds];
-        await query(sql2, sqlParams2);
-        // 设置队长标志
-        const sql3 = `
-        UPDATE user
-        SET captain_flag = ?
-        WHERE user_id = ?
-        `;
-        const sqlParams3 = [1, userId];
-        await query(sql3, sqlParams3);
-        return true;
+
+        return transaction(async (conn) => {
+                // 插入团队信息
+                const sql = `
+            INSERT INTO team (id, user_id, name, model, direction, created_at)
+            VALUES (?, ?, ?, ?, ?, NOW())
+            `;
+                const sqlParams = [id, userId, name, model, direction];
+                await query(sql, sqlParams, true, conn);
+                // 更新用户团队信息
+                const studentIds = players.map(player => player.studentId);
+                const sql2 = `
+            UPDATE user
+            SET team_id = ?
+            WHERE student_id IN (?)
+            `;
+                const sqlParams2 = [id, studentIds];
+                await query(sql2, sqlParams2, true, conn);
+                // 设置队长标志
+                const sql3 = `
+            UPDATE user
+            SET captain_flag = ?
+            WHERE user_id = ?
+            `;
+                const sqlParams3 = [1, userId];
+                await query(sql3, sqlParams3, true, conn);
+                // 更新每日统计数据
+                const sql4 = `
+                INSERT INTO daily_statistics (date, new_teams)
+                VALUES (CURDATE(), 1)
+                ON DUPLICATE KEY UPDATE new_teams = new_teams + 1;
+            `;
+                await query(sql4, [], true, conn);
+                return true;
+        });
     }
     //获取队伍信息
     async findTeamInfo(teamId: string) {

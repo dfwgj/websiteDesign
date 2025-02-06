@@ -2,6 +2,7 @@ import { Provide, Inject } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { ContestDTO, updateContestDTO } from '../dto/contest';
 import { ContestDao } from '../dao/contestDao';
+import { StatisticsDao } from '../dao/statisticsDao';
 import { UploadFileInfo } from '@midwayjs/busboy';
 import { GetFileExtension } from './originelFileName.service'
 import { OSSService } from '@midwayjs/oss';
@@ -13,6 +14,8 @@ export class ContestService {
     ctx: Context;
     @Inject()
     contestDao: ContestDao;
+    @Inject()
+    statisticsDao: StatisticsDao;
     @Inject()
     getFileExtension: GetFileExtension;
     @Inject()
@@ -64,7 +67,11 @@ export class ContestService {
     }
     //用户获取比赛信息
     async getContest() {
-        return await this.contestDao.getContest();
+        const data = await this.contestDao.getContest();
+        if (data) {
+            await this.statisticsDao.createStatistics();
+        };
+        return data;
     }
     //管理员获取比赛列表
     async getAllContest() {

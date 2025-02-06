@@ -1,5 +1,5 @@
 import { Inject, Provide } from '@midwayjs/core';
-import { query } from '../dbConnPool/mariadb'; // 引入查询函数
+import { query, transaction } from '../dbConnPool/mariadb'; // 引入查询函数
 import { ContestDTO, ContestDateDTO, ContestAwardsDTO, ContestDirectionDTO, ContestInfoDTO } from '../dto/contest';
 import { Caching } from '@midwayjs/cache-manager';
 import { Context } from '@midwayjs/koa';
@@ -121,43 +121,44 @@ export class ContestDao {
     //用户获取比赛信息
     @Caching('redis', 'contestList')
     async getContest() {
-        const sql = `
+        return transaction(async (conn) => {
+            const sql = `
     SELECT id, name, topic, introduce, double_knots, qr_link AS qrLink, organizers, contractors, year, created_at
     FROM contest_information
     WHERE valid_flag = 1
     `;
-        const sqlParams = [];
-        const contests = await query(sql, sqlParams, false);
-        // 为每个比赛补充 date、awards 和 direction 信息
-        if (!contests) {
-            return [];
-        } else {
-            const contestPromises = contests.map(async (contest) => {
-                const contestId = contest.id;
-                // 获取比赛时间
-                const dateSql = `
+            const sqlParams = [];
+            const contests = await query(sql, sqlParams, false,conn);
+            // 为每个比赛补充 date、awards 和 direction 信息
+            if (!contests) {
+                return [];
+            } else {
+                const contestPromises = contests.map(async (contest) => {
+                    const contestId = contest.id;
+                    // 获取比赛时间
+                    const dateSql = `
         SELECT spot_date, spot_place, submission_date, submission_place, preliminary_date, preliminary_place, final_date, final_place
         FROM contest_process
         WHERE contest_id = ? AND valid_flag = 1
         `;
-                const dateSqlParams = [contestId];
-                const [dateData] = await query(dateSql, dateSqlParams, false);
-                if (!dateData) {
-                    contest.date = {};
-                } else {
-                    contest.date = {
-                        spotDate: dateData.spot_date,
-                        spotPlace: dateData.spot_place,
-                        submissionDate: dateData.submission_date,
-                        submissionPlace: dateData.submission_place,
-                        preliminaryDate: dateData.preliminary_date,
-                        preliminaryPlace: dateData.preliminary_place,
-                        finalDate: dateData.final_date,
-                        finalPlace: dateData.final_place
-                    };
-                }
-                // 获取比赛奖项
-                const awardsSql = `
+                    const dateSqlParams = [contestId];
+                    const [dateData] = await query(dateSql, dateSqlParams, false,conn);
+                    if (!dateData) {
+                        contest.date = {};
+                    } else {
+                        contest.date = {
+                            spotDate: dateData.spot_date,
+                            spotPlace: dateData.spot_place,
+                            submissionDate: dateData.submission_date,
+                            submissionPlace: dateData.submission_place,
+                            preliminaryDate: dateData.preliminary_date,
+                            preliminaryPlace: dateData.preliminary_place,
+                            finalDate: dateData.final_date,
+                            finalPlace: dateData.final_place
+                        };
+                    }
+                    // 获取比赛奖项
+                    const awardsSql = `
         SELECT 
             c.id,
             c.name,
@@ -172,22 +173,22 @@ export class ContestDao {
         WHERE 
             c.contest_id = ? AND c.valid_flag = 1
         `;
-                const awardsSqlParams = [contestId];
-                const awardsData = await query(awardsSql, awardsSqlParams, false);
-                if (!awardsData) {
-                    contest.awards = [];
-                } else {
-                    contest.awards = awardsData.map(award => ({
-                        id: award.id,
-                        name: award.name,
-                        prize: award.prize,
-                        amount: award.amount,
-                        model: award.model,
-                        modelValue: award.modelValue
-                    }));
-                }
-                // 获取比赛方向
-                const directionSql = `
+                    const awardsSqlParams = [contestId];
+                    const awardsData = await query(awardsSql, awardsSqlParams, false,conn);
+                    if (!awardsData) {
+                        contest.awards = [];
+                    } else {
+                        contest.awards = awardsData.map(award => ({
+                            id: award.id,
+                            name: award.name,
+                            prize: award.prize,
+                            amount: award.amount,
+                            model: award.model,
+                            modelValue: award.modelValue
+                        }));
+                    }
+                    // 获取比赛方向
+                    const directionSql = `
         SELECT 
             id,
             name,
@@ -200,23 +201,24 @@ export class ContestDao {
         WHERE 
             contest_id = ? AND valid_flag = 1
         `;
-                const directionSqlParams = [contestId];
-                const directionData = await query(directionSql, directionSqlParams, false);
-                if (!directionData) {
-                    contest.direction = [];
-                } else {
-                    contest.direction = directionData.map(direction => ({
-                        id: direction.id,
-                        name: direction.name,
-                        txt: direction.txt,
-                        directionCode: direction.directionCode
-                    }));
-                }
-                return contest;
-            });
-            // 等待所有比赛数据加载完成
-            return await Promise.all(contestPromises);
-        }
+                    const directionSqlParams = [contestId];
+                    const directionData = await query(directionSql, directionSqlParams, false,conn);
+                    if (!directionData) {
+                        contest.direction = [];
+                    } else {
+                        contest.direction = directionData.map(direction => ({
+                            id: direction.id,
+                            name: direction.name,
+                            txt: direction.txt,
+                            directionCode: direction.directionCode
+                        }));
+                    }
+                    return contest;
+                });
+                // 等待所有比赛数据加载完成
+                return await Promise.all(contestPromises);
+            }
+        });
     }
     //管理员获取比赛列表
     async getAllContest() {

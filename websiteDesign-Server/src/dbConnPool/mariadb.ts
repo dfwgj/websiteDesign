@@ -13,11 +13,43 @@ const pool: Pool = mariadb.createPool({
   database: config.databaseConfig.database,
   connectionLimit: 10, // 限制最大连接数
 });
-// 封装数据库查询方法
-export const query = async (sql: string, sqlParams: any[],throwOnEmptyResult = true): Promise<any> => {
+
+// 封装事务操作
+export const transaction = async (callback: (conn: PoolConnection) => Promise<any>): Promise<any> => {
   let conn: PoolConnection | null = null;
   try {
     conn = await pool.getConnection();
+    await conn.beginTransaction(); // 开启事务
+    const result = await callback(conn); // 执行回调函数中的操作
+
+    await conn.commit(); // 提交事务
+    return result;
+  } catch (err) {
+    if (conn) {
+      await conn.rollback(); // 回滚事务
+    }
+    console.error('Database transaction error:', err);
+    throw err;
+  } finally {
+    if (conn) {
+      conn.release(); // 释放连接
+    }
+  }
+};
+// 封装数据库查询方法
+export const query = async (
+  sql: string,
+  sqlParams: any[],
+  throwOnEmptyResult = true,
+  conn?: PoolConnection
+): Promise<any> => {
+  let connFromPool: PoolConnection | null = null;
+  try {
+    // 如果没有传入 conn，则从连接池中获取一个新的连接
+    if (!conn) {
+      connFromPool = await pool.getConnection();
+      conn = connFromPool;
+    }
     // 仅在开发环境下打印 SQL 查询语句
     if (process.env.NODE_ENV === 'local') {
       console.log(`Executing SQL query: ${sql}`);
@@ -36,7 +68,10 @@ export const query = async (sql: string, sqlParams: any[],throwOnEmptyResult = t
     }
     throw err; // 抛出错误，便于调用者捕获
   } finally {
-    if (conn) conn.release();
+    // 如果连接是从连接池中获取的，则释放连接
+    if (connFromPool) {
+      connFromPool.release();
+    }
   }
 };
 // 过滤 SQL 语句中的空参数
