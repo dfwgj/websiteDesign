@@ -15,7 +15,9 @@ const pool: Pool = mariadb.createPool({
 });
 
 // 封装事务操作
-export const transaction = async (callback: (conn: PoolConnection) => Promise<any>): Promise<any> => {
+export const transaction = async (
+  callback: (conn: PoolConnection) => Promise<any>
+): Promise<any> => {
   let conn: PoolConnection | null = null;
   try {
     conn = await pool.getConnection();

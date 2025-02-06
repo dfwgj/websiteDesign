@@ -1,8 +1,8 @@
 import { Provide, Inject, Config } from '@midwayjs/core';
 import { UserDao } from '../dao/userDao';
-import { UserDTO, UpdateUserDTO } from '../dto/user';
+import { UserDTO, UpdateUserDTO, allUserDTO } from '../dto/user';
 import { BigIntService } from './bigInt.service';
-import { GetFileExtension } from './originelFileName.service'
+import { GetFileExtension } from './originelFileName.service';
 import { OSSService } from '@midwayjs/oss';
 import * as bcrypt from 'bcryptjs';
 import { Context } from '@midwayjs/koa';
@@ -29,33 +29,27 @@ export class UserService {
   // 通过用户 ID 查找用户
   async findUserById(userId: UserDTO['userId']) {
     // 从数据库中查询用户信息
-    const user = await this.userDao.findUserById(userId);
-    return user;
+    return await this.userDao.findUserById(userId);
   }
   // 通过学生 ID 查找用户
   async findStudentIdById(studentId: UserDTO['studentId']) {
     // 从数据库中查询用户信息
-    const user = await this.userDao.findStudentIdById(studentId);
-    return user;
+    return await this.userDao.findStudentIdById(studentId);
   }
   //修改用户信息
-  async updateUserInfo(updateUserDto: UpdateUserDTO) {
+  async updateUserInfo(
+    userId: UserDTO['userId'],
+    updateUserDto: UpdateUserDTO
+  ) {
     if (updateUserDto.password) {
       updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
     }
-    return await this.userDao.updateUserInfo(updateUserDto);
+    return await this.userDao.updateUserInfo(userId, updateUserDto);
   }
   // 通过账号邮箱密码查找用户
   async findAccount(field: string, value: string) {
     // 从数据库中查询用户信息
-    const user = await this.userDao.findAccount(field, value);
-    return user;
-  }
-  // 删除用户
-  async deleteUser(userId: UserDTO['userId']) {
-    // 从数据库中删除用户信息
-    const result = await this.userDao.delUser(userId);
-    return result;
+    return await this.userDao.findAccount(field, value);
   }
   //获取用户信息
   async getUserInfo() {
@@ -90,5 +84,9 @@ export class UserService {
         expiresIn: this.jwtConfig.expiresIn,
       }
     );
+  }
+  //管理员获取所有用户信息
+  async getAllUser(allUserDto: allUserDTO) {
+    return await this.userDao.getAllUser(allUserDto);
   }
 }

@@ -33,16 +33,28 @@ export class AuthService {
     major: UserDTO['major'],
     phone: UserDTO['phone'],
     email: UserDTO['email'],
-    password: UserDTO['password'],
+    password: UserDTO['password']
   ) {
     const hashPassword = await bcrypt.hash(password, 10);
     // 在返回结果之前进行 BigInt 转换
     return this.bigIntService.bigInt(
-      await this.authDao.register(name, studentId, college, grade, major, phone, email, hashPassword)
+      await this.authDao.register(
+        name,
+        studentId,
+        college,
+        grade,
+        major,
+        phone,
+        email,
+        hashPassword
+      )
     );
   }
   // 登录方法
-  async login(studentId: LoginDTO['studentId'], password: LoginDTO['password']) {
+  async login(
+    studentId: LoginDTO['studentId'],
+    password: LoginDTO['password']
+  ) {
     // 获取用户实体
     const user = await this.authDao.login(studentId);
     if (!user || user.length === 0) {
@@ -83,7 +95,7 @@ export class AuthService {
     );
   }
   // Token 验证方法
-  async tokenVerify(token:string) {
+  async tokenVerify(token: string) {
     const decoded: any = await this.jwtService.verify(
       token,
       this.jwtConfig.secret,

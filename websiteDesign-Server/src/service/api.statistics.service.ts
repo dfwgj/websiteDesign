@@ -6,16 +6,15 @@ import { StatisticsDao } from '../dao/statisticsDao';
 
 @Provide()
 export class StatisticsService {
-    @Inject()
-    ctx: Context;
-    @Inject()
-    statisticsDao: StatisticsDao;
-    @Inject()
-    bigIntService: BigIntService;
-    //获取系统统计信息
-    async getStatistics(statisticsDTO: StatisticsDTO) {
-        const result = await this.statisticsDao.getStatistics(statisticsDTO);
-        console.log(result);
-        return this.bigIntService.bigInt(result);
-    }
+  @Inject()
+  ctx: Context;
+  @Inject()
+  statisticsDao: StatisticsDao;
+  @Inject()
+  bigIntService: BigIntService;
+  //获取系统统计信息
+  async getStatistics(statisticsDTO: StatisticsDTO) {
+    const result = await this.statisticsDao.getStatistics(statisticsDTO);
+    return this.bigIntService.bigInt(result);
+  }
 }
