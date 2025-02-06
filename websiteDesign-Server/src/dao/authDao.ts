@@ -1,6 +1,6 @@
 import { Inject, Provide } from '@midwayjs/core';
 import { InjectClient } from '@midwayjs/core';
-import { query } from '../dbConnPool/mariadb'; // 引入查询函数
+import { query, transaction } from '../dbConnPool/mariadb'; // 引入查询函数
 import { LoginDTO, UserDTO } from '../dto/user';
 import { UserDao } from './userDao';
 import { uuidv7 } from 'uuidv7';
@@ -23,14 +23,32 @@ export class AuthDao {
     hashPassword: UserDTO['hashPassword']
   ) {
     const userId = uuidv7();
-    const sql = `
+    return transaction(async conn => {
+      const sql = `
         INSERT INTO user
           ( user_id, name, student_id, college, grade, major, phone, email, password, created_at)
           VALUES ( ?,?, ?, ?, ?, ?, ?, ?, ?, NOW())
       `;
-    const sqlParams = [userId, name, studentId, college, grade, major, phone, email, hashPassword];
-    await query(sql, sqlParams);
-    return "注册成功";
+      const sqlParams = [
+        userId,
+        name,
+        studentId,
+        college,
+        grade,
+        major,
+        phone,
+        email,
+        hashPassword,
+      ];
+      await query(sql, sqlParams, false, conn);
+      const sq2 = `
+    INSERT INTO daily_statistics (date, new_users)
+        VALUES (CURDATE(), 1)
+        ON DUPLICATE KEY UPDATE new_users = new_users + 1;
+        `;
+      await query(sq2, [], false, conn);
+      return '注册成功';
+    });
   }
   // 登录验证
   async login(studentId: LoginDTO['studentId']) {

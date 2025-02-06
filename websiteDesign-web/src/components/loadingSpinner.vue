@@ -1,5 +1,5 @@
 <template>
-    <div v-if="isLoading" class="fixed w-full h-full flex flex-col justify-center items-center bg-[#F7FFFF]">
+    <div v-if="isLoading" class="fixed z-10 w-screen h-screen flex flex-col justify-center items-center bg-[#F7FFFF]">
         <!-- SVG 圆圈加载条 -->
         <div class="circle-container mb-4">
             <svg ref="circleSvg" width="90px" height="90px" xmlns="http://www.w3.org/2000/svg">

@@ -26,7 +26,7 @@ export class JwtMiddleware {
       if (/^Bearer$/i.test(scheme)) {
         try {
           // 验证 token 是否有效
-          console.log("niub");
+          console.log('niub');
           const decoded = await this.jwtService.verify(
             token,
             this.jwtConfig.secret,
@@ -66,7 +66,14 @@ export class JwtMiddleware {
   }
   // 配置忽略鉴权的路由地址
   public match(ctx: Context): boolean {
-    const ignoreRoutes = ['/api/auth/login', '/api/auth/register', '/info','/api/contest/getContest'];
+    const ignoreRoutes = [
+      '/api/auth/login',
+      '/api/auth/register',
+      '/info',
+      '/api/contest/getContest',
+      '/api/course/getCourse',
+      '/api/materials/getMaterials',
+    ];
     const ignore = ignoreRoutes.some(route => ctx.path.indexOf(route) !== -1);
     return !ignore;
   }
