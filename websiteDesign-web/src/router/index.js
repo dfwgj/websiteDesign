@@ -38,6 +38,15 @@ const routes = [
             title: '示例页面',
             freeAuth: true
         }
+    },
+    {
+        path: '/competitionInformation',
+        name: 'competitionInformation',
+        component: () => import('../pages/user/competitionInformation.vue'),
+        meta: {
+            title: '大赛详细',
+            freeAuth: true
+        }
     }
 ];
 
