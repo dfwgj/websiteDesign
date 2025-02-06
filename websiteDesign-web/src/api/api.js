@@ -1,12 +1,14 @@
 import auth from '../api/auth';
 import user from '../api/user';
+import course from '../api/course';
 
 // 注入所有 api 模块到 Vue 实例
 export default {
     install(app) {
         app.config.globalProperties.$api = {
             auth,
-            user
+            user,
+            course
         };
     }
 };
