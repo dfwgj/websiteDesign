@@ -100,11 +100,9 @@ export class MaterialsDao {
         materials.name AS materialsName, 
         materials.link,
         materials.description,
-        t.item_label AS type,
+        t.item_label AS type
         FROM
         materials
-    LEFT JOIN
-        user ON materials.user_id = user.user_id
     LEFT JOIN
         sys_dict_item t ON materials.type = t.item_code AND t.dict_code = 'TYPE'
     WHERE
