@@ -15,7 +15,7 @@ import { UserDTO, LoginDTO } from '../dto/user';
 import { AuthGuard } from '../guard/auth.guard';
 
 @Controller('/auth')
-export class APIController {
+export class AuthController {
   @Inject()
   ctx: Context;
 
@@ -31,15 +31,18 @@ export class APIController {
    * @returns {object} user - 用户信息
    * */
   @Post('/register')
-  async register(
-    @Body() userDto: UserDTO): Promise<object> {
+  async register(@Body() userDto: UserDTO): Promise<object> {
     //是否存在该用户
-    const {name, studentId, college, grade, major, phone, email, password} = userDto;
-    const userStudentId = await this.userService.findAccount('student_id',studentId);
+    const { name, studentId, college, grade, major, phone, email, password } =
+      userDto;
+    const userStudentId = await this.userService.findAccount(
+      'student_id',
+      studentId
+    );
     if (userStudentId) {
       throw new Error('用户已经存在');
     }
-    const userEmail = await this.userService.findAccount('email',email);
+    const userEmail = await this.userService.findAccount('email', email);
     if (userEmail) {
       throw new Error('邮箱已经存在');
     }
@@ -48,7 +51,14 @@ export class APIController {
       throw new Error('该手机号已经存在');
     }
     const result = await this.authService.register(
-      name, studentId, college, grade, major, phone, email, password
+      name,
+      studentId,
+      college,
+      grade,
+      major,
+      phone,
+      email,
+      password
     );
     return result;
   }
@@ -60,9 +70,7 @@ export class APIController {
    * @returns {Object} token - 登录凭证
    */
   @Post('/login')
-  async login(
-    @Body() LoginDto: LoginDTO
-  ): Promise<string> {
+  async login(@Body() LoginDto: LoginDTO): Promise<string> {
     const { studentId, password } = LoginDto;
     return await this.authService.login(studentId, password);
   }
@@ -73,9 +81,7 @@ export class APIController {
    * @returns {Object} payload 凭证负载
    */
   @Post('/tokenVerify')
-  async tokenVerify(
-    @Headers('Authorization') token: string
-  ): Promise<unknown> {
+  async tokenVerify(@Headers('Authorization') token: string): Promise<unknown> {
     token = this.ctx.request.header.authorization.split(' ')[1];
     return await this.authService.tokenVerify(token);
   }

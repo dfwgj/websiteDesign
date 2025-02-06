@@ -30,7 +30,7 @@ import * as codeDye from '@midwayjs/code-dye';
     busboy,
     crossDomain,
     cacheManager,
-    oss, 
+    oss,
     {
       component: info,
       enabledEnvironment: ['local'],
