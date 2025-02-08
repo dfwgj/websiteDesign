@@ -22,9 +22,18 @@ const routes = [
             {
                 path: 'resource',
                 name: 'CourseResourcesPage',
-                component: () => import('@/pages/user/courseResources.vue'),
+                component: () => import('@/pages/user/course/courseResources.vue'),
                 meta: {
                     title: '课程资料',
+                    freeAuth: true
+                }
+            },
+            {
+                path: 'detail',
+                name: 'detail',
+                component: () => import('../pages/user/contest/detail.vue'),
+                meta: {
+                    title: '竞赛详情',
                     freeAuth: true
                 }
             }
@@ -36,15 +45,6 @@ const routes = [
         component: () => import('../pages/manager/main.vue'),
         meta: {
             title: '示例页面',
-            freeAuth: true
-        }
-    },
-    {
-        path: '/competitionInformation',
-        name: 'competitionInformation',
-        component: () => import('../pages/user/competitionInformation.vue'),
-        meta: {
-            title: '大赛详细',
             freeAuth: true
         }
     }

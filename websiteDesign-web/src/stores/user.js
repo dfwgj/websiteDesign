@@ -14,6 +14,13 @@ export const userStore = defineStore('userStore', {
         email: null,
         userRole: null,
         password: "*********",
+        team:{
+            teamName: null,
+            teamState: null,
+            model: null,
+            direction: null,
+            players: [],
+        }
     }),
     actions: {
         // 解密 token 并填充用户信息
@@ -32,6 +39,11 @@ export const userStore = defineStore('userStore', {
                     this.phone = decodedToken.phone;
                     this.email = decodedToken.email;
                     this.userRole = decodedToken.userRole;
+                    this.team.teamName = decodedToken.team.teamName;
+                    this.team.teamState = decodedToken.team.teamState;
+                    this.team.model = decodedToken.team.model;
+                    this.team.direction = decodedToken.team.direction;
+                    this.team.players = decodedToken.team.players;
                 } catch (error) {
                     console.log(error);
                 }
