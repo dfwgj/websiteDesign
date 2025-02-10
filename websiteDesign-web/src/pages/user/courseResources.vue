@@ -3,7 +3,7 @@
         <!-- 图标部分 -->
         <div class="mx-10 flex justify-center items-center">
             <div v-for="(icon, index) in icons" :key="index" class="w-1/6 h-1/6" @click="loadCourseByType(icon.type)">
-                <img :src="icon.iconLink" class="w-11/12 h-11/12" />
+                <img :src="icon.iconLink" class="w-11/12 h-11/12 transition-all" :class="{'brightness-75' : selectedType ===icon.type,'brightness-100' : selectedType !== icon.type}"/>
             </div>
         </div>
         <!-- 课程资源部分 -->
@@ -112,8 +112,8 @@ export default {
         loadCourseByType(type){
             const coursesByType = this.courses.filter(course => course.type === type);
             this.coursesByType = coursesByType;
+            this.selectedType = this.selectedType === type ? null : type; // 切换选择状态时，当前分类的标签变暗
         }
-
     } // 定义组件的方法
 };
 </script>
