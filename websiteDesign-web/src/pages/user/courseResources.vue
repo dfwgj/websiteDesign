@@ -1,13 +1,18 @@
 <template>
-    <div class="w-full max-w-screen-sm h-full mx-auto py-10">
+    <div class="w-full h-full mx-auto py-10 lg:flex">
         <!-- 图标部分 -->
-        <div class="mx-10 flex justify-center items-center">
-            <div v-for="(icon, index) in icons" :key="index" class="w-1/6 h-1/6" @click="loadCourseByType(icon.type)">
-                <img :src="icon.iconLink" class="w-11/12 h-11/12" />
+        <div class="lg:w-1/4 mx-10 lg:mx-0 flex lg:flex-col justify-center items-center">
+            <div v-for="(icon, index) in icons" :key="index" class="w-full h-1/6 lg:border-2  lg:border-[#5295CD] lg:p-2 lg:m-0 lg:border-l-0 first:lg:rounded-tr-3xl last:lg:rounded-br-3xl" @click="loadCourseByType(icon.type)">
+                <div class="w-full h-full lg:flex lg:items-center" :class="{'brightness-75' : selectedType ===icon.type,'brightness-100' : selectedType !== icon.type}">
+                    <div class="hidden lg:w-2/3 lg:shrink-0 lg:flex lg:items-center lg:justify-center">
+                        <div class="text-[#5295CD] text-3xl">{{ icon.type }}</div>
+                    </div>
+                    <img :title="icon.type" :alt="icon.type" :src="icon.iconLink" class="w-11/12 h-11/12 lg:w-1/4 lg:max-h-[80%] transition-all" />
+                </div>
             </div>
         </div>
         <!-- 课程资源部分 -->
-        <div class="h-full overflow-auto flex-col mx-10 mt-5 flex-1">
+        <div class="lg:w-3/4 h-full mx-10 mt-5 flex-1 flex-col overflow-auto">
             <div v-for="(course, index) in coursesByType" :key="index" class="w-full flex justify-between items-center border-b-2 border-gray-200">
                 <div class="w-full h-full flex justify-between items-center">
                     <var-card ripple variant="outlined" @click="openNewTab(course.link)">
@@ -35,7 +40,7 @@
             <div class="h-28 sm:h-32"></div>
         </div>
         <!-- 底部固定栏 -->
-        <div class="absolute w-screen bottom-0 left-0 flex justify-center items-center bg-[#F7FFFF]">
+        <div class="absolute w-screen bottom-0 left-0 flex justify-center items-center bg-[#F7FFFF] lg:hidden ">
             <div class="w-full mx-5 max-w-screen-sm">
                 <var-divider description="课程资料">
                 </var-divider>
@@ -112,8 +117,8 @@ export default {
         loadCourseByType(type){
             const coursesByType = this.courses.filter(course => course.type === type);
             this.coursesByType = coursesByType;
+            this.selectedType = this.selectedType === type ? null : type; // 切换选择状态时，当前分类的标签变暗
         }
-
     } // 定义组件的方法
 };
 </script>
