@@ -172,7 +172,7 @@ export class ContestDao {
   async getContest() {
     return transaction(async conn => {
       const sql = `
-    SELECT id, name, topic, introduce, double_knots, qr_link AS qrLink, organizers, contractors, year, created_at
+    SELECT id, name, topic, introduce, double_knots AS doubleKnots, qr_link AS qrLink, organizers, contractors, year, created_at AS createdAt
     FROM contest_information
     WHERE valid_flag = 1
     `;

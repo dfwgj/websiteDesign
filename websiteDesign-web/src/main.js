@@ -9,6 +9,7 @@ import { createPinia } from 'pinia';
 const pinia = createPinia();
 import store from './stores/store';
 import { userStore } from './stores/user';
+import { contestStore } from './stores/contest';
 
 // api
 import api from './api/api';
@@ -30,3 +31,5 @@ import '@/style.css';
 const app = createApp(App).use(router).use(pinia).use(store).use(api).mount('#app');
 const user = userStore();
 user.decodeToken(); // 解码 Token 并保存到 userStore
+const contest = contestStore();
+await contest.getContest(); // 获取比赛信息并保存到 contestStore
