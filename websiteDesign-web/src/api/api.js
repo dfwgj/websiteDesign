@@ -1,6 +1,7 @@
 import auth from '../api/auth';
 import user from '../api/user';
 import course from '../api/course';
+import materials from '../api/materials';
 
 // 注入所有 api 模块到 Vue 实例
 export default {
@@ -8,7 +9,8 @@ export default {
         app.config.globalProperties.$api = {
             auth,
             user,
-            course
+            course,
+            materials
         };
     }
 };

@@ -13,30 +13,50 @@
         </div>
         <!-- 课程资源部分 -->
         <div class="lg:w-3/4 h-full mx-10 mt-5 flex-1 flex-col overflow-auto">
-            <div v-for="(course, index) in coursesByType" :key="index" class="w-full flex justify-between items-center border-b-2 border-gray-200">
-                <div class="w-full h-full flex justify-between items-center">
-                    <var-card ripple variant="outlined" @click="openNewTab(course.link)">
-                        <div class="w-full h-full flex flex-col justify-between items-start">
-                            <div class="w-full h-1/2 flex justify-between items-center">
-                                <div class="w-1/2 h-full flex justify-start items-center">
-                                    <span class="text-lg font-bold" style="color:black">{{ course.courseName }}</span>
+            <!-- 课程部分 -->
+            <div v-if="!ismaterials">
+                <div v-for="(course, index) in coursesByType" :key="index" class="w-full flex justify-between items-center border-b-2 border-gray-200">
+                    <div class="w-full h-full flex justify-between items-center">
+                        <var-card ripple variant="outlined" @click="openNewTab(course.link)">
+                            <div class="w-full h-full flex flex-col justify-between items-start">
+                                <div class="w-full h-1/2 flex justify-between items-center">
+                                    <div class="w-1/2 h-full flex justify-start items-center">
+                                        <span class="text-lg font-bold" style="color:black">{{ course.courseName}}</span>
+                                    </div>
+                                    <div class="w-1/2 h-full flex justify-end items-center">
+                                        <span class="text-sm" style="color:black">{{ formatDate(course.createdAt)}}</span>
+                                    </div>
                                 </div>
-                                <div class="w-1/2 h-full flex justify-end items-center">
-                                    <span class="text-sm" style="color:black">{{ formatDate(course.createdAt) }}</span>
+                                <div class="w-full h-1/2 flex justify-between items-center">
+                                    <div class="w-2/3 h-full flex justify-start items-center">
+                                        <span class="text-sm" style="color:#5295CD">{{ course.type }}</span>
+                                    </div>
+                                    <div class="w-1/3 h-full flex justify-end items-center">
+                                        <span class="text-sm" style="color:black">{{ course.userName }}</span>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="w-full h-1/2 flex justify-between items-center">
-                                <div class="w-2/3 h-full flex justify-start items-center">
-                                    <span class="text-sm" style="color:#5295CD">{{ course.type }}</span>
-                                </div>
-                                <div class="w-1/3 h-full flex justify-end items-center">
-                                    <span class="text-sm" style="color:black">{{ course.userName }}</span>
-                                </div>
-                            </div>
-                        </div>
-                    </var-card>
+                        </var-card>
+                    </div>
                 </div>
             </div>
+
+            <!-- 资料部分 -->
+            <div v-if="ismaterials">
+                <div class="w-full h-full flex justify-between items-center">
+                    <var-collapse v-model="openCollapse" :offset="false">
+                        <var-collapse-item v-for="(material, index) in materials" :key="index" :title="material.type" style="color:#5295CD">
+                            <template #title>
+                                <span class="text-xl">{{ material.type }}</span>
+                            </template>
+                            <p style="color:#0B0808" class="text-base">{{ material.materialsName }}</p>
+                            <p style="color:#0B0808" class="text-base" :title="material.description" :alt="material.description">{{ material.link }}</p>
+                        </var-collapse-item>
+                    </var-collapse>
+                </div>
+
+            </div>
+            <!-- 底部空白 -->
             <div class="h-28 sm:h-32"></div>
         </div>
         <!-- 底部固定栏 -->
@@ -47,7 +67,7 @@
             </div>
         </div>
     </div>
-    
+
 </template>
 
 <script>
@@ -94,12 +114,17 @@ export default {
                 }
             ],
             courses: [], // 原始的课程信息
-            coursesByType: [] // 某个分类的课程信息
+            coursesByType: [], // 某个分类的课程信息
+            openCollapse:[], // 课程资料折叠面板
+            materials: [],// 课程资料
+            selectedType: null, // 选中的分类
+            ismaterials:false // 是否显示课程资料
         };
     },
     created() {}, // 组件的生命周期钩子，创建时调用
     async mounted() {
         await this.getCourses();
+        await this.getMaterials();
         this.loadCourseByType('UI设计');
     }, // 组件的生命周期钩子，挂载时调用
     updated() {}, // 组件的生命周期钩子，更新时调用
@@ -118,6 +143,19 @@ export default {
             const coursesByType = this.courses.filter(course => course.type === type);
             this.coursesByType = coursesByType;
             this.selectedType = this.selectedType === type ? null : type; // 切换选择状态时，当前分类的标签变暗
+
+        if (type === "课程资料") {
+            this.ismaterials = true;
+            this.getMaterials(); // 获取资料数据
+        } else {
+            this.ismaterials = false;
+            this.coursesByType = this.courses.filter(course => course.type === type);
+        }
+            },
+        //获取课程资料
+        async getMaterials(){
+            const res = await this.$api.materials.getMaterials();
+            this.materials = res;
         }
     } // 定义组件的方法
 };
