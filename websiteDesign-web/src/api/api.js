@@ -10,7 +10,6 @@ export default {
         app.config.globalProperties.$api = {
             auth,
             user,
-            course,
             materials,
             contest,
             course
