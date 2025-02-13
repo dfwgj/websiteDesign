@@ -1,23 +1,23 @@
 <template>
-    <div class="w-full h-full mx-auto py-10 lg:flex">
+    <div class="w-full h-full mx-auto py-6 lg:flex">
         <!-- 图标部分 -->
-        <div class="lg:w-1/4 mx-10 lg:mx-0 flex lg:flex-col justify-center items-center">
-            <div v-for="(icon, index) in icons" :key="index" class="w-full h-1/6 lg:border-2  lg:border-[#5295CD] lg:p-2 lg:m-0 lg:border-l-0 first:lg:rounded-tr-3xl last:lg:rounded-br-3xl" @click="loadCourseByType(icon.type)">
-                <div class="w-full h-full lg:flex lg:items-center" :class="{'brightness-75' : selectedType ===icon.type,'brightness-100' : selectedType !== icon.type}">
-                    <div class="hidden lg:w-2/3 lg:shrink-0 lg:flex lg:items-center lg:justify-center">
-                        <div class="text-[#5295CD] text-3xl">{{ icon.type }}</div>
+        <div class="lg:w-1/4 lg:max-h-[550px] lg:max-w-[256px] mx-10 lg:mt-5 lg:ml-16 lg:mr-2 flex lg:flex-col justify-center items-center">
+            <div v-for="(icon, index) in icons" :key="index" class="w-full h-1/6 lg:border-2  lg:border-[#5295CD] lg:p-2 lg:m-2 lg:rounded-xl" @click="loadCourseByType(icon.type)">
+                <div class="w-full h-full lg:flex lg:items-center lg:justify-center" :class="{'brightness-75' : selectedType ===icon.type,'brightness-100' : selectedType !== icon.type}">
+                    <div class="hidden lg:w-1/2 lg:shrink-0 lg:flex lg:items-center lg:justify-center">
+                        <div class="text-[#5295CD] text-[1.4rem]">{{ icon.type }}</div>
                     </div>
                     <img :title="icon.type" :alt="icon.type" :src="icon.iconLink" class="w-11/12 h-11/12 lg:w-1/4 lg:max-h-[80%] transition-all" />
                 </div>
             </div>
         </div>
         <!-- 课程资源部分 -->
-        <div class="lg:w-3/4 h-full mx-10 mt-5 flex-1 flex-col overflow-auto">
+        <div class="lg:w-3/4 h-full mx-10 mt-4 lg:mr-16 flex-1 flex-col overflow-auto">
             <!-- 课程部分 -->
             <div v-if="!ismaterials">
-                <div v-for="(course, index) in coursesByType" :key="index" class="w-full flex justify-between items-center border-b-2 border-gray-200">
-                    <div class="w-full h-full flex justify-between items-center">
-                        <var-card ripple variant="outlined" @click="openNewTab(course.link)">
+                <div v-for="(course, index) in coursesByType" :key="index" class="w-full flex justify-between items-center border-b-2 border-gray-200  rounded-[10px]">
+                    <div class="w-full h-full flex justify-between items-center border-2 border-[#5295CD] rounded-[10px]">
+                        <var-card ripple variant="outlined"  @click="openNewTab(course.link)">
                             <div class="w-full h-full flex flex-col justify-between items-start">
                                 <div class="w-full h-1/2 flex justify-between items-center">
                                     <div class="w-1/2 h-full flex justify-start items-center">
@@ -43,9 +43,9 @@
 
             <!-- 资料部分 -->
             <div v-if="ismaterials">
-                <div class="w-full h-full flex justify-between items-center">
+                <div class="border-[#5295CD] w-full h-full flex justify-between items-center">
                     <var-collapse v-model="openCollapse" :offset="false">
-                        <var-collapse-item v-for="(material, index) in materials" :key="index" :title="material.type" style="color:#5295CD">
+                        <var-collapse-item v-for="(material, index) in materials" :key="index" :title="material.type" style="color:#5295CD" class=" border-2 border-[#5295CD] rounded-[10px] mb-0.5">
                             <template #title>
                                 <span class="text-xl">{{ material.type }}</span>
                             </template>
