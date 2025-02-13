@@ -22,7 +22,7 @@ const routes = [
             {
                 path: 'resource',
                 name: 'CourseResourcesPage',
-                component: () => import('@/pages/user/course/courseResources.vue'),
+                component: () => import('../pages/user/courseResources.vue'),
                 meta: {
                     title: '课程资料',
                     freeAuth: true
