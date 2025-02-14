@@ -36,6 +36,15 @@ const routes = [
                     title: '竞赛详情',
                     freeAuth: true
                 }
+            },
+            {
+                path: 'login',
+                name: 'login',
+                component: () => import('../components/login.vue'),
+                meta:{
+                    title: '注册登录',
+                    freeAuth: true
+                }
             }
         ]
     },
