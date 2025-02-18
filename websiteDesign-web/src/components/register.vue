@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col items-center justify-center w-full h-full">
-        <div class="w-2/3 max-w-sm lg:max-w-md border-[#5295CD] border-2 flex flex-col items-center justify-center mx-auto p-6 rounded-2xl shadow-lg mb-16">
+        <div class="w-2/3 max-w-sm lg:max-w-md border-[#5295CD] border-2 flex flex-col items-center justify-center mx-auto p-6 rounded-2xl shadow-lg">
             <h2 class="text-2xl font-bold mb-4 text-[#5295CD]">注册</h2>
 
             <form @submit.prevent="handleRegister" class="w-full">
