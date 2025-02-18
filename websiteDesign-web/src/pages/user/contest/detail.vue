@@ -84,7 +84,6 @@
             </div>
         </div>
     </div>
-
 </template>
 <script>
 export default {
@@ -107,12 +106,12 @@ export default {
         };
     },
     computed: {
-    contest(){
-        return this.$store.contest;
-        },
+        contest() {
+            return this.$store.contest;
+        }
     },
     methods: {
-        console(){
+        console() {
             console.log(this.contest);
         },
         // 根据点击的按钮改变内容
