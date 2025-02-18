@@ -13,13 +13,13 @@ export const userStore = defineStore('userStore', {
         phone: null,
         email: null,
         userRole: null,
-        password: "*********",
-        team:{
+        password: '*********',
+        team: {
             teamName: null,
             teamState: null,
             model: null,
             direction: null,
-            players: [],
+            players: []
         }
     }),
     actions: {
@@ -61,7 +61,7 @@ export const userStore = defineStore('userStore', {
             this.phone = null;
             this.email = null;
             this.userRole = null;
-            this.password = "*********";
+            this.password = '*********';
         }
     }
 });
