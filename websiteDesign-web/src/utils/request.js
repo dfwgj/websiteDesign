@@ -9,7 +9,7 @@ const request = {
                 if (!res.ok) {
                     console.error('Request error:', res.statusText);
                     return false;
-                } 
+                }
                 return res.json();
             })
             .then((res) => {
@@ -73,7 +73,7 @@ const request = {
         return request.fetch(url, {
             method: 'PUT',
             headers: {
-                'Authorization': 'Bearer ' + localStorage.getItem('token')
+                Authorization: 'Bearer ' + localStorage.getItem('token')
             },
             body: formData
         });

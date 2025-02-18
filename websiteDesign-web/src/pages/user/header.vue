@@ -18,7 +18,7 @@
                 <div class="flex-grow"></div>
                 <Icon type="caidan" extraclass="icon" size="25" color="#71A9D7" class="flex w-[15%] justify-center" @click="right = true"></Icon>
             </div>
-            
+
             <var-popup position="right" v-model:show="right" style="width: 60vw">
                 <div class="px-1 mt-2">
                     <var-button outline text block text-color="#71A9D7" size="large" class="mt-2 mb-2" @click="goHome">首页</var-button>

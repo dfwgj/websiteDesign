@@ -8,11 +8,11 @@ export function formatDate(timestamp, format = 'YYYY-MM-DD') {
 // 打开新标签页
 export function openNewTab(url) {
     window.open(url, '_blank');
-};
+}
 
 const common = {
     formatDate,
-    openNewTab,
+    openNewTab
 };
 
 export default common;

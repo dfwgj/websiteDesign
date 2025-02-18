@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import contest from "@/api/contest";
+import contest from '@/api/contest';
 
 export const contestStore = defineStore('contestStore', {
     state: () => ({
@@ -13,7 +13,7 @@ export const contestStore = defineStore('contestStore', {
         contractors: null,
         year: null,
         createdAt: null,
-        date:{
+        date: {
             spotDate: null,
             spotPlace: null,
             submissionDate: null,
@@ -23,12 +23,12 @@ export const contestStore = defineStore('contestStore', {
             finalDate: null,
             finalPlace: null
         },
-        awards:[],
-        direction:[],
+        awards: [],
+        direction: []
     }),
     actions: {
         async getContest() {
-            const res =  (await contest.getContest())[0];
+            const res = (await contest.getContest())[0];
             if (res) {
                 this.contestId = res.id;
                 this.name = res.name;

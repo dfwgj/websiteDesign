@@ -2,6 +2,24 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 const routes = [
     {
+        path: '/login',
+        name: 'login',
+        component: () => import('../components/login.vue'),
+        meta: {
+            title: '登录',
+            freeAuth: true
+        }
+    },
+    {
+        path: '/register',
+        name: 'register',
+        component: () => import('../components/register.vue'),
+        meta: {
+            title: '注册',
+            freeAuth: true
+        }
+    },
+    {
         path: '/',
         name: 'header',
         component: () => import('../pages/user/header.vue'),
@@ -24,8 +42,7 @@ const routes = [
                 name: 'CourseResourcesPage',
                 component: () => import('../pages/user/courseResources.vue'),
                 meta: {
-                    title: '课程资料',
-                    freeAuth: true
+                    title: '课程资料'
                 }
             },
             {
@@ -34,15 +51,6 @@ const routes = [
                 component: () => import('../pages/user/contest/detail.vue'),
                 meta: {
                     title: '竞赛详情',
-                    freeAuth: true
-                }
-            },
-            {
-                path: 'login',
-                name: 'login',
-                component: () => import('../components/login.vue'),
-                meta:{
-                    title: '注册登录',
                     freeAuth: true
                 }
             }
