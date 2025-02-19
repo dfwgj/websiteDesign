@@ -28,21 +28,21 @@ export const contestStore = defineStore('contestStore', {
     }),
     actions: {
         async getContest() {
-            const res = (await contest.getContest())[0];
-            if (res) {
-                this.contestId = res.id;
-                this.name = res.name;
-                this.topic = res.topic;
-                this.introduce = res.introduce;
-                this.doubleKnots = res.doubleKnots;
-                this.qrLink = res.qrLink;
-                this.organizers = res.organizers;
-                this.contractors = res.contractors;
-                this.year = res.year;
-                this.createdAt = res.createdAt;
-                this.date = res.date;
-                this.awards = res.awards;
-                this.direction = res.direction;
+            const res = await contest.getContest();
+            if (res.success) {
+                this.contestId = res.data[0].id;
+                this.name = res.data[0].name;
+                this.topic = res.data[0].topic;
+                this.introduce = res.data[0].introduce;
+                this.doubleKnots = res.data[0].doubleKnots;
+                this.qrLink = res.data[0].qrLink;
+                this.organizers = res.data[0].organizers;
+                this.contractors = res.data[0].contractors;
+                this.year = res.data[0].year;
+                this.createdAt = res.data[0].createdAt;
+                this.date = res.data[0].date;
+                this.awards = res.data[0].awards;
+                this.direction = res.data[0].direction;
             }
         },
         //清除比赛信息
