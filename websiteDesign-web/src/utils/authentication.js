@@ -14,42 +14,32 @@ const authentication = {
             .then((res) => {
                 if (!res.ok) {
                     console.error('Request error:', res.statusText);
-                    return false;
+                    return res.json();
                 }
                 return res.json();
             })
             .then((res) => {
                 if (res.code !== 0) {
                     console.error('Request error: Code', res.code);
-                    return false;
+                    return { success: false, error: res.error }; // 返回具体的错误信息
                 }
-                return res.data;
+                return { success: true, data: res.data };
             })
             .catch((error) => {
                 console.error('Request error:', error);
-                return false;
+                return { success: false, error: error.message || '未知错误' }; // 返回捕获的错误信息
             });
     },
     // 封装 login 请求
     login: async (data) => {
         // 获取 jwt
         const token = await authentication.fetch('/auth/login', data);
-        if (token) {
-            // 将 jwt 保存到 localStorage
-            localStorage.setItem('token', token);
-            return true;
-        } else {
-            return false;
-        }
+        return token;
     },
     // 封装 register 请求
     register: async (data) => {
         const response = await authentication.fetch('/auth/register', data);
-        if (response) {
-            return true;
-        } else {
-            return false;
-        }
+        return response;
     }
 };
 

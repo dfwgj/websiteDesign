@@ -41,8 +41,8 @@ export class ErrorFilter {
     return {
       code: ctx.status,
       message,
-      error: err.stack, // 开发模式下使用
-      // error: err.message, // 生产模式下使用
+      //error: err.stack, // 开发模式下使用
+       error: err.message, // 生产模式下使用
     };
   }
 }

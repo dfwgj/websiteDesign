@@ -17,20 +17,18 @@
 
 <script>
 import { gsap } from 'gsap';
-
 export default {
     name: 'LoadingSpinner',
     data() {
         return {
-            isLoading: true // 控制加载页面的显示和隐藏
+            isLoading: true, // 控制加载页面的显示和隐藏
+            isDataLoaded: false, // 数据是否加载完成
         };
     },
     mounted() {
         this.startLoaderAnimation();
         this.startIconRotation();
-
-        // 模拟网站加载
-        this.simulateWebsiteLoading();
+        this.loadWebsiteData(); // 调用加载数据的方法
     },
     methods: {
         startLoaderAnimation() {
@@ -53,7 +51,6 @@ export default {
         },
         startIconRotation() {
             const icon = this.$refs.icon.$el;
-
             // GSAP 动画：图标旋转
             gsap.to(icon, {
                 rotationY: 360, // 旋转 360 度
@@ -63,33 +60,45 @@ export default {
                 transformOrigin: 'center' // 旋转中心为图标中心
             });
         },
-        simulateWebsiteLoading() {
-            // 模拟网站加载（例如：2 秒后加载完成）
-            setTimeout(() => {
-                // 停止加载条动画
-                gsap.killTweensOf(this.$refs.progressCircle);
-                // 快速完成加载条动画
-                gsap.to(this.$refs.progressCircle, {
-                    strokeDashoffset: 0,
-                    duration: 0.5,
-                    ease: 'power2.out',
-                    onComplete: () => {
-                        // 隐藏加载页面
-                        this.isLoading = false;
-                        // 1秒后渐渐消失
-                        gsap.to(this.$el, {
-                            opacity: 0,
-                            duration: 1,
-                            onComplete: () => {
-                                this.$emit('loading-complete');
-                            }
-                        });
-                    }
-                });
-            }, 2000); // 模拟加载时间
+        async loadWebsiteData() {
+            try {
+                // 调用 Vuex action 获取比赛数据
+                await this.$store.contest.getContest();
+                // 数据加载完成后，设置标志位
+                this.isDataLoaded = true;
+                // 停止加载动画
+                this.stopLoading();
+            } catch (error) {
+                console.error('Error loading website data:', error);
+                // 处理加载数据失败的情况
+                this.stopLoading();
+            }
+        },
+        stopLoading() {
+            // 停止加载条动画
+            gsap.killTweensOf(this.$refs.progressCircle);
+            // 快速完成加载条动画
+            gsap.to(this.$refs.progressCircle, {
+                strokeDashoffset: 0,
+                duration: 0.5,
+                ease: 'power2.out',
+                onComplete: () => {
+                    // 隐藏加载页面
+                    this.isLoading = false;
+                    // 1秒后渐渐消失
+                    gsap.to(this.$el, {
+                        opacity: 0,
+                        duration: 1,
+                        onComplete: () => {
+                            this.$emit('loading-complete');
+                        }
+                    });
+                }
+            });
         }
     }
 };
+
 </script>
 
 <style scoped>

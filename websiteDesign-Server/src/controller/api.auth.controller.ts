@@ -40,15 +40,15 @@ export class AuthController {
       studentId
     );
     if (userStudentId) {
-      throw new Error('用户已经存在');
+      throw new Error('该学号已经注册');
     }
     const userEmail = await this.userService.findAccount('email', email);
     if (userEmail) {
-      throw new Error('邮箱已经存在');
+      throw new Error('该邮箱已经注册');
     }
     const userPhone = await this.userService.findAccount('phone', phone);
     if (userPhone) {
-      throw new Error('该手机号已经存在');
+      throw new Error('该手机号已经注册');
     }
     const result = await this.authService.register(
       name,
