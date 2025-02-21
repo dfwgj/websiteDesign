@@ -61,7 +61,7 @@ export default {
         };
     },
     computed: {
-        user(){
+        user() {
             return this.$store.user;
         },
         contest() {
@@ -73,8 +73,10 @@ export default {
     updated() {}, // 组件的生命周期钩子，更新时调用
     methods: {
         goHome() {
+            console.log(this.user);
             this.right = false;
             this.$router.push('/');
+            this.$router.push('/home');
         },
         goDetail() {
             this.right = false;
@@ -90,7 +92,7 @@ export default {
         },
         goSignup() {
             this.right = false;
-                this.LoginShow = true;
+            this.LoginShow = true;
         },
         handleRegisterShow() {
             // 登录弹窗隐藏，注册弹窗显示
