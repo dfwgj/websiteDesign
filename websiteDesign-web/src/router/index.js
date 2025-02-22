@@ -27,7 +27,16 @@ const routes = [
                     title: '课程资料',
                     freeAuth: true
                 }
-            }
+            },
+            {
+                path: 'detail',
+                name: 'ResponsiveDesignCompetition',
+                component: () => import('@/pages/user/detail.vue'),
+                meta: {
+                    title: '大赛详细',
+                    freeAuth: true
+                }
+            },
         ]
     },
     {
@@ -39,15 +48,7 @@ const routes = [
             freeAuth: true
         }
     },
-    {
-        path: '/competitionInformation',
-        name: 'competitionInformation',
-        component: () => import('../pages/user/competitionInformation.vue'),
-        meta: {
-            title: '大赛详细',
-            freeAuth: true
-        }
-    }
+    
 ];
 
 const router = createRouter({
