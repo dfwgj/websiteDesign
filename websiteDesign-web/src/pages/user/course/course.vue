@@ -26,7 +26,7 @@
             <div
                 v-for="(card, index) in cards"
                 :key="index"
-                class="w-[140px] h-[200px] lg:w-[280px] lg:h-[400px] flex-shrink-0 border-[3px] bg-white bg-opacity-70 lg:bg-opacity-90 border-[#5295CD] rounded-[10px] lg:rounded-[20px] grid grid-cols-[30%_70%] lg:grid-cols-[35%_65%] gap-1 justify-items-stretch transition-all duration-1000"
+                class="w-[140px] h-[200px] lg:w-[280px] lg:h-[400px] flex-shrink-0 border-[3px] bg-white bg-opacity-70 lg:bg-opacity-90 border-[#5295CD] rounded-[10px] lg:rounded-[20px] grid grid-cols-[30%_70%] lg:grid-cols-[35%_65%] gap-1 justify-items-stretch "
                 :style="cardStyle(index)"
                 :data-index="index"
                 @touchstart="handleMouseEnter(index)"
@@ -143,6 +143,7 @@ export default {
             } else {
                 const { translateX, translateY, rotate, isHovered } = this.cards[index];
                 return {
+                    transition: isHovered ? 'transform 0.3s ease' : 'transform 1s ease',
                     'transform': `
                         translateX(${translateX}px) 
                         translateY(${isHovered ? translateY - 80 : translateY}px) /* 动画效果：鼠标悬停时卡片上移 */

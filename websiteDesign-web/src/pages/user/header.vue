@@ -29,9 +29,8 @@
                 </div>
             </var-popup>
         </div>
-        <div class="w-full h-[90vh]">
-            <!--  style="background-image: url('src/assets/生工院标（中.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat" -->
-            <router-view></router-view>
+        <div class="w-full h-[90vh] overflow-auto">
+                <router-view></router-view>
             <var-popup v-model:show="LoginShow" class="w-3/4 lg:w-1/3 rounded-2xl border-2 border-[#5295CD] lg:block">
                 <Login @go-register="handleRegisterShow" @login-success="handleLoginSuccess" />
             </var-popup>
@@ -75,7 +74,6 @@ export default {
         goHome() {
             console.log(this.user);
             this.right = false;
-            this.$router.push('/');
             this.$router.push('/home');
         },
         goDetail() {

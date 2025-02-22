@@ -14,7 +14,7 @@ const routes = [
             {
                 path: 'home',
                 name: 'home',
-                component: () => import('../pages/user/course/course.vue'),
+                component: () => import('../pages/user/home/home.vue'),
                 meta: {
                     title: '示例页面',
                     freeAuth: true
