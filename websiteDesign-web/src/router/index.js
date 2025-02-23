@@ -29,22 +29,13 @@ const routes = [
                     freeAuth:  true
                 }
             },
-                {
-                    path: 'courseResources/:title',
-                    name: 'courseResources',
-                    component: () => import('../pages/user/course/courseResources.vue'),
-                    meta: {
-                        title: '课程资源',
-                        freeAuth: false
-                    }
-                },
             {
-                path: 'detail',
-                name: 'detail',
-                component: () => import('../pages/user/contest/detail.vue'),
+                path: 'courseResources/:title',
+                name: 'courseResources',
+                component: () => import('../pages/user/course/courseResources.vue'),
                 meta: {
-                    title: '竞赛详情',
-                    freeAuth: true
+                    title: '课程资源',
+                    freeAuth: false
                 }
             },
             {
@@ -56,6 +47,44 @@ const routes = [
                     freeAuth: true
                 }
             },
+            {
+                path: 'myInfo',
+                name: 'myInfo',
+                component: () => import('../pages/user/myInfo.vue'),
+                meta: {
+                    title: '个人信息',
+                    freeAuth: false
+                },
+                children: [
+                    {
+                        path: '/revise',
+                        name: 'revise',
+                        component: () => import('../pages/user/myInfo/revise.vue'),
+                        meta: {
+                            title: '信息修改',
+                            freeAuth: false
+                        }
+                    },
+                    {
+                        path: '/team',
+                        name:'team',
+                        component: () => import('../pages/user/myInfo/team.vue'),
+                        meta: {
+                            title: '我的队伍',
+                            freeAuth: false
+                        }
+                    },
+                    {
+                        path: '/signup',
+                        name: 'signup',
+                        component: () => import('../pages/user/myInfo/signup.vue'),
+                        meta: {
+                            title: '比赛报名',
+                            freeAuth: false
+                        }
+                    }
+                ]
+            }
         ]
     },
 
