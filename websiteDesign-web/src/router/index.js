@@ -37,6 +37,44 @@ const routes = [
                     title: '竞赛详情',
                     freeAuth: true
                 }
+            },
+            {
+                path: 'myInfo',
+                name: 'myInfo',
+                component: () => import('../pages/user/myInfo.vue'),
+                meta: {
+                    title: '个人信息',
+                    freeAuth: false
+                },
+                children: [
+                    {
+                        path: '/revise',
+                        name: 'revise',
+                        component: () => import('../pages/user/myInfo/revise.vue'),
+                        meta: {
+                            title: '信息修改',
+                            freeAuth: false
+                        }
+                    },
+                    {
+                        path: '/team',
+                        name:'team',
+                        component: () => import('../pages/user/myInfo/team.vue'),
+                        meta: {
+                            title: '我的队伍',
+                            freeAuth: false
+                        }
+                    },
+                    {
+                        path: '/signup',
+                        name: 'signup',
+                        component: () => import('../pages/user/myInfo/signup.vue'),
+                        meta: {
+                            title: '比赛报名',
+                            freeAuth: false
+                        }
+                    }
+                ]
             }
         ]
     },
