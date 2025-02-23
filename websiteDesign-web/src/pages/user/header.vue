@@ -29,9 +29,8 @@
                 </div>
             </var-popup>
         </div>
-        <div class="w-full h-[90vh]">
-            <!--  style="background-image: url('src/assets/生工院标（中.png'); background-size: 100% 100%; background-position: center; background-repeat: no-repeat" -->
-            <router-view></router-view>
+        <div class="w-full h-[90vh] overflow-auto">
+                <router-view></router-view>
             <var-popup v-model:show="LoginShow" class="w-3/4 lg:w-1/3 rounded-2xl border-2 border-[#5295CD] lg:block">
                 <Login @go-register="handleRegisterShow" @login-success="handleLoginSuccess" />
             </var-popup>
@@ -61,7 +60,7 @@ export default {
         };
     },
     computed: {
-        user(){
+        user() {
             return this.$store.user;
         },
         contest() {
@@ -73,8 +72,9 @@ export default {
     updated() {}, // 组件的生命周期钩子，更新时调用
     methods: {
         goHome() {
+            console.log(this.user);
             this.right = false;
-            this.$router.push('/');
+            this.$router.push('/home');
         },
         goDetail() {
             this.right = false;
@@ -90,7 +90,7 @@ export default {
         },
         goSignup() {
             this.right = false;
-                this.LoginShow = true;
+            this.LoginShow = true;
         },
         handleRegisterShow() {
             // 登录弹窗隐藏，注册弹窗显示

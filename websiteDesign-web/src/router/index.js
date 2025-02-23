@@ -14,7 +14,7 @@ const routes = [
             {
                 path: 'home',
                 name: 'home',
-                component: () => import('../pages/user/demo.vue'),
+                component: () => import('../pages/user/home/home.vue'),
                 meta: {
                     title: '示例页面',
                     freeAuth: true
@@ -22,19 +22,28 @@ const routes = [
             },
             {
                 path: 'resource',
-                name: 'CourseResourcesPage',
-                component: () => import('../pages/user/courseResources.vue'),
+                name: 'resource',
+                component: () => import('../pages/user/course/course.vue'),
                 meta: {
-                    title: '课程资料',
+                    title: '资料',
+                    freeAuth:  true
+                }
+            },
+            {
+                path: 'courseResources/:title',
+                name: 'courseResources',
+                component: () => import('../pages/user/course/courseResources.vue'),
+                meta: {
+                    title: '课程资源',
                     freeAuth: false
                 }
             },
             {
                 path: 'detail',
-                name: 'detail',
-                component: () => import('../pages/user/contest/detail.vue'),
+                name: 'ResponsiveDesignCompetition',
+                component: () => import('@/pages/user/detail.vue'),
                 meta: {
-                    title: '竞赛详情',
+                    title: '大赛详细',
                     freeAuth: true
                 }
             },
@@ -78,6 +87,7 @@ const routes = [
             }
         ]
     },
+
     {
         path: '/Mmain',
         name: 'Mmain',

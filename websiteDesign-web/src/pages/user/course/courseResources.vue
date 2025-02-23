@@ -121,12 +121,17 @@ export default {
             ismaterials: false // 是否显示课程资料
         };
     },
+    computed: {
+        title() {
+            return this.$route.params.title; // 获取传递的参数
+        }
+    },
     created() {}, // 组件的生命周期钩子，创建时调用
     async mounted() {
         this.loading = true;
         await this.getCourses();
         await this.getMaterials();
-        this.loadCourseByType('UI设计');
+        this.loadCourseByType(this.title||'UI设计');
         this.loading = false;
     }, // 组件的生命周期钩子，挂载时调用
     updated() {}, // 组件的生命周期钩子，更新时调用
