@@ -1,13 +1,13 @@
 <template>
     <div class="w-full h-full mx-auto py-6 lg:flex">
         <!-- 图标部分 -->
-        <div class="lg:w-1/4 lg:max-h-[550px] lg:max-w-[256px] mx-10 lg:mt-5 lg:ml-16 lg:mr-2 flex lg:flex-col justify-center items-center">
-            <div v-for="(icon, index) in icons" :key="index" class="w-full h-1/6 lg:border-2 lg:border-[#5295CD] lg:p-2 lg:m-2 lg:rounded-xl" @click="loadCourseByType(icon.type)">
-                <div class="w-full h-full lg:flex lg:items-center lg:justify-center" :class="{ 'brightness-75': selectedType === icon.type, 'brightness-100': selectedType !== icon.type }">
+        <div class="lg:w-1/4 lg:max-h-[550px] lg:max-w-[256px] mx-10 lg:mt-5 lg:ml-16 lg:mr-2 flex lg:flex-col justify-center items-center  lg:space-y-[6%]">
+            <div v-for="(icon, index) in icons" :key="index" class="w-full h-1/6 lg:border-2   lg:border-[#5295CD] lg:rounded-[20px]" :class="{ 'bg-[#E8F3FF]': selectedType === icon.type }" @click="loadCourseByType(icon.type)">
+                <div class="w-full h-full lg:flex lg:items-center lg:justify-center">
                     <div class="hidden lg:w-1/2 lg:shrink-0 lg:flex lg:items-center lg:justify-center">
                         <div class="text-[#5295CD] text-[1.4rem]">{{ icon.type }}</div>
                     </div>
-                    <img :title="icon.type" :alt="icon.type" :src="icon.iconLink" class="w-11/12 h-11/12 lg:w-1/4 lg:max-h-[80%] transition-all" />
+                    <img :title="icon.type" :alt="icon.type" :src="icon.iconLink" class="lg:w-1/4 lg:max-h-[80%] " />
                 </div>
             </div>
         </div>
@@ -15,29 +15,25 @@
         <div class="lg:w-3/4 h-full mx-10 mt-4 lg:mr-16 flex-1 flex-col overflow-auto">
             <!-- 课程部分 -->
             <var-loading description="LOADING" :loading="loading" color="#5295CD">
-                <div v-if="!ismaterials">
-                    <div v-for="(course, index) in coursesByType" :key="index" class="w-full flex justify-between items-center border-b-2 border-gray-200 rounded-[10px]">
-                        <div class="w-full h-full flex justify-between items-center border-2 border-[#5295CD] rounded-[10px]">
-                            <var-card ripple variant="outlined" @click="openNewTab(course.link)">
-                                <div class="w-full h-full flex flex-col justify-between items-start">
-                                    <div class="w-full h-1/2 flex justify-between items-center">
-                                        <div class="w-1/2 h-full flex justify-start items-center">
-                                            <span class="text-lg font-bold" style="color: black">{{ course.courseName }}</span>
-                                        </div>
-                                        <div class="w-1/2 h-full flex justify-end items-center">
-                                            <span class="text-sm" style="color: black">{{ formatDate(course.createdAt) }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="w-full h-1/2 flex justify-between items-center">
-                                        <div class="w-2/3 h-full flex justify-start items-center">
-                                            <span class="text-sm" style="color: #5295cd">{{ course.type }}</span>
-                                        </div>
-                                        <div class="w-1/3 h-full flex justify-end items-center">
-                                            <span class="text-sm" style="color: black">{{ course.userName }}</span>
-                                        </div>
-                                    </div>
+                <div v-if="!ismaterials" class="space-y-[0.5%]">
+                    <div v-for="(course, index) in coursesByType" :key="index" class="w-full flex justify-between items-center ">
+                        <div  @click="openNewTab(course.link)" class="w-full h-[9vh] p-4 lg:p-2 border-2 border-[#5295CD] rounded-[10px]">
+                            <div class="h-1/2 flex justify-between items-center">
+                                <div class="w-1/2 h-full flex justify-start items-center">
+                                    <span class=" text-sm lg:text-lg font-bold" style="color: black">{{ course.courseName }}</span>
                                 </div>
-                            </var-card>
+                                <div class="w-1/2  h-full flex justify-end items-center">
+                                    <span class="text-sm" style="color: black">{{ formatDate(course.createdAt) }}</span>
+                                </div>
+                            </div>
+                            <div class="w-full  h-full flex justify-between items-center">
+                                <div class="w-2/3 h-full flex justify-start items-center">
+                                    <span class="text-sm" style="color: #5295cd">{{ course.type }}</span>
+                                </div>
+                                <div class="w-1/3 h-full flex justify-end items-center">
+                                    <span class="text-sm" style="color: black">{{ course.userName }}</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -130,7 +126,7 @@ export default {
         this.loading = true;
         await this.getCourses();
         await this.getMaterials();
-        this.loadCourseByType(this.title||'UI设计');
+        this.loadCourseByType(this.title || 'UI设计');
         this.loading = false;
     }, // 组件的生命周期钩子，挂载时调用
     updated() {}, // 组件的生命周期钩子，更新时调用
@@ -150,9 +146,7 @@ export default {
         },
         // 加载某个分类的课程
         loadCourseByType(type) {
-            const coursesByType = this.courses.filter((course) => course.type === type);
-            this.coursesByType = coursesByType;
-            this.selectedType = this.selectedType === type ? null : type; // 切换选择状态时，当前分类的标签变暗
+            this.selectedType = type;
             if (type === '课程资料') {
                 this.ismaterials = true;
             } else {
