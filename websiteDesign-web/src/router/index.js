@@ -42,7 +42,7 @@ const routes = [
             {
                 path: 'detail',
                 name: 'ResponsiveDesignCompetition',
-                component: () => import('@/pages/user/detail.vue'),
+                component: () => import('../pages/user/contest/detail.vue'),
                 meta: {
                     title: '大赛详细',
                     freeAuth: true
