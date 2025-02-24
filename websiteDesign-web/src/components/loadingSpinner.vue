@@ -25,10 +25,12 @@ export default {
             isDataLoaded: false, // 数据是否加载完成
         };
     },
+    created() {
+        this.loadWebsiteData(); // 调用加载数据的方法
+    },
     mounted() {
         this.startLoaderAnimation();
         this.startIconRotation();
-        this.loadWebsiteData(); // 调用加载数据的方法
     },
     methods: {
         startLoaderAnimation() {

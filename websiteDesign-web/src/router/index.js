@@ -6,6 +6,7 @@ const routes = [
         path: '/',
         name: 'header',
         component: () => import('../pages/user/header.vue'),
+        redirect: '/home',
         meta: {
             title: '示例页面',
             freeAuth: true
@@ -47,18 +48,8 @@ const routes = [
                     freeAuth: true
                 }
             },
-            {
-                path: 'detail',
-                name: 'ResponsiveDesignCompetition',
-                component: () => import('@/pages/user/detail.vue'),
-                meta: {
-                    title: '大赛详细',
-                    freeAuth: true
-                }
-            },
         ]
     },
-
     {
         path: '/Mmain',
         name: 'Mmain',

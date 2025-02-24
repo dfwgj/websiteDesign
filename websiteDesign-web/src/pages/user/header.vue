@@ -1,7 +1,7 @@
 <template>
     <!-- html代码 -->
     <LoadingSpinner />
-    <div class="h-full w-full bg-[#F7FFFF]">
+    <div class="h-full w-full bg-[#FFFFFF]">
         <div class="hidden lg:block">
             <div class="w-full h-[10vh] py-4 flex items-center">
                 <p class="flex w-[25%] justify-center text-2xl xl:text-3xl font-black text-[#71A9D7]">{{ contest.name }}</p>
@@ -29,7 +29,7 @@
                 </div>
             </var-popup>
         </div>
-        <div class="w-full h-[90vh] overflow-auto">
+        <div class="w-full h-[90vh] bg-[#FFFFFF] overflow-auto">
                 <router-view></router-view>
             <var-popup v-model:show="LoginShow" class="w-3/4 lg:w-1/3 rounded-2xl border-2 border-[#5295CD] lg:block">
                 <Login @go-register="handleRegisterShow" @login-success="handleLoginSuccess" />

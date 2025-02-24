@@ -13,16 +13,8 @@ export const contestStore = defineStore('contestStore', {
         contractors: null,
         year: null,
         createdAt: null,
-        date: {
-            spotDate: null,
-            spotPlace: null,
-            submissionDate: null,
-            submissionPlace: null,
-            preliminaryDate: null,
-            preliminaryPlace: null,
-            finalDate: null,
-            finalPlace: null
-        },
+        date: {},
+        group: [],
         awards: [],
         direction: []
     }),
@@ -41,6 +33,7 @@ export const contestStore = defineStore('contestStore', {
                 this.year = res.data[0].year;
                 this.createdAt = res.data[0].createdAt;
                 this.date = res.data[0].date;
+                this.group = res.data[0].group;
                 this.awards = res.data[0].awards;
                 this.direction = res.data[0].direction;
             }
@@ -57,16 +50,8 @@ export const contestStore = defineStore('contestStore', {
             this.contractors = null;
             this.year = null;
             this.createdAt = null;
-            this.date = {
-                spotDate: null,
-                spotPlace: null,
-                submissionDate: null,
-                submissionPlace: null,
-                preliminaryDate: null,
-                preliminaryPlace: null,
-                finalDate: null,
-                finalPlace: null
-            };
+            this.date = {};
+            this.group = [];
             this.awards = [];
             this.direction = [];
         }

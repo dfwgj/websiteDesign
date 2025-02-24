@@ -1,22 +1,16 @@
 import { Rule, RuleType } from '@midwayjs/validate';
 const requiredString = RuleType.string().required();
 export class ContestDateDTO {
+  @Rule(RuleType.string().min(1).max(200))
+  id: string;
+  @Rule(RuleType.string().min(1).max(16))
+  name: string;
   @Rule(RuleType.date())
-  spotDate: Date;
+  date: Date;
   @Rule(RuleType.string().min(1).max(64))
-  spotPlace: string;
-  @Rule(RuleType.date())
-  submissionDate: Date;
-  @Rule(RuleType.string().min(1).max(64))
-  submissionPlace: string;
-  @Rule(RuleType.date())
-  preliminaryDate: Date;
-  @Rule(RuleType.string().min(1).max(64))
-  preliminaryPlace: string;
-  @Rule(RuleType.date())
-  finalDate: Date;
-  @Rule(RuleType.string().min(1).max(64))
-  finalPlace: string;
+  place: string;
+  @Rule(RuleType.string().min(1).max(255))
+  txt:string;
 }
 export class ContestAwardsDTO {
   @Rule(RuleType.string().min(1).max(200))
@@ -28,7 +22,7 @@ export class ContestAwardsDTO {
   @Rule(RuleType.string().min(1).max(16))
   amount: string;
   @Rule(RuleType.string().min(1).max(16))
-  model: string;
+  quantity: string;
 }
 export class ContestDirectionDTO {
   @Rule(RuleType.string().min(1).max(200))
@@ -53,8 +47,8 @@ export class ContestDTO {
   contractors: string;
   @Rule(requiredString.min(1).max(4))
   year: string;
-  @Rule(RuleType.object())
-  date: ContestDateDTO;
+  @Rule(RuleType.array())
+  date: ContestDateDTO[];
   @Rule(RuleType.array())
   awards: ContestAwardsDTO[];
   @Rule(RuleType.array())
@@ -85,8 +79,8 @@ export class updateContestDTO {
   id: string;
   @Rule(RuleType.object())
   info: ContestInfoDTO;
-  @Rule(RuleType.object())
-  date: ContestDateDTO;
+  @Rule(RuleType.array())
+  date: ContestDateDTO[];
   @Rule(RuleType.array())
   awards: ContestAwardsDTO[];
   @Rule(RuleType.array())
