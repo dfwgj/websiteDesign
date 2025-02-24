@@ -58,35 +58,27 @@ export class ContestDao {
     return id;
   }
   //添加比赛时间
-  async createContestDate(contestId: string, contestDateDto: ContestDateDTO) {
-    const {
-      spotDate,
-      spotPlace,
-      submissionDate,
-      submissionPlace,
-      preliminaryDate,
-      preliminaryPlace,
-      finalDate,
-      finalPlace,
-    } = contestDateDto;
+  async createContestDate(contestId: string, contestDateDto: ContestDateDTO[]) {
     const userId = this.ctx.state.user.userId;
-    const sql = `
-        REPLACE INTO
-        contest_process(contest_id,user_id,spot_date,spot_place,submission_date,submission_place,preliminary_date,preliminary_place,final_date,final_place,created_at)
-        VALUES (?,?,?,?,?,?,?,?,?,?,NOW())
-        `;
-    const sqlParams = [
+    const values = contestDateDto.map(dto => [
+      uuidv7(),
       contestId,
       userId,
-      spotDate,
-      spotPlace,
-      submissionDate,
-      submissionPlace,
-      preliminaryDate,
-      preliminaryPlace,
-      finalDate,
-      finalPlace,
-    ];
+      dto.name,
+      dto.date,
+      dto.place,
+      dto.txt,
+      new Date(),
+    ]);
+    const valuesPlaceholders = values
+      .map(() => '(?,?, ?, ?, ?, ?, ?, ?)')
+      .join(', ');
+    const sql = `
+        INSERT INTO
+        contest_process(id,contest_id,user_id,name,date,place,txt,created_at)
+        VALUES ${valuesPlaceholders}
+        `;
+    const sqlParams = [].concat(...values);
     await query(sql, sqlParams);
     return true;
   }
@@ -103,7 +95,7 @@ export class ContestDao {
       dto.name,
       dto.prize,
       dto.amount,
-      dto.model,
+      dto.quantity,
       new Date(),
     ]);
     const valuesPlaceholders = values
@@ -111,7 +103,7 @@ export class ContestDao {
       .join(', ');
     const sql = `
         INSERT INTO
-        contest_awards(id,contest_id,user_id,name,prize,amount,model,created_at)
+        contest_awards(id,contest_id,user_id,name,prize,amount,quantity,created_at)
         VALUES ${valuesPlaceholders}
         `;
     const sqlParams = [].concat(...values);
@@ -186,42 +178,70 @@ export class ContestDao {
           const contestId = contest.id;
           // 获取比赛时间
           const dateSql = `
-        SELECT spot_date, spot_place, submission_date, submission_place, preliminary_date, preliminary_place, final_date, final_place
-        FROM contest_process
-        WHERE contest_id = ? AND valid_flag = 1
+        SELECT 
+            id,
+            name,
+            date,
+            place,
+            txt
+        FROM 
+            contest_process
+        WHERE 
+        contest_id = ? AND valid_flag = 1
         `;
           const dateSqlParams = [contestId];
-          const [dateData] = await query(dateSql, dateSqlParams, false, conn);
+          const dateData = await query(dateSql, dateSqlParams, false, conn);
           if (!dateData) {
-            contest.date = {};
+            contest.date = [];
           } else {
-            contest.date = {
-              spotDate: dateData.spot_date,
-              spotPlace: dateData.spot_place,
-              submissionDate: dateData.submission_date,
-              submissionPlace: dateData.submission_place,
-              preliminaryDate: dateData.preliminary_date,
-              preliminaryPlace: dateData.preliminary_place,
-              finalDate: dateData.final_date,
-              finalPlace: dateData.final_place,
-            };
+            contest.date = dateData.map(dateData => ({
+              id: dateData.id,
+              name: dateData.name,
+              date: dateData.date,
+              place: dateData.place,
+              txt: dateData.txt,
+            }));
+          }
+          // 获取比赛组别
+          const groupSql = `
+          SELECT 
+              item_code AS groupCode,
+            item_label AS groupName,
+              remark AS groupRemark
+          FROM
+          sys_dict_item
+          WHERE
+          dict_code = 'MODEL'
+            `;
+          const groupSqlParams = [];
+          const groupData = await query(
+            groupSql,
+            groupSqlParams,
+            false,
+            conn
+          );
+          if (!groupData) {
+            contest.direction = [];
+          } else {
+            contest.group = groupData.map(direction => ({
+              groupCode: direction.groupCode,
+              groupName: direction.groupName,
+              groupRemark: direction.groupRemark,
+            }));
           }
           // 获取比赛奖项
           const awardsSql = `
-        SELECT 
-            c.id,
-            c.name,
-            c.prize,
-            c.amount,
-            c.model,
-            m.item_label AS modelValue
-        FROM 
-            contest_awards c
-        LEFT JOIN
-        sys_dict_item m ON c.model = m.item_code AND m.dict_code = 'MODEL'
-        WHERE 
-            c.contest_id = ? AND c.valid_flag = 1
-        `;
+          SELECT
+          id,
+            name,
+            prize,
+            amount,
+            quantity
+          FROM
+          contest_awards
+          WHERE
+          contest_id = ? AND valid_flag = 1
+            `;
           const awardsSqlParams = [contestId];
           const awardsData = await query(
             awardsSql,
@@ -237,24 +257,23 @@ export class ContestDao {
               name: award.name,
               prize: award.prize,
               amount: award.amount,
-              model: award.model,
-              modelValue: award.modelValue,
+              quantity: award.quantity
             }));
           }
           // 获取比赛方向
           const directionSql = `
-        SELECT 
-            id,
+          SELECT
+          id,
             name,
             txt,
-            item_code AS directionCode      
-        FROM 
-            contest_direction
+            item_code AS directionCode
+          FROM
+          contest_direction
         LEFT JOIN
         sys_dict_item d ON name = d.item_label AND d.dict_code = 'DIRECTION'
-        WHERE 
-            contest_id = ? AND valid_flag = 1
-        `;
+          WHERE
+          contest_id = ? AND valid_flag = 1
+            `;
           const directionSqlParams = [contestId];
           const directionData = await query(
             directionSql,
@@ -282,118 +301,121 @@ export class ContestDao {
   //管理员获取比赛列表
   async getAllContest() {
     const sql = `
-        SELECT 
-        id, 
-        name, 
-        valid_flag AS status, 
-        created_at AS createdAt
+          SELECT
+          id,
+            name,
+            valid_flag AS status,
+              created_at AS createdAt
         FROM contest_information
-        `;
+            `;
     const sqlParams = [];
     return await query(sql, sqlParams);
   }
   //管理员获取单一比赛信息
   async getContestInfo(id: string) {
-    const sql = `
+    return transaction(async conn => {
+      const sql = `
         SELECT id, name, topic, introduce, double_knots, qr_link AS qrLink, organizers, contractors, year, created_at
         FROM contest_information
         WHERE id = ?
-        `;
-    const sqlParams = [id];
-    const contest = await query(sql, sqlParams, false);
-    // 为每个比赛补充 date、awards 和 direction 信息
-    if (!contest) {
-      return [];
-    } else {
-      const contestPromises = contest.map(async contest => {
-        const contestId = contest.id;
-        // 获取比赛时间
-        const dateSql = `
-            SELECT spot_date, spot_place, submission_date, submission_place, preliminary_date, preliminary_place, final_date, final_place
-            FROM contest_process
-            WHERE contest_id = ? AND valid_flag = 1
             `;
-        const dateSqlParams = [contestId];
-        const [dateData] = await query(dateSql, dateSqlParams, false);
-        if (!dateData) {
-          contest.date = {};
-        } else {
-          contest.date = {
-            spotDate: dateData.spot_date,
-            spotPlace: dateData.spot_place,
-            submissionDate: dateData.submission_date,
-            submissionPlace: dateData.submission_place,
-            preliminaryDate: dateData.preliminary_date,
-            preliminaryPlace: dateData.preliminary_place,
-            finalDate: dateData.final_date,
-            finalPlace: dateData.final_place,
-          };
-        }
-        // 获取比赛奖项
-        const awardsSql = `
-            SELECT 
-                c.id,
-                c.name,
-                c.prize,
-                c.amount,
-                c.model,
-                m.item_label AS modelValue
-            FROM 
-                contest_awards c
-            LEFT JOIN
-            sys_dict_item m ON c.model = m.item_code AND m.dict_code = 'MODEL'
-            WHERE 
-                c.contest_id = ? AND c.valid_flag = 1
+      const sqlParams = [id];
+      const contests = await query(sql, sqlParams, false, conn);
+      // 为每个比赛补充 date、awards 和 direction 信息
+      if (!contests) {
+        return [];
+      } else {
+        const contestPromises = contests.map(async contest => {
+          const contestId = contest.id;
+          // 获取比赛时间
+          const dateSql = `
+      SELECT 
+          id,
+          name,
+          date,
+          place,
+          txt
+      FROM 
+          contest_process
+      WHERE 
+      contest_id = ? AND valid_flag = 1
+      `;
+          const dateSqlParams = [contestId];
+          const dateData = await query(dateSql, dateSqlParams, false, conn);
+          if (!dateData) {
+            contest.date = [];
+          } else {
+            contest.date = dateData.map(dateData => ({
+              id: dateData.id,
+              name: dateData.name,
+              date: dateData.date,
+              place: dateData.place,
+              txt: dateData.txt,
+            }));
+          }
+          // 获取比赛奖项
+          const awardsSql = `
+          SELECT
+          id,
+            name,
+            prize,
+            amount,
+            quantity
+          FROM
+          contest_awards
+          WHERE
+          contest_id = ? AND c.valid_flag = 1
             `;
-        const awardsSqlParams = [contestId];
-        const awardsData = await query(awardsSql, awardsSqlParams, false);
-        if (!awardsData) {
-          contest.awards = [];
-        } else {
-          contest.awards = awardsData.map(award => ({
-            id: award.id,
-            name: award.name,
-            prize: award.prize,
-            amount: award.amount,
-            model: award.model,
-            modelValue: award.modelValue,
-          }));
-        }
-        // 获取比赛方向
-        const directionSql = `
-            SELECT 
-                id,
-                name,
-                txt,
-                item_code AS directionCode      
-            FROM 
-                contest_direction
+          const awardsSqlParams = [contestId];
+          const awardsData = await query(awardsSql, awardsSqlParams, false, conn);
+          if (!awardsData) {
+            contest.awards = [];
+          } else {
+            contest.awards = awardsData.map(award => ({
+              id: award.id,
+              name: award.name,
+              prize: award.prize,
+              amount: award.amount,
+              quantity: award.quantity
+            }));
+          }
+          // 获取比赛方向
+          const directionSql = `
+          SELECT
+          id,
+            name,
+            txt,
+            item_code AS directionCode
+          FROM
+          contest_direction
             LEFT JOIN
             sys_dict_item d ON name = d.item_label AND d.dict_code = 'DIRECTION'
-            WHERE 
-                contest_id = ? AND valid_flag = 1
+          WHERE
+          contest_id = ? AND valid_flag = 1
             `;
-        const directionSqlParams = [contestId];
-        const directionData = await query(
-          directionSql,
-          directionSqlParams,
-          false
-        );
-        if (!directionData) {
-          contest.direction = [];
-        } else {
-          contest.direction = directionData.map(direction => ({
-            id: direction.id,
-            name: direction.name,
-            txt: direction.txt,
-            directionCode: direction.directionCode,
-          }));
-        }
-        return contest;
-      });
-      // 等待所有比赛数据加载完成
-      return await Promise.all(contestPromises);
-    }
+          const directionSqlParams = [contestId];
+          const directionData = await query(
+            directionSql,
+            directionSqlParams,
+            false,
+            conn
+          );
+          if (!directionData) {
+            contest.direction = [];
+          } else {
+            contest.direction = directionData.map(direction => ({
+              id: direction.id,
+              name: direction.name,
+              txt: direction.txt,
+              directionCode: direction.directionCode,
+            }));
+          }
+          return contest;
+        });
+        // 等待所有比赛数据加载完成
+        return await Promise.all(contestPromises);
+      }
+    });
   }
   //管理员启动该比赛
   @InjectClient(CachingFactory, 'redis')
@@ -402,12 +424,12 @@ export class ContestDao {
     // 更新所有记录的 valid_flag 为 0
     const sql1 = `
         UPDATE contest_information SET valid_flag = 0
-        `;
+            `;
     await query(sql1, []);
     // 更新指定记录的 valid_flag 为 1
     const sql2 = `
         UPDATE contest_information SET valid_flag = 1 WHERE id = ?
-        `;
+            `;
     const sqlParams = [id];
     await query(sql2, sqlParams);
     await this.cache.del('contestList');
@@ -417,12 +439,12 @@ export class ContestDao {
   async uploadImg(url: string, id: string) {
     const sql = `
     UPDATE
-        contest_information
-    SET
-        qr_link = ?
-    WHERE
+          contest_information
+          SET
+          qr_link = ?
+            WHERE
         id = ?
-    `;
+            `;
     const sqlParams = [url, id];
     await query(sql, sqlParams);
     return url;
@@ -437,31 +459,42 @@ export class ContestDao {
     }
     sqlParams.push(id);
     const sql = `
-        UPDATE
-        contest_information
+          UPDATE
+          contest_information
         SET ${setClause.join(', ')}
         WHERE id = ?
-        `;
+            `;
     await query(sql, sqlParams);
     return true;
   }
   //修改比赛时间信息
-  async updateContestDate(contestId: string, contestDateDto: ContestDateDTO) {
-    const setClause = [];
-    const sqlParams = [];
-    for (const [key, value] of Object.entries(contestDateDto)) {
-      const snakeKey = this.camelToSnake(key);
-      setClause.push(`${snakeKey} = ?`);
-      sqlParams.push(value);
+  async updateContestDate(contestId: string, contestDateDto: ContestDateDTO[]) {
+    const allowedFields = ['name', 'date', 'place', 'txt']; // 允许修改的字段白名单
+    for (const dto of contestDateDto) {
+      // 过滤有效字段
+      const validUpdates = Object.entries(dto).filter(
+        ([key, value]) => allowedFields.includes(key) && value !== undefined
+      );
+      // 检查是否有有效更新字段
+      if (validUpdates.length === 0) {
+        throw new Error(`时间ID ${dto.id} 未提供有效修改字段`);
+      }
+      // 构建动态SET语句
+      const setClause = validUpdates.map(([key]) => `${key} = ?`).join(', ');
+      // 提取参数值（按字段顺序）
+      const params = validUpdates.map(([, value]) => value);
+      // 添加用户ID和WHERE条件参数
+      params.push(dto.id, contestId);
+      const sql = `
+            UPDATE contest_process
+          SET 
+                ${setClause}
+          WHERE
+          id = ?
+            AND contest_id = ?
+              AND valid_flag = 1`;
+      await query(sql, params);
     }
-    sqlParams.push(contestId);
-    const sql = `
-        UPDATE
-        contest_process
-        SET ${setClause.join(', ')}
-        WHERE contest_id = ?
-        `;
-    await query(sql, sqlParams);
     return true;
   }
 
@@ -470,7 +503,7 @@ export class ContestDao {
     contestId: string,
     contestAwardsDto: ContestAwardsDTO[]
   ) {
-    const allowedFields = ['name', 'prize', 'amount', 'model']; // 允许修改的字段白名单
+    const allowedFields = ['name', 'prize', 'amount', 'quantity']; // 允许修改的字段白名单
     for (const dto of contestAwardsDto) {
       // 过滤有效字段
       const validUpdates = Object.entries(dto).filter(
@@ -488,12 +521,12 @@ export class ContestDao {
       params.push(dto.id, contestId);
       const sql = `
             UPDATE contest_awards
-            SET 
+          SET 
                 ${setClause}
-            WHERE 
-                id = ? 
-                AND contest_id = ?
-                AND valid_flag = 1`;
+          WHERE
+          id = ?
+            AND contest_id = ?
+              AND valid_flag = 1`;
       await query(sql, params);
     }
     return true;
@@ -522,12 +555,12 @@ export class ContestDao {
       params.push(dto.id, contestId);
       const sql = `
         UPDATE contest_direction
-        SET 
+          SET 
             ${setClause}
-        WHERE 
-            id = ? 
+          WHERE
+          id = ?
             AND contest_id = ?
-            AND valid_flag = 1`;
+              AND valid_flag = 1`;
       updatePromises.push(query(sql, params));
     }
     // 等待所有更新操作完成

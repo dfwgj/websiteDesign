@@ -71,7 +71,6 @@
 
 <script>
 import { formatDate, openNewTab } from '@/utils/common';
-
 import photoshopIcon from '@/assets/photoshop.svg';
 import vuejsIcon from '@/assets/vuejs.svg';
 import springbootIcon from '@/assets/springboot.svg';
