@@ -89,14 +89,73 @@ const routes = [
         ]
     },
     {
-        path: '/Mmain',
-        name: 'Mmain',
+        path: '/main',
+        name: 'main',
         component: () => import('../pages/manager/main.vue'),
         meta: {
             title: '示例页面',
             freeAuth: true
-        }
-    }
+        },
+        children: [
+            {
+                path: 'one', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'one',
+                component: () => import('../pages/manager/main1.vue'), // 假设这是默认显示的组件
+                meta: {
+                    title: '首页'
+                }
+            },
+            {
+                path: 'two', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'two',
+                component: () => import('../pages/manager/main2.vue'), // 假设这是默认显示的组件
+                meta: {
+                    title: '分页'
+                }
+            },
+            {
+                path: 'three', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'three',
+                component: () => import('../pages/manager/main3.vue'), // 假设这是默认显示的组件
+                meta: {
+                    title: '尾页'
+                }
+            },
+            {
+                path: 'three2', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'three2',
+                component: () => import('../pages/manager/main3a.vue'), // 假设这是默认显示的组件
+                meta: {
+                    title: '尾页'
+                }
+            },
+            {
+                path: 'four', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'four',
+                component: () => import('../pages/manager/main4.vue'), // 假设这是默认显示的组件
+                meta: {
+                    title: '页'
+                }
+            },
+            {
+                path: 'five', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'five',
+                component: () => import('../pages/manager/main5.vue'), // 假设这是默认显示的组件
+                meta: {
+                    title: '页'
+                }
+            },
+            {
+                path: 'six', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'six',
+                component: () => import('../pages/manager/main6.vue'), // 假设这是默认显示的组件
+                meta: {
+                    title: '页'
+                }
+            },
+        ],
+    },
+
 ];
 
 const router = createRouter({
