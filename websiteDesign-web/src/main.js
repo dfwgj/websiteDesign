@@ -8,10 +8,10 @@ import router from './router';
 import { createPinia } from 'pinia';
 const pinia = createPinia();
 import store from './stores/store';
+import { userStore } from './stores/user';
 
 // api
 import api from './api/api';
-
 // ui - Varlet
 // becase of auto-import, we don't need to import Varlet here
 // import Varlet from '@varlet/ui';
@@ -27,3 +27,5 @@ import App from '@/App.vue';
 import '@/style.css';
 
 const app = createApp(App).use(router).use(pinia).use(store).use(api).mount('#app');
+const user = userStore();
+user.decodeToken(); // 解码 Token 并保存到 userStore

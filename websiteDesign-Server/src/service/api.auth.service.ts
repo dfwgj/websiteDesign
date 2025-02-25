@@ -6,6 +6,7 @@ import { AuthDao } from '../dao/authDao';
 import { BigIntService } from './bigInt.service';
 import { LoginDTO, UserDTO } from '../dto/user';
 import { UserDao } from '../dao/userDao';
+import { TeamDao } from '../dao/teamDao';
 
 @Provide()
 export class AuthService {
@@ -17,6 +18,8 @@ export class AuthService {
   authDao: AuthDao;
   @Inject()
   userDao: UserDao;
+  @Inject()
+  teamDao: TeamDao;
   @Inject()
   bigIntService: BigIntService; //BigInt转换
   @Config('jwtConfig') // 动态注入配置
@@ -30,38 +33,60 @@ export class AuthService {
     major: UserDTO['major'],
     phone: UserDTO['phone'],
     email: UserDTO['email'],
-    password: UserDTO['password'],
-    hashPassword: UserDTO['hashPassword']
+    password: UserDTO['password']
   ) {
-    hashPassword = await bcrypt.hash(password, 10);
+    const hashPassword = await bcrypt.hash(password, 10);
     // 在返回结果之前进行 BigInt 转换
     return this.bigIntService.bigInt(
-      await this.authDao.register(name, studentId, college, grade, major, phone, email, hashPassword)
+      await this.authDao.register(
+        name,
+        studentId,
+        college,
+        grade,
+        major,
+        phone,
+        email,
+        hashPassword
+      )
     );
   }
   // 登录方法
-  async login(studentId: LoginDTO['studentId'], password: LoginDTO['password']) {
+  async login(
+    studentId: LoginDTO['studentId'],
+    password: LoginDTO['password']
+  ) {
     // 获取用户实体
     const user = await this.authDao.login(studentId);
     if (!user || user.length === 0) {
       // 用户不存在
-      throw new Error('账户不存在');
-    }
-    if (user.deleted === 1) {
-      // 用户被禁用
-      throw new Error('账户被禁用或注销');
+      throw new Error('账户不存在或者账号被封禁');
     }
     // 验证密码
     const match = await bcrypt.compare(password, user.passwordHash);
     if (!match) {
       throw new Error('密码错误');
     }
+    const team = await this.teamDao.findTeamInfo(user.teamId);
     // 生成 token
     return await this.jwtService.sign(
       {
         userId: user.userId,
         studentId: user.studentId,
+        name: user.name,
+        college: user.college,
+        grade: user.grade,
+        major: user.major,
+        phone: user.phone,
+        email: user.email,
         userRole: user.role,
+        team: {
+          teamId: team.teamId,
+          teamName: team.teamName,
+          teamState: team.teamState,
+          model: team.model,
+          direction: team.direction,
+          players: team.players,
+        },
       },
       this.jwtConfig.secret,
       {
@@ -70,7 +95,7 @@ export class AuthService {
     );
   }
   // Token 验证方法
-  async tokenVerify(token: UserDTO['token']) {
+  async tokenVerify(token: string) {
     const decoded: any = await this.jwtService.verify(
       token,
       this.jwtConfig.secret,

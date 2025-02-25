@@ -15,7 +15,7 @@ import { UserDTO, LoginDTO } from '../dto/user';
 import { AuthGuard } from '../guard/auth.guard';
 
 @Controller('/auth')
-export class LoginController {
+export class AuthController {
   @Inject()
   ctx: Context;
 
@@ -31,26 +31,35 @@ export class LoginController {
    * @returns {object} user - 用户信息
    * */
   @Post('/register')
-  async register(
-    @Body('name') name: UserDTO['name'],
-    @Body('studentId') studentId: UserDTO['studentId'],
-    @Body('college') college: UserDTO['college'],
-    @Body('grade') grade: UserDTO['grade'],
-    @Body('major') major: UserDTO['major'],
-    @Body('phone') phone: UserDTO['phone'],
-    @Body('email') email: UserDTO['email'],
-    @Body('password') password: UserDTO['password'],
-    @Body('hashPassword') hashPassword: UserDTO['hashPassword']
-  ): Promise<object> {
+  async register(@Body() userDto: UserDTO): Promise<object> {
     //是否存在该用户
-    const user = await this.userService.findStudentIdById(studentId);
-    if (user) {
-      throw new Error('用户已经存在');
+    const { name, studentId, college, grade, major, phone, email, password } =
+      userDto;
+    const userStudentId = await this.userService.findAccount(
+      'student_id',
+      studentId
+    );
+    if (userStudentId) {
+      throw new Error('该学号已经注册');
+    }
+    const userEmail = await this.userService.findAccount('email', email);
+    if (userEmail) {
+      throw new Error('该邮箱已经注册');
+    }
+    const userPhone = await this.userService.findAccount('phone', phone);
+    if (userPhone) {
+      throw new Error('该手机号已经注册');
     }
     const result = await this.authService.register(
-      name, studentId, college, grade, major, phone, email, password, hashPassword
+      name,
+      studentId,
+      college,
+      grade,
+      major,
+      phone,
+      email,
+      password
     );
-    console.log(result);
     return result;
   }
   /**
@@ -61,10 +70,8 @@ export class LoginController {
    * @returns {Object} token - 登录凭证
    */
   @Post('/login')
-  async login(
-    @Body('studentId') studentId: LoginDTO['studentId'],
-    @Body('password') password: LoginDTO['password']
-  ): Promise<string> {
+  async login(@Body() LoginDto: LoginDTO): Promise<string> {
+    const { studentId, password } = LoginDto;
     return await this.authService.login(studentId, password);
   }
   /**
@@ -74,9 +81,7 @@ export class LoginController {
    * @returns {Object} payload 凭证负载
    */
   @Post('/tokenVerify')
-  async tokenVerify(
-    @Headers('Authorization') token: UserDTO['token']
-  ): Promise<unknown> {
+  async tokenVerify(@Headers('Authorization') token: string): Promise<unknown> {
     token = this.ctx.request.header.authorization.split(' ')[1];
     return await this.authService.tokenVerify(token);
   }

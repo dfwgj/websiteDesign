@@ -1,10 +1,12 @@
 import { userStore } from '../stores/user';
+import { contestStore } from '../stores/contest';
 
 // 注入所有 store 模块到 Vue 实例
 export default {
     install(app) {
         app.config.globalProperties.$store = {
-            user: userStore()
+            user: userStore(),
+            contest: contestStore()
         };
     }
 };

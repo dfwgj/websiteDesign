@@ -24,6 +24,7 @@
     "bcryptjs": "^2.4.3",
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.4.0",
+    "pinyin-pro": "^3.26.0",
     "uuidv7": "^1.0.2"
   },
   "devDependencies": {
