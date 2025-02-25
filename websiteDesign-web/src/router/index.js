@@ -27,7 +27,7 @@ const routes = [
                 component: () => import('../pages/user/course/course.vue'),
                 meta: {
                     title: '资料',
-                    freeAuth:  true
+                    freeAuth: true
                 }
             },
             {
@@ -51,14 +51,14 @@ const routes = [
             {
                 path: 'myInfo',
                 name: 'myInfo',
-                component: () => import('../pages/user/myInfo.vue'),
+                component: () => import('../pages/user/myInfo/myInfo.vue'),
                 meta: {
                     title: '个人信息',
                     freeAuth: false
                 },
                 children: [
                     {
-                        path: '/revise',
+                        path: 'revise',
                         name: 'revise',
                         component: () => import('../pages/user/myInfo/revise.vue'),
                         meta: {
@@ -67,8 +67,8 @@ const routes = [
                         }
                     },
                     {
-                        path: '/team',
-                        name:'team',
+                        path: 'team',
+                        name: 'team',
                         component: () => import('../pages/user/myInfo/team.vue'),
                         meta: {
                             title: '我的队伍',
@@ -76,7 +76,7 @@ const routes = [
                         }
                     },
                     {
-                        path: '/signup',
+                        path: 'signup',
                         name: 'signup',
                         component: () => import('../pages/user/myInfo/signup.vue'),
                         meta: {

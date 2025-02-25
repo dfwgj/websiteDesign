@@ -114,7 +114,7 @@ export class TeamDao {
     const team = result[0];
     const sql2 = `
         SELECT
-            u.student_id,
+            u.student_id AS studentId,
             u.name,
             c.item_label AS college,
             u.captain_flag AS captain
