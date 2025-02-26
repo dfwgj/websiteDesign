@@ -14,18 +14,18 @@ export class TeamService {
     return await this.teamDao.findTeam(teamId);
   }
   //验证是否已经报名
-  async isRegister(studentId: string) {
-    const result = await this.teamDao.isRegister(studentId);
-    return result;
+  async isRegister(studentId: string,name: string) {
+    return await this.teamDao.isRegister(studentId,name);
   }
   //比赛报名
   async registerTeam(
     name: TeamDTO['name'],
     model: TeamDTO['model'],
     direction: TeamDTO['direction'],
+    opusName: TeamDTO['opusName'],
     players: TeamDTO['players']
   ) {
-    return await this.teamDao.registerTeam(name, model, direction, players);
+    return await this.teamDao.registerTeam(name, model, direction, opusName, players);
   }
   //管理员获取队伍信息
   async getTeam() {

@@ -105,7 +105,6 @@ export default {
         handleLoginSuccess() {
             // 登录成功后，关闭弹窗
             this.LoginShow = false;
-            this.$router.push('/signup');
         }
     }
 };

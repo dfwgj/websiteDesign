@@ -52,6 +52,7 @@ const routes = [
                 path: 'myInfo',
                 name: 'myInfo',
                 component: () => import('../pages/user/myInfo/myInfo.vue'),
+                redirect: '/myInfo/team',
                 meta: {
                     title: '个人信息',
                     freeAuth: false

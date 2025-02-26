@@ -27,25 +27,38 @@ export class TeamController {
    */
   @Post('/registerTeam')
   async registerTeam(@Body() teamdDto: TeamDTO): Promise<boolean> {
-    const { name, model, direction, players } = teamdDto;
+    const { name, model, direction, opusName, players } = teamdDto;
+    if (model !== 'WZKF' && model !== 'WYSJ') {
+      throw new Error('队伍类型错误');
+    }
     if (model === 'WZKF') {
-      const studentIds = players.map(player => player.studentId);
-      if (players.length !== 3) {
+      const validPlayers = players.filter(player => player.name !== undefined && player.studentId !== '');
+      const studentIds = validPlayers.map(player => player.studentId);
+      const names = validPlayers.map(player => player.name);
+      console.log(studentIds, names);
+      if (studentIds.length !== 3 || names.length !== 3) {
         throw new Error('网站开发组的队员数量必须为三个');
       }
       const results = await Promise.all(
-        studentIds.map(studentId => this.teamService.isRegister(studentId))
+        studentIds.map((studentId, index) =>
+          this.teamService.isRegister(studentId, names[index])
+        )
       );
       if (!results.every(result => result)) {
-        throw new Error('有队员已报名，或者有队员未注册');
+        throw new Error('有队员已报名，或者有队员未注册,或者信息有误');
       }
     } else {
-      const results = await this.teamService.isRegister(players[0].studentId);
+      const studentId = players[0].studentId;
+      const name = players[0].name;
+      if (studentId === '' || name === '') {
+        throw new Error('信息不能为空');
+      }
+      const results = await this.teamService.isRegister(studentId, name);
       if (!results) {
-        throw new Error('有队员已报名，或者有队员未注册');
+        throw new Error('你已经报名,或者信息有误');
       }
     }
-    return await this.teamService.registerTeam(name, model, direction, players);
+    return await this.teamService.registerTeam(name, model, direction, opusName, players);
   }
   /**
    * @name getTeam 管理员获取队伍信息

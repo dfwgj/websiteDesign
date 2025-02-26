@@ -65,7 +65,11 @@ export default {
         async loadWebsiteData() {
             try {
                 // 调用 Vuex action 获取比赛数据
-                await this.$store.contest.getContest();
+                const contest = await this.$store.contest.getContest();
+                if (!contest) {
+                    this.$api.notify.error('获取比赛数据失败');
+                    return;
+                }
                 // 数据加载完成后，设置标志位
                 this.isDataLoaded = true;
                 // 停止加载动画

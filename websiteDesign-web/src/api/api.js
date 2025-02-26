@@ -3,6 +3,7 @@ import user from '../api/user';
 import course from '../api/course';
 import materials from '../api/materials';
 import contest from '../api/contest';
+import team from '../api/team';
 
 import notify from '@/api/notify';
 
@@ -15,6 +16,7 @@ export default {
             materials,
             contest,
             course,
+            team,
             notify
         };
     }

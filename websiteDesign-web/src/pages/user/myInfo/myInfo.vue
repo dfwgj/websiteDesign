@@ -1,14 +1,14 @@
 <template>
     <div class="w-full h-full mx-auto py-6 lg:flex">
         <!-- 图标部分 -->
-        <div class="lg:w-1/4 lg:max-h-[400px] lg:max-w-[256px] mx-10 lg:mt-5 lg:ml-16 lg:mr-2 flex lg:flex-col justify-center items-center">
-            <div v-for="(icon, index) in icons" :key="index" class="w-full h-1/4 lg:border-2 lg:border-[#5295CD] lg:p-2 lg:m-2 lg:rounded-[20px]" :class="{ 'bg-[#E8F3FF]': selectedType === icon.type }" @click="handleIconClick(icon.type)">
-                <div class="w-full h-full lg:flex lg:items-center lg:justify-center">
-                    <div class="flex items-center justify-center w-11/12 h-11/12 lg:w-2/5 lg:max-h-[80%] transition-all">
-                        <img :title="icon.type" :alt="icon.type" :src="icon.iconLink" class="w-3/5" />
+        <div class="lg:w-1/4 lg:max-h-[400px] lg:max-w-[256px]  mx-[5vw] lg:mt-5 lg:ml-16 lg:mr-2 flex lg:flex-col justify-center items-center">
+            <div v-for="(icon, index) in icons" :key="index" class="w-full h-[8vh] border-2 border-[#5295CD] lg:p-2 lg:m-2 rounded-[10px] mx-[1vw] lg:rounded-[20px]" :class="{ 'bg-[#E8F3FF]': selectedType === icon.type }" @click="handleIconClick(icon.type)">
+                <div class="w-full h-full flex flex-col lg:flex-row items-center justify-center">
+                    <div class="flex items-center justify-center h-[60%] lg:h-[80%] lg:w-2/5 ">
+                        <img :title="icon.type" :alt="icon.type" :src="icon.iconLink" class="w-[6vw] lg:w-2/5" />
                     </div>
-                    <div class="w-11/12 h-11/12 lg:w-1/2 flex items-center justify-center">
-                        <div class="text-[#5295CD] lg:text-[1.4rem] text-[1.1rem]">{{ icon.type }}</div>
+                    <div class="h-[60%] lg:w-3/5 flex items-center justify-center">
+                        <div class="text-[#5295CD] lg:text-[1.4rem] text-sm ">{{ icon.type }}</div>
                     </div>
                 </div>
             </div>
@@ -67,10 +67,11 @@ export default {
     methods: {
         handleIconClick(type) {
             //点击图标切换页面
+            this.selectedType = type;
             if (type === '退出登录') {
                 this.show = true;
+                return;
             }
-            this.selectedType = type;
             this.$router.push(this.icons.find((icon) => icon.type === type).route);
         },
         handleBeforeClose(action, done) {

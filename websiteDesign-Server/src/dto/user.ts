@@ -4,7 +4,7 @@ const requiredString = RuleType.string().required();
 export class UserDTO {
   @Rule(RuleType.string().min(1).max(200))
   userId: string;
-  @Rule(requiredString.min(0).max(11))
+  @Rule(requiredString.length(11))
   studentId: string;
   @Rule(requiredString.min(0).max(10))
   name: string;
@@ -26,6 +26,8 @@ export class UserDTO {
 export class UpdateUserDTO {
   @Rule(RuleType.string().min(1).max(200))
   userId: string;
+  @Rule(RuleType.string().min(2).max(12))
+  name: string;
   @Rule(RuleType.string().min(0).max(10))
   college: string;
   @Rule(RuleType.string().min(0).max(10))

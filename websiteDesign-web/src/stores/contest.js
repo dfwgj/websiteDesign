@@ -36,6 +36,9 @@ export const contestStore = defineStore('contestStore', {
                 this.group = res.data[0].group;
                 this.awards = res.data[0].awards;
                 this.direction = res.data[0].direction;
+                return true;
+            }else {
+                return false;
             }
         },
         //清除比赛信息

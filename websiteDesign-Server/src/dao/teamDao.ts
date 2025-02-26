@@ -24,16 +24,16 @@ export class TeamDao {
     return result[0].count;
   }
   //是否已经报名
-  async isRegister(studentId: string) {
+  async isRegister(studentId: string, name: string) {
     const sql = `
     SELECT
         COUNT(*) AS count
     FROM 
         user
     WHERE 
-        student_id = ? AND team_id IS null;
+        name = ? AND student_id = ? AND team_id IS null AND valid_flag = 1;
     `;
-    const sqlParams = [studentId];
+    const sqlParams = [name, studentId];
     const result = await query(sql, sqlParams, false); // 设置 throwOnEmptyResult 为 false
     return result[0].count;
   }
@@ -41,18 +41,18 @@ export class TeamDao {
     name: TeamDTO['name'],
     model: TeamDTO['model'],
     direction: TeamDTO['direction'],
+    opusName: TeamDTO['opusName'],
     players: TeamDTO['players']
   ) {
     const id = uuidv7();
     const userId = this.ctx.state.user.userId;
-
     return transaction(async conn => {
       // 插入团队信息
       const sql = `
-            INSERT INTO team (id, user_id, name, model, direction, created_at)
-            VALUES (?, ?, ?, ?, ?, NOW())
+            INSERT INTO team (id, user_id, name, model, direction, opus_name, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, NOW())
             `;
-      const sqlParams = [id, userId, name, model, direction];
+      const sqlParams = [id, userId, name, model, direction, opusName];
       await query(sql, sqlParams, true, conn);
       // 更新用户团队信息
       const studentIds = players.map(player => player.studentId);
@@ -137,6 +137,7 @@ export class TeamDao {
             t.id,
             u.name AS userName,
             t.name AS teamName,
+            t.opus_name AS opusName,
             m.item_label AS model,
             d.item_label AS direction,
             t.state_flag AS teamState,
