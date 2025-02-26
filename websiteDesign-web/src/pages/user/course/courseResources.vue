@@ -1,8 +1,11 @@
 <template>
     <div class="w-full h-full mx-auto py-6 lg:flex">
         <!-- 图标部分 -->
-        <div class="lg:w-1/4 lg:max-h-[550px] lg:max-w-[256px] mx-10 lg:mt-5 lg:ml-16 lg:mr-2 flex lg:flex-col justify-center items-center  lg:space-y-[6%]">
-            <div v-for="(icon, index) in icons" :key="index" class="w-full h-1/6 lg:border-2   lg:border-[#5295CD] lg:rounded-[20px]" :class="{ 'bg-[#E8F3FF]': selectedType === icon.type }" @click="loadCourseByType(icon.type)">
+        <div
+            class="lg:w-1/4 lg:max-h-[550px] lg:max-w-[256px] mx-10 lg:mt-5 lg:ml-16 lg:mr-2 flex lg:flex-col justify-center items-center  lg:space-y-[6%]">
+            <div v-for="(icon, index) in icons" :key="index"
+                class="w-full h-1/6 border-2 border-[#5295CD] rounded-[10px] sm:rounded-[20px] mx-[1%]"
+                :class="{ 'bg-[#E8F3FF]': selectedType === icon.type }" @click="loadCourseByType(icon.type)">
                 <div class="w-full h-full lg:flex lg:items-center lg:justify-center">
                     <div class="hidden lg:w-1/2 lg:shrink-0 lg:flex lg:items-center lg:justify-center">
                         <div class="text-[#5295CD] text-[1.4rem]">{{ icon.type }}</div>
@@ -16,11 +19,14 @@
             <!-- 课程部分 -->
             <var-loading description="LOADING" :loading="loading" color="#5295CD">
                 <div v-if="!ismaterials" class="space-y-[0.5%]">
-                    <div v-for="(course, index) in coursesByType" :key="index" class="w-full flex justify-between items-center ">
-                        <div  @click="openNewTab(course.link)" class="w-full h-[9vh] p-4 lg:p-2 border-2 border-[#5295CD] rounded-[10px]">
+                    <div v-for="(course, index) in coursesByType" :key="index"
+                        class="w-full flex justify-between items-center ">
+                        <div @click="openNewTab(course.link)"
+                            class="w-full h-[9vh] p-4 lg:p-2 border-2 border-[#5295CD] rounded-[10px]">
                             <div class="h-1/2 flex justify-between items-center">
                                 <div class="w-1/2 h-full flex justify-start items-center">
-                                    <span class=" text-sm lg:text-lg font-bold" style="color: black">{{ course.courseName }}</span>
+                                    <span class=" text-sm lg:text-lg font-bold" style="color: black">{{
+                                        course.courseName }}</span>
                                 </div>
                                 <div class="w-1/2  h-full flex justify-end items-center">
                                     <span class="text-sm" style="color: black">{{ formatDate(course.createdAt) }}</span>
@@ -42,12 +48,15 @@
                 <div v-if="ismaterials">
                     <div class="border-[#5295CD] w-full h-full flex justify-between items-center">
                         <var-collapse v-model="openCollapse" :offset="false">
-                            <var-collapse-item v-for="(material, index) in materials" :key="index" :title="material.type" style="color: #5295cd" class="border-2 border-[#5295CD] rounded-[10px] mb-0.5">
+                            <var-collapse-item v-for="(material, index) in materials" :key="index"
+                                :title="material.type" style="color: #5295cd"
+                                class="border-2 border-[#5295CD] rounded-[10px] mb-0.5">
                                 <template #title>
                                     <span class="text-xl">{{ material.type }}</span>
                                 </template>
                                 <p style="color: #0b0808" class="text-base">{{ material.materialsName }}</p>
-                                <p style="color: #0b0808" class="text-base" :title="material.description" :alt="material.description">{{ material.link }}</p>
+                                <p style="color: #0b0808" class="text-base" :title="material.description"
+                                    :alt="material.description" v-html="getHref(material.link)"></p>
                             </var-collapse-item>
                         </var-collapse>
                     </div>
@@ -162,7 +171,22 @@ export default {
             } else {
                 this.$api.notify.error(res.error);
             }
-        }
+        },
+        // 文本内容中存在链接时，替换成超链接a标签展示
+        getHref(content) {
+            if (!content) {
+                return '';
+            }
+            const urlPattern = /(https?:\/\/[a-zA-Z0-9\-\.]+(?:\/[^\s,]*)?)/g; // 匹配URL的正则表达式(匹配 URL 路径部分，允许包含特殊字符，直到遇到空格或逗号为止)
+            content = content.replace(urlPattern, (match) => { 
+                const url = match;
+                const href = match;
+                return `<alt="" style="width: 13px; height: 13px"><a target="_blank" href="${href}" style="color: #3298FF">${url}</a>`;
+            });
+            content = content.replace(/,/g, '<br>');
+            return content;
+        },
+
     } // 定义组件的方法
 };
 </script>
