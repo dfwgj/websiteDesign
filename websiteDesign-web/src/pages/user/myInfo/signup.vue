@@ -7,7 +7,7 @@
         <p class="lg:hidden text-center  text-2xl text-[#5295CD]">
             您已经报名成功,<br />祝您比赛顺利！ 
         </p>
-        <img class="h-[8vh]" :src="dianzangImg" />
+        <img class="lg:hidden h-[8vh]" :src="dianzangImg" />
     </div>
     <div v-if="!user.team.teamName" class="w-full h-5/6 border-2 rounded-xl border-[#5295CD] bg-[#FFFFFF] bg-opacity-70 overflow-auto">
         <!-- 选择赛道 -->
