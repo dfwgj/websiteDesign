@@ -1,7 +1,7 @@
 <template>
     <div class="w-full">
         <div class="w-full h-[90vh]">
-            <img class="w-full h-[80vh]" src="@/assets/design.svg" alt="" />
+            <img class="w-full h-[80vh]" src="@/assets/天蓝.svg" alt="" />
             <div class="left-0 right-0 flex justify-center">
                 <img src="@/assets/展开.svg" @click="handleClick" />
             </div>

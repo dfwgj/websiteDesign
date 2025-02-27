@@ -35,7 +35,6 @@ export class TeamController {
       const validPlayers = players.filter(player => player.name !== undefined && player.studentId !== '');
       const studentIds = validPlayers.map(player => player.studentId);
       const names = validPlayers.map(player => player.name);
-      console.log(studentIds, names);
       if (studentIds.length !== 3 || names.length !== 3) {
         throw new Error('网站开发组的队员数量必须为三个');
       }
