@@ -23,6 +23,8 @@ export class ContestAwardsDTO {
   amount: string;
   @Rule(RuleType.string().min(1).max(16))
   quantity: string;
+  @Rule(RuleType.string().min(1).max(16))
+  type: string;
 }
 export class ContestDirectionDTO {
   @Rule(RuleType.string().min(1).max(200))

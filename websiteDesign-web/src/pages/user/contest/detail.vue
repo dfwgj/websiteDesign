@@ -1,5 +1,5 @@
 <template>
-    <div class="hidden lg:block w-full h-full bg-[url('@/assets/生工院标.svg')] bg-contain bg-center bg-no-repeat flex-col lg:flex-row items-center justify-center opacity-0 " :class="{ 'title-visible': isMounted }">
+    <div class="hidden lg:block w-full h-full bg-[url('@/assets/生工院标.svg')] bg-contain bg-center bg-no-repeat flex-col lg:flex-row items-center justify-center opacity-0" :class="{ 'title-visible': isMounted }">
         <div class="w-full h-full flex justify-center items-center mx-auto bg-[#FFFFFF] bg-opacity-60">
             <!-- 左侧按钮组 -->
             <div class="w-[10%] h-[80%] flex flex-col space-y-7 justify-center items-center pr-2">
@@ -26,12 +26,12 @@
                                 <div class="text-5xl 2xl:text-6xl text-[#5D9CD0] font-bold py-[1%]">{{ contest?.topic }}</div>
                                 <div class="text-3xl 2xl:text-4xl py-[1%]">选手可以选择以下四个方向进行创作：</div>
                             </header>
-                            <div class="flex justify-between flex-1  max-h-[9vh]" style="padding-left: 89px; padding-right: 89px">
+                            <div class="flex justify-between flex-1 max-h-[9vh]" style="padding-left: 89px; padding-right: 89px">
                                 <div v-for="theme in contest.direction" :key="theme.id" v-if="content === 'theme'" @click="changeTheme(theme)" :class="{ 'bg-[#E8F3FF]': currentTheme === theme.name }" class="w-[18%] h-[8vh] flex items-center justify-center border-4 border-[#5D9CD0] p-1 rounded-[20px] text-2xl text-[#5D9CD0]">
                                     {{ theme.name }}
                                 </div>
                             </div>
-                            <div class="h-[20vh] w-[100%] border-4 border-[#5D9CD0] rounded-[15px] flex items-center justify-center text-xl  2xl:text-3xl py-[1%] px-4">
+                            <div class="h-[20vh] w-[100%] border-4 border-[#5D9CD0] rounded-[15px] flex items-center justify-center text-xl 2xl:text-3xl py-[1%] px-4">
                                 <!-- 显示对应主题的详细内容 -->
                                 <p>{{ theme.txt }}</p>
                             </div>
@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                             <div class="h-[35vh] pt-[1%]">
-                                <div class="h-full flex-1 flex justify-center border-4 border-[#5D9CD0] rounded-[15px] text-xl 2xl:text-4xl p-8">
+                                <div class="h-full flex-1 flex justify-center border-4 border-[#5D9CD0] rounded-[15px] text-xl 2xl:text-3xl p-8">
                                     {{ group.groupRemark }}
                                 </div>
                             </div>
@@ -60,20 +60,36 @@
                         <!-- 奖项设置 -->
                         <div v-else-if="content === 'awards'" class="flex flex-col h-full space-y-[3%]">
                             <header class="space-y-4 px-5 pt-[2%] text-2xl 2xl:text-4xl">
-                                <p>在这场创意与技术的盛宴中，我们为设置了以下奖项：</p>
+                                <p>在这场创意与技术的盛宴中，我们为获奖者设置了以下奖项：</p>
                                 <p>致敬每一位不懈追求卓越的参赛者！</p>
                             </header>
                             <div class="flex flex-col flex-1 justify-between">
-                                <div v-for="award in awards" :key="award.id" class="flex flex-col items-start">
-                                    <div class="text-2xl 2xl:text-4xl text-[#70A7D6] w-full px-5 pt-2">
-                                        {{ award.name }}
+                                <!-- 按照奖项名称分组后，每个奖项等级只渲染一次 -->
+                                <div v-for="awardGroup in groupedAwards" :key="awardGroup.name" class="flex flex-col items-start">
+                                    <div class="text-2xl 2xl:text-4xl text-[#70A7D6] w-full px-5">
+                                        {{ awardGroup.name }}
                                         <div class="flex items-center text-xl 2xl:text-3xl text-[#70A7D6] px-5 pt-2">
                                             奖项设置：
-                                            <div class="text-xl 2xl:text-3xl text-[#2C2828C2]">{{ groups.map((group) => group.groupName).join('、') }}各{{ award.quantity }}支队伍。</div>
+                                            <div class="text-xl 2xl:text-3xl text-[#2C2828C2]">
+                                                <!-- 显示排序后所有组别的名称，并依次显示各自的参赛队伍数量 -->
+                                                <template v-for="(group, index) in sortedGroups" :key="group.groupCode">
+                                                    {{ index === 0 ? '' : '、' }}{{ group.groupName }}
+                                                    {{ getAwardQuantity(group.groupCode, awardGroup.awards) }}
+                                                    支队伍
+                                                </template>
+                                                。
+                                            </div>
                                         </div>
                                         <div class="flex items-center text-xl 2xl:text-3xl text-[#70A7D6] px-5 pt-2">
                                             奖品：
-                                            <div class="text-2xl 2xl:text-3xl text-[#2C2828C2]">每位队员将获得价值{{ award.amount }}元的{{ award.prize || '精美礼品' }}及校级荣誉证书。</div>
+                                            <div class="text-xl 2xl:text-3xl text-[#2C2828C2]">
+                                                <template v-for="(group, index) in sortedGroups" :key="group.groupCode">
+                                                    {{ group.groupName }}每位队员将获得价值
+                                                    {{ getAwardAmount(group.groupCode, awardGroup.awards) }}
+                                                    元的{{ getAwardPrize(group.groupCode, awardGroup.awards) || '精美礼品' }}及校级荣誉证书
+                                                    <br />
+                                                </template>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -108,7 +124,7 @@
             </div>
         </div>
     </div>
-    <div class="lg:hidden w-full h-full bg-[url('@/assets/生工院标.svg')] bg-contain bg-center bg-no-repeat flex-col lg:flex-row items-center justify-center  opacity-0 " :class="{ 'title-visible': isMounted }">
+    <div class="lg:hidden w-full h-full bg-[url('@/assets/生工院标.svg')] bg-contain bg-center bg-no-repeat flex-col lg:flex-row items-center justify-center opacity-0" :class="{ 'title-visible': isMounted }">
         <div class="bg-[#FFFFFF] bg-opacity-60">
             <!-- 导航区 -->
             <div class="w-[88%] h-[9vh] flex justify-center items-center mx-auto mb-8">
@@ -162,18 +178,30 @@
                                 <p>在这场创意与技术的盛宴中，我们为获奖者设置了以下奖项：</p>
                                 <p>致敬每一位不懈追求卓越的参赛者！</p>
                             </div>
-                            <div v-for="award in awards" :key="award.id" class="flex flex-col items-start">
+                            <div v-for="awardGroup in groupedAwards" :key="awardGroup.name" class="flex flex-col items-start">
                                 <div class="text-xl text-[#70A7D6] w-full px-1 pt-2">
-                                    {{ award.name }}
+                                    {{ awardGroup.name }}
                                     <!-- 奖项设置 -->
                                     <div class="flex pt-2">
-                                        <div class="w-[120px] text-lg text-[#70A7D6]">奖项设置：</div>
-                                        <div class="flex-grow text-sm text-[#2C2828C2]">{{ groups.map((group) => group.groupName).join('、') }}各{{ award.quantity }}支队伍。</div>
+                                        <div class="w-[30vw] text-lg text-[#70A7D6]">奖项设置：</div>
+                                        <div class="w-[50vw]  flex-grow text-lg text-[#2C2828C2]">
+                                            <template v-for="(group, index) in sortedGroups" :key="group.groupCode">
+                                                {{ index === 0 ? '' : '、' }}{{ group.groupName }}
+                                                {{ getAwardQuantity(group.groupCode, awardGroup.awards) }}
+                                                支队伍
+                                            </template>
+                                            。
+                                        </div>
                                     </div>
                                     <!-- 奖品 -->
                                     <div class="flex pt-2">
-                                        <div class="w-[160px] text-lg text-[#70A7D6]">奖品：</div>
-                                        <div class="flex-grow text-sm text-[#2C2828C2]">每位队员将获得价值{{ award.amount }}元的{{ award.prize || '精美礼品' }}及校级荣誉证书。</div>
+                                        <div class="w-[30vw]  text-lg text-[#70A7D6]">奖品：</div>
+                                        <div class="w-[50vw] flex-grow text-lg text-[#2C2828C2]"> <template v-for="(group, index) in sortedGroups" :key="group.groupCode">
+                                                    {{ group.groupName }}每位队员将获得价值
+                                                    {{ getAwardAmount(group.groupCode, awardGroup.awards) }}
+                                                    元的{{ getAwardPrize(group.groupCode, awardGroup.awards) || '精美礼品' }}及校级荣誉证书
+                                                    <br />
+                                                </template></div>
                                     </div>
                                 </div>
                             </div>
@@ -248,6 +276,28 @@ export default {
             if (this.$store.contest.direction.length > 0) {
                 return this.$store.contest;
             }
+        },
+        groupedAwards() {
+            // 根据奖项名称（例如一等奖、二等奖、三等奖）分组，保证只渲染三次
+            const groupsObj = {};
+            this.awards.forEach((award) => {
+                if (!groupsObj[award.name]) {
+                    groupsObj[award.name] = [];
+                }
+                groupsObj[award.name].push(award);
+            });
+            return Object.keys(groupsObj).map((name) => ({
+                name,
+                awards: groupsObj[name]
+            }));
+        },
+        sortedGroups() {
+            // 按照你希望的顺序排序，比如将网站开发组（groupCode 为 'WZKF'）排在前面
+            return this.groups.slice().sort((a, b) => {
+                if (a.groupCode === 'WZKF') return -1;
+                if (b.groupCode === 'WZKF') return 1;
+                return 0;
+            });
         }
     },
     mounted() {
@@ -289,6 +339,20 @@ export default {
         changeProcess(process) {
             this.date = process;
             this.currentProcess = process.name;
+        },
+        getAwardAmount(groupCode, awards) {
+            const award = awards.find((a) => a.type === groupCode);
+            return award ? award.amount : '';
+        },
+        // 根据组别代码和奖项数组查找对应的奖品名称
+        getAwardPrize(groupCode, awards) {
+            const award = awards.find((a) => a.type === groupCode);
+            return award ? award.prize : '';
+        },
+        // 根据组别代码查找对应的参赛队伍数量
+        getAwardQuantity(groupCode, awards) {
+            const award = awards.find((a) => a.type === groupCode);
+            return award ? award.quantity : '';
         }
     }
 };

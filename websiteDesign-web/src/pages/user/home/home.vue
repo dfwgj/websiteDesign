@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full overflow-hidden opacity-0 " :class="{ 'title-visible': isMounted }">
+    <div class="w-full overflow-hidden opacity-0" :class="{ 'title-visible': isMounted }">
         <!-- 固定背景图（非第一页时显示） -->
         <div class="fixed top-[10vh] w-full h-[90vh] opacity-0 transition-opacity duration-100 bg-contain bg-center bg-no-repeat z-0" :class="{ 'opacity-100': currentPage !== 0 }" :style="{ backgroundImage: `url(${bgImage})` }"></div>
         <!-- 滚动容器，使用 CSS Scroll Snap 实现全屏吸附 -->
@@ -50,23 +50,25 @@
                     <img ref="direction" src="@/assets/组合 6.svg" class="transition-transform lg:place-self-center lg:ml-[5vw] order-2 self-end w-2/5 lg:w-1/4 ease-out" alt="方向图标" />
                 </div>
             </div>
-            <!-- 页面 4：奖品设置 -->
+            <!-- 页面 4：奖品设置（分两组渲染） -->
             <div class="page" data-index="4" ref="page4">
                 <div class="h-[90vh] lg:h-[100vh] flex flex-col items-center justify-center p-5 lg:p-8 opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 4 }">
                     <div class="h-[60%] w-full lg:p-8">
                         <div class="grid grid-cols-2 gap-[5vw] lg:gap-[20vw] lg:p-8">
-                            <span v-for="(char, index) in contest.group" :key="index" :ref="groupItemRef">
+                            <!-- 遍历经过排序的组（两组） -->
+                            <span v-for="group in sortedGroups" :key="group.groupCode" :ref="groupItemRef">
                                 <div class="flex flex-col items-center justify-center">
-                                    <p class="text-3xl lg:text-5xl 2xl:text-7xl mb-[1vh] text-[#5295CD]">{{ char.groupName }}</p>
+                                    <p class="text-3xl lg:text-5xl 2xl:text-7xl mb-[1vh] text-[#5295CD]">{{ group.groupName }}</p>
                                     <div class="flex flex-col lg:flex-row mb-[8vh] lg:mb-0 items-center">
-                                        <span v-for="(award, awardIndex) in contest.awards" :key="awardIndex" class="mb-[2vh] lg:mb-[10vh] flex flex-row text-lg lg:text-3xl 2xl:text-4xl text-[#2C2828] items-center">
+                                        <!-- 显示该组对应的奖项设置（例如：一等奖、二等奖、三等奖各自的数量） -->
+                                        <span v-for="(award, index) in getAwardsByGroup(group.groupCode)" :key="award.id" class="mb-[2vh] lg:mb-[10vh] flex flex-row text-lg lg:text-3xl 2xl:text-4xl text-[#2C2828] items-center">
                                             {{ award.name }}{{ award.quantity }}名
-                                            <span hidden lg:block v-if="awardIndex !== contest.awards.length - 1">、</span>
+                                            <span class="hidden lg:block" v-if="index !== getAwardsByGroup(group.groupCode).length - 1">、</span>
                                         </span>
                                     </div>
                                     <p class="text-3xl lg:text-5xl 2xl:text-7xl mb-[1vh] text-[#5295CD]">奖品划分</p>
                                     <div class="flex flex-col items-center">
-                                        <span v-for="(award, awardIndex) in contest.awards" :key="awardIndex" class="mb-[2vh] flex flex-row text-md lg:text-3xl 2xl:text-4xl text-[#2C2828] items-center">{{ award.name }}: 价值{{ award.amount }}的{{ award.prize }}</span>
+                                        <span v-for="award in getAwardsByGroup(group.groupCode)" :key="award.id" class="mb-[2vh] flex flex-row text-md lg:text-3xl 2xl:text-4xl text-[#2C2828] items-center">{{ award.name }}: 价值{{ award.amount }}元的{{ award.prize }}</span>
                                     </div>
                                 </div>
                             </span>
@@ -116,6 +118,16 @@ export default {
     computed: {
         contest() {
             return this.$store.contest;
+        },
+        // 对 contest.group 进行排序，如优先显示网站开发组（groupCode 为 "WZKF"）
+        sortedGroups() {
+            return this.contest.group
+                ? this.contest.group.slice().sort((a, b) => {
+                      if (a.groupCode === 'WZKF') return -1;
+                      if (b.groupCode === 'WZKF') return 1;
+                      return 0;
+                  })
+                : [];
         }
     },
     mounted() {
@@ -269,6 +281,10 @@ export default {
                 duration: 1.5,
                 ease: 'power2.out'
             });
+        },
+        // 根据组别代码过滤出对应奖项
+        getAwardsByGroup(groupCode) {
+            return this.contest.awards.filter((award) => award.type === groupCode);
         }
     }
 };

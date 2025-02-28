@@ -232,10 +232,11 @@ export class ContestDao {
           // 获取比赛奖项
           const awardsSql = `
           SELECT
-          id,
+            id,
             name,
             prize,
             amount,
+            type,
             quantity
           FROM
           contest_awards
@@ -257,6 +258,7 @@ export class ContestDao {
               name: award.name,
               prize: award.prize,
               amount: award.amount,
+              type: award.type,
               quantity: award.quantity
             }));
           }
@@ -360,6 +362,7 @@ export class ContestDao {
             name,
             prize,
             amount,
+            type,
             quantity
           FROM
           contest_awards
@@ -376,6 +379,7 @@ export class ContestDao {
               name: award.name,
               prize: award.prize,
               amount: award.amount,
+              type: award.type,
               quantity: award.quantity
             }));
           }
@@ -503,7 +507,7 @@ export class ContestDao {
     contestId: string,
     contestAwardsDto: ContestAwardsDTO[]
   ) {
-    const allowedFields = ['name', 'prize', 'amount', 'quantity']; // 允许修改的字段白名单
+    const allowedFields = ['name', 'prize', 'amount', 'quantity', 'type']; // 允许修改的字段白名单
     for (const dto of contestAwardsDto) {
       // 过滤有效字段
       const validUpdates = Object.entries(dto).filter(
