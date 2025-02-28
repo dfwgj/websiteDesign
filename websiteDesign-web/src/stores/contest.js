@@ -8,6 +8,7 @@ export const contestStore = defineStore('contestStore', {
         topic: null,
         introduce: null,
         doubleKnots: null,
+        userLink: null,
         qrLink: null,
         organizers: null,
         contractors: null,
@@ -27,6 +28,7 @@ export const contestStore = defineStore('contestStore', {
                 this.topic = res.data[0].topic;
                 this.introduce = res.data[0].introduce;
                 this.doubleKnots = res.data[0].doubleKnots;
+                this.userLink = res.data[0].userLink;
                 this.qrLink = res.data[0].qrLink;
                 this.organizers = res.data[0].organizers;
                 this.contractors = res.data[0].contractors;

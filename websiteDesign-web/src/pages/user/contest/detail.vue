@@ -26,16 +26,16 @@
                                 <div class="text-5xl 2xl:text-6xl text-[#5D9CD0] font-bold py-[1%]">{{ contest?.topic }}</div>
                                 <div class="text-3xl 2xl:text-4xl py-[1%]">选手可以选择以下四个方向进行创作：</div>
                             </header>
-                            <div class="flex justify-between flex-1 py-[%] max-h-[9vh]" style="padding-left: 89px; padding-right: 89px">
+                            <div class="flex justify-between flex-1  max-h-[9vh]" style="padding-left: 89px; padding-right: 89px">
                                 <div v-for="theme in contest.direction" :key="theme.id" v-if="content === 'theme'" @click="changeTheme(theme)" :class="{ 'bg-[#E8F3FF]': currentTheme === theme.name }" class="w-[18%] h-[8vh] flex items-center justify-center border-4 border-[#5D9CD0] p-1 rounded-[20px] text-2xl text-[#5D9CD0]">
                                     {{ theme.name }}
                                 </div>
                             </div>
-                            <div class="h-[20vh] border-4 border-[#5D9CD0] rounded-[15px] flex items-center justify-center text-xl 2xl:text-3xl py-[1%] px-4">
+                            <div class="h-[20vh] w-[100%] border-4 border-[#5D9CD0] rounded-[15px] flex items-center justify-center text-xl  2xl:text-3xl py-[1%] px-4">
                                 <!-- 显示对应主题的详细内容 -->
                                 <p>{{ theme.txt }}</p>
                             </div>
-                            <footer class="text-xl 2xl:text-3xl space-y-3 text-gray-500 px-5 2xl:py-[1%]">
+                            <footer class="text-sm 2xl:text-3xl space-y-3 text-gray-500 px-5 2xl:py-[1%]">
                                 <p>本次比赛不限网站形式，可选且不限于宣传网站、门户网站、视频网站、网页游戏等；</p>
                                 <p>要求创作内容积极向上，思想健康，主题鲜明，能够体现时代要求与大学生的精神面貌。</p>
                             </footer>
@@ -51,7 +51,7 @@
                                 </div>
                             </div>
                             <div class="h-[35vh] pt-[1%]">
-                                <div class="h-full flex-1 flex justify-center border-4 border-[#5D9CD0] rounded-[15px] text-3xl 2xl:text-4xl p-8">
+                                <div class="h-full flex-1 flex justify-center border-4 border-[#5D9CD0] rounded-[15px] text-xl 2xl:text-4xl p-8">
                                     {{ group.groupRemark }}
                                 </div>
                             </div>
@@ -133,7 +133,7 @@
                                     {{ theme.name }}
                                 </div>
                             </div>
-                            <div class="w-[95%] h-[20vh] border-4 border-[#5D9CD0] rounded-[15px] p-2 text-xl mx-auto mt-6">
+                            <div class="w-[95%] h-[30vh] border-4 border-[#5D9CD0] rounded-[15px] p-2 text-xl mx-auto mt-6">
                                 <p>{{ theme.txt }}</p>
                             </div>
                             <footer class="text-gray-500 pt-4 px-2">
