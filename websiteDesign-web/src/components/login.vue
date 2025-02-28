@@ -3,12 +3,12 @@
         <div class="flex flex-col items-center justify-center w-full h-full max-w-sm lg:max-w-md border-[#5295CD] mx-auto p-6 rounded-2xl">
             <h2 class="text-2xl font-bold mb-4 text-[#5295CD]">登录</h2>
             <div class="mb-4 w-full">
-                <var-input size="small" variant="outlined" focus-color="#5295CD" v-model="studentId" clearable placeholder="请输入学号":rules="[(v) => !!v || '学号不能为空', (v) => /^\d{11}$/.test(v.trim()) || '学号格式不正确']" />
+                <var-input size="small" variant="outlined" focus-color="#5295CD" v-model="studentId" clearable placeholder="请输入学号" :rules="[(v) => !!v || '学号不能为空', (v) => /^\d{11}$/.test(v.trim()) || '学号格式不正确']" />
             </div>
             <div class="mb-4 w-full">
                 <var-input size="small" variant="outlined" focus-color="#5295CD" type="password" v-model="password" clearable placeholder="请输入密码" :rules="[(v) => !!v || '密码不能为空', (v) => /^[A-Za-z0-9]{6,16}$/.test(v) || '密码只能为6到16位的数字、字母组成']" />
             </div>
-            <button class="w-full py-2 rounded-full font-bold border-[#5295CD] border text-[#5295CD] text-lg bg-[#E8F3FF] "@click="handleLogin">登录</button>
+            <button class="w-full py-2 rounded-full font-bold border-[#5295CD] border text-[#5295CD] text-lg bg-[#E8F3FF]" @click="handleLogin">登录</button>
             <div class="mt-4 text-center cursor-pointer hover:underline text-[#8FBBDF]" @click="goRegister">暂无账号?请先注册</div>
         </div>
     </var-loading>
@@ -25,7 +25,11 @@ export default {
             loading: false // 控制loading的显示
         };
     },
-    computed: {}, // 定义计算属性
+    computed: {
+        user() {
+            return this.$store.user;
+        }
+    }, // 定义计算属性
     created() {}, // 组件的生命周期钩子，创建时调用
     mounted() {}, // 组件的生命周期钩子，挂载时调用
     updated() {}, // 组件的生命周期钩子，更新时调用
@@ -51,7 +55,12 @@ export default {
                 this.$store.user.clearUserInfo();
                 this.$store.user.decodeToken();
                 this.$emit('login-success');
-                this.$api.notify.success('登录成功');
+                if (this.user.userRole == '1') {
+                    this.$router.push('/manager');
+                    this.$api.notify.success('欢迎回来，管理员！');
+                } else {
+                    this.$api.notify.success('登录成功');
+                }
             } else {
                 this.$api.notify.error(res.error); // 修正错误信息的访问路径
             }

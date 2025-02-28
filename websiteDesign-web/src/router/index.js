@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import notify from '@/api/notify';
+import { userStore } from '../stores/user'
 
 const routes = [
     {
@@ -90,68 +91,84 @@ const routes = [
         ]
     },
     {
-        path: '/main',
-        name: 'main',
-        component: () => import('../pages/manager/main.vue'),
+        path: '/manager',
+        name: 'manager',
+        component: () => import('../pages/manager/manager.vue'),
+        redirect: '/manager/managerHome',
         meta: {
             title: '示例页面',
-            freeAuth: true
+            freeAuth: false,
+            requireAuth: true
         },
         children: [
             {
-                path: 'one', // 默认子路由，当访问 /engineer 时会匹配这个子路由
-                name: 'one',
-                component: () => import('../pages/manager/main1.vue'), // 假设这是默认显示的组件
+                path: 'managerHome', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'managerHome',
+                component: () => import('../pages/manager/managerHome.vue'), // 假设这是默认显示的组件
                 meta: {
-                    title: '首页'
+                    title: '首页',
+                    freeAuth: false,
+                    requireAuth: true
                 }
             },
             {
-                path: 'two', // 默认子路由，当访问 /engineer 时会匹配这个子路由
-                name: 'two',
-                component: () => import('../pages/manager/main2.vue'), // 假设这是默认显示的组件
+                path: 'userManagement', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'userManagement',
+                component: () => import('../pages/manager/userManagement.vue'), // 假设这是默认显示的组件
                 meta: {
-                    title: '分页'
+                    title: '用户管理',
+                    freeAuth: false,
+                    requireAuth: true
                 }
             },
             {
-                path: 'three', // 默认子路由，当访问 /engineer 时会匹配这个子路由
-                name: 'three',
-                component: () => import('../pages/manager/main3.vue'), // 假设这是默认显示的组件
+                path: 'contestManagement', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'contestManagement',
+                component: () => import('../pages/manager/contestManagement.vue'), // 假设这是默认显示的组件
                 meta: {
-                    title: '尾页'
+                    title: '比赛管理',
+                    freeAuth: false,
+                    requireAuth: true
                 }
             },
             {
-                path: 'three2', // 默认子路由，当访问 /engineer 时会匹配这个子路由
-                name: 'three2',
-                component: () => import('../pages/manager/main3a.vue'), // 假设这是默认显示的组件
+                path: 'contestThings', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'contestThings',
+                component: () => import('../pages/manager/contestThings.vue'), // 假设这是默认显示的组件
                 meta: {
-                    title: '尾页'
+                    title: '尾页',
+                    freeAuth: false,
+                    requireAuth: true
                 }
             },
             {
-                path: 'four', // 默认子路由，当访问 /engineer 时会匹配这个子路由
-                name: 'four',
-                component: () => import('../pages/manager/main4.vue'), // 假设这是默认显示的组件
+                path: 'teamManagement', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'teamManagement',
+                component: () => import('../pages/manager/teamManagement.vue'), // 假设这是默认显示的组件
                 meta: {
-                    title: '页'
+                    title: '团队管理',
+                    freeAuth: false,
+                    requireAuth: true
                 }
             },
             {
-                path: 'five', // 默认子路由，当访问 /engineer 时会匹配这个子路由
-                name: 'five',
-                component: () => import('../pages/manager/main5.vue'), // 假设这是默认显示的组件
+                path: 'courseManagement', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'courseManagement',
+                component: () => import('../pages/manager/courseManagement.vue'), // 假设这是默认显示的组件
                 meta: {
-                    title: '页'
+                    title: '课程管理',
+                    freeAuth: false,
+                    requireAuth: true
                 }
             },
             {
-                path: 'six', // 默认子路由，当访问 /engineer 时会匹配这个子路由
-                name: 'six',
-                component: () => import('../pages/manager/main6.vue'), // 假设这是默认显示的组件
+                path: 'materialsManagement', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                name: 'materialsManagement',
+                component: () => import('../pages/manager/materialsManagement.vue'), // 假设这是默认显示的组件
                 meta: {
-                    title: '页'
+                    title: '资源管理',
+                    freeAuth: false,
+                    requireAuth: true
                 }
             },
         ],
@@ -168,16 +185,28 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
     // 从 localStorage 中读取 token
     const token = localStorage.getItem('token');
-    // 判断当前页面 meta 信息是否包含免认证标识
+    // 获取当前路由最后一条匹配记录的 meta 信息
     const currentRecord = to.matched[to.matched.length - 1];
     const freeAuthMeta = currentRecord.meta.freeAuth;
-    // 如果不是免认证的页面并且没有token，则跳转到首页
+    const requireAuthMeta = currentRecord.meta.requireAuth;
+    // 通过状态管理获取用户信息
+    const user = userStore();
+
+    // 如果不是免认证的页面并且没有 token，则跳转到首页
     if (!freeAuthMeta && !token) {
         notify.error('请先登录！');
-        next({ name: 'header' });
-    } else {
-        next();
+        return next({ name: 'header' });
     }
+
+    // 如果当前页面需要管理员权限，并且用户的权限不满足要求，则跳转到首页
+    if (requireAuthMeta && user.userRole !== '1') {
+        notify.error('你没有权限访问该页面！');
+        return next({ name: 'header' });
+    }
+
+    // 通过验证，允许访问目标路由
+    next();
 });
+
 
 export default router;
