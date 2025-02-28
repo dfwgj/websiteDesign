@@ -72,7 +72,6 @@ export default {
     updated() {}, // 组件的生命周期钩子，更新时调用
     methods: {
         goHome() {
-            console.log(this.user);
             this.right = false;
             this.$router.push('/home');
         },

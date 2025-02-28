@@ -1,5 +1,5 @@
 <template>
-    <div class="hidden lg:block w-full h-full bg-[url('@/assets/生工院标.svg')] bg-contain bg-center bg-no-repeat flex-col lg:flex-row items-center justify-center">
+    <div class="hidden lg:block w-full h-full bg-[url('@/assets/生工院标.svg')] bg-contain bg-center bg-no-repeat flex-col lg:flex-row items-center justify-center opacity-0 " :class="{ 'title-visible': isMounted }">
         <div class="w-full h-full flex justify-center items-center mx-auto bg-[#FFFFFF] bg-opacity-60">
             <!-- 左侧按钮组 -->
             <div class="w-[10%] h-[80%] flex flex-col space-y-7 justify-center items-center pr-2">
@@ -108,7 +108,7 @@
             </div>
         </div>
     </div>
-    <div class="lg:hidden w-full h-full bg-[url('@/assets/生工院标.svg')] bg-contain bg-center bg-no-repeat flex-col lg:flex-row items-center justify-center">
+    <div class="lg:hidden w-full h-full bg-[url('@/assets/生工院标.svg')] bg-contain bg-center bg-no-repeat flex-col lg:flex-row items-center justify-center  opacity-0 " :class="{ 'title-visible': isMounted }">
         <div class="bg-[#FFFFFF] bg-opacity-60">
             <!-- 导航区 -->
             <div class="w-[88%] h-[9vh] flex justify-center items-center mx-auto mb-8">
@@ -238,6 +238,7 @@ export default {
             group: '',
             awards: [],
             dates: [],
+            isMounted: false,
             date: ''
         };
     },
@@ -250,6 +251,9 @@ export default {
         }
     },
     mounted() {
+        setTimeout(() => {
+            this.isMounted = true;
+        }, 200);
         this.themes = this.contest.direction;
         this.groups = this.contest.group;
         this.awards = this.contest.awards;
@@ -303,6 +307,11 @@ export default {
 .fade-enter-from,
 .fade-leave-to {
     opacity: 0;
+}
+
+.title-visible {
+    opacity: 1;
+    transition: opacity 0.4s ease-in;
 }
 
 @keyframes fadeOut {

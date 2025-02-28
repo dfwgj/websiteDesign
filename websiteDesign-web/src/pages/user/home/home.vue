@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full overflow-hidden">
+    <div class="w-full overflow-hidden opacity-0 " :class="{ 'title-visible': isMounted }">
         <!-- 固定背景图（非第一页时显示） -->
         <div class="fixed top-[10vh] w-full h-[90vh] opacity-0 transition-opacity duration-100 bg-contain bg-center bg-no-repeat z-0" :class="{ 'opacity-100': currentPage !== 0 }" :style="{ backgroundImage: `url(${bgImage})` }"></div>
         <!-- 滚动容器，使用 CSS Scroll Snap 实现全屏吸附 -->
@@ -109,6 +109,7 @@ export default {
         return {
             bgImage,
             groupRefs: [],
+            isMounted: false,
             currentPage: 0
         };
     },
@@ -119,6 +120,9 @@ export default {
     },
     mounted() {
         // 使用 IntersectionObserver 监听各页面的进入状态
+        setTimeout(() => {
+            this.isMounted = true;
+        }, 200);
         const options = {
             threshold: 0.7
         };
@@ -282,5 +286,9 @@ export default {
 .page {
     height: 100vh;
     scroll-snap-align: start;
+}
+.title-visible {
+    opacity: 1;
+    transition: opacity 0.4s ease-in;
 }
 </style>

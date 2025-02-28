@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full h-full mx-auto py-6 lg:flex">
+    <div class="w-full h-full mx-auto py-6 lg:flex  opacity-0 " :class="{ 'title-visible': isMounted }">
         <!-- 图标部分 -->
         <div class="lg:w-1/4 lg:max-h-[400px] lg:max-w-[256px]  mx-[5vw] lg:mt-5 lg:ml-16 lg:mr-2 flex lg:flex-col justify-center items-center">
             <div v-for="(icon, index) in icons" :key="index" class="w-full h-[8vh] border-2 border-[#5295CD] lg:p-2 lg:m-2 rounded-[10px] mx-[1vw] lg:rounded-[20px]" :class="{ 'bg-[#E8F3FF]': selectedType === icon.type }" @click="handleIconClick(icon.type)">
@@ -55,12 +55,16 @@ export default {
                 }
             ],
             selectedType: null,
+            isMounted: false,
             show: false
         };
     },
     computed: {}, // 定义计算属性
     created() {}, // 组件的生命周期钩子，创建时调用
     mounted() {
+        setTimeout(() => {
+            this.isMounted = true;
+        }, 200);
         this.handleIconClick('我的队伍'); // 默认打开信息修改页面
     }, // 组件的生命周期钩子，挂载时调用
     updated() {}, // 组件的生命周期钩子，更新时调用
@@ -89,4 +93,9 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.title-visible {
+    opacity: 1;
+    transition: opacity 0.4s ease-in;
+}
+</style>
