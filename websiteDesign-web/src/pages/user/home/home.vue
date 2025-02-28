@@ -18,7 +18,7 @@
             <div class="page" data-index="1" ref="page1">
                 <div class="h-screen flex flex-col lg:flex-row items-center justify-center opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 1 }">
                     <img ref="poeme" class="ml-[0vw] lg:ml-[10vw] w-[80%] lg:w-[40%] mt-[-15vh] lg:mt-[-20vh]" src="@/assets/大赛简介.svg" alt="大赛简介" />
-                    <p ref="introText" class="text-[#5295CD] p-10 mt-[80px] lg:mt-0 text-3xl lg:text-5xl">
+                    <p ref="introText" class="text-[#5295CD] p-10 mt-[80px] lg:mt-0 text-3xl lg:text-5xl 2xl:text-7xl">
                         <span v-for="(char, index) in contest.introduce" :key="index" class="inline-block">
                             {{ char }}
                         </span>
@@ -30,9 +30,9 @@
                 <div class="h-[90vh] flex flex-col lg:flex-row justify-center lg:p-[2%] opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 2 }">
                     <img ref="gourp1" src="@/assets/组合 7.svg" class="transition-transform ease-out hidden lg:block w-1/3 ml-[8vw]" alt="分组图标" />
                     <p ref="groupText" class="text-[#5295CD] flex flex-col lg:flex-row items-center justify-center mx-[5vw] sm:mt-10vh">
-                        <span v-for="(char, index) in contest.group" :key="index" class="flex lg:flex-col items-center bg-[white] bg-opacity-80 justify-center border-[#5295CD] p-[2%] my-[1vh] border-2 rounded-xl lg:p-4 lg:mx-4">
-                            <p class="text-3xl lg:text-4xl mr-[2vw]">{{ char.groupName }}</p>
-                            <p class="text-lg lg:text-2xl text-[#2C2828]">{{ char.groupRemark }}</p>
+                        <span v-for="(char, index) in contest.group" :key="index" class="flex lg:flex-col items-center bg-[white] bg-opacity-80 justify-center border-[#5295CD] p-[2%] my-[1vh] border-2 rounded-xl lg:mx-4">
+                            <p class="text-3xl lg:text-4xl 2xl:text-6xl mr-[2vw]">{{ char.groupName }}</p>
+                            <p class="text-lg lg:text-2xl 2xl:text-3xl text-[#2C2828]">{{ char.groupRemark }}</p>
                         </span>
                     </p>
                     <img ref="gourp2" src="@/assets/组合 7.svg" class="mt-[5vh] lg:hidden transition-transform ease-out w-3/5" alt="分组图标" />
@@ -41,10 +41,10 @@
             <!-- 页面 3：赛程及方向 -->
             <div class="page" data-index="3" ref="page3">
                 <div class="h-[90vh] flex flex-col lg:flex-row items-center justify-center lg:p-[2%] opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 3 }">
-                    <p ref="directionText" class="text-[#2C2828] lg:w-1/2 p-[2%] bg-[white] bg-opacity-80 rounded-xl mx-[5vw] lg:mx-[5vw]">
+                    <p ref="directionText" class="text-[#2C2828] lg:w-1/2 p-[2%] bg-[white] bg-opacity-80 rounded-xl mx-[5vw] lg:mx-[1vw]">
                         <span v-for="(char, index) in contest.direction" :key="index" class="flex flex-row items-center justify-center">
-                            <p class="text-2xl lg:text-4xl mr-[2vw] lg:mr-0 text-[#5295CD] w-[40%] my-[5%]">{{ char.name }}</p>
-                            <p class="text-md lg:text-xl w-[70%] lg:w-[60%] my-[5%]">{{ char.txt }}</p>
+                            <p class="text-2xl lg:text-4xl 2xl:text-6xl mr-[2vw] lg:mr-0 text-[#5295CD] w-[40%] my-[5%]">{{ char.name }}</p>
+                            <p class="text-md lg:text-xl 2xl:text-2xl w-[70%] lg:w-[60%] my-[5%]">{{ char.txt }}</p>
                         </span>
                     </p>
                     <img ref="direction" src="@/assets/组合 6.svg" class="transition-transform lg:place-self-center lg:ml-[5vw] order-2 self-end w-2/5 lg:w-1/4 ease-out" alt="方向图标" />
@@ -57,16 +57,16 @@
                         <div class="grid grid-cols-2 gap-[5vw] lg:gap-[20vw] lg:p-8">
                             <span v-for="(char, index) in contest.group" :key="index" :ref="groupItemRef">
                                 <div class="flex flex-col items-center justify-center">
-                                    <p class="text-3xl lg:text-5xl mb-[1vh] text-[#5295CD]">{{ char.groupName }}</p>
+                                    <p class="text-3xl lg:text-5xl 2xl:text-7xl mb-[1vh] text-[#5295CD]">{{ char.groupName }}</p>
                                     <div class="flex flex-col lg:flex-row mb-[8vh] lg:mb-0 items-center">
-                                        <span v-for="(award, awardIndex) in contest.awards" :key="awardIndex" class="mb-[2vh] lg:mb-[10vh] flex flex-row text-lg lg:text-3xl text-[#2C2828] items-center">
+                                        <span v-for="(award, awardIndex) in contest.awards" :key="awardIndex" class="mb-[2vh] lg:mb-[10vh] flex flex-row text-lg lg:text-3xl 2xl:text-4xl text-[#2C2828] items-center">
                                             {{ award.name }}{{ award.quantity }}名
                                             <span hidden lg:block v-if="awardIndex !== contest.awards.length - 1">、</span>
                                         </span>
                                     </div>
-                                    <p class="text-3xl lg:text-5xl mb-[1vh] text-[#5295CD]">奖品划分</p>
+                                    <p class="text-3xl lg:text-5xl 2xl:text-7xl mb-[1vh] text-[#5295CD]">奖品划分</p>
                                     <div class="flex flex-col items-center">
-                                        <span v-for="(award, awardIndex) in contest.awards" :key="awardIndex" class="mb-[2vh] flex flex-row text-md lg:text-3xl text-[#2C2828] items-center">{{ award.name }}: 价值{{ award.amount }}的{{ award.prize }}</span>
+                                        <span v-for="(award, awardIndex) in contest.awards" :key="awardIndex" class="mb-[2vh] flex flex-row text-md lg:text-3xl 2xl:text-4xl text-[#2C2828] items-center">{{ award.name }}: 价值{{ award.amount }}的{{ award.prize }}</span>
                                     </div>
                                 </div>
                             </span>
@@ -78,21 +78,21 @@
             <!-- 页面 5：主办信息 -->
             <div class="page" data-index="5" ref="page5">
                 <div class="h-[100vh] flex flex-col items-center justify-center p-8 opacity-0 transition-opacity duration-1000" :class="{ 'opacity-100': currentPage === 5 }">
-                    <div class=" h-[70vh] lg:grid lg:grid-cols-2 gap-[5vw] lg:gap-[30vw]">
+                    <div class="h-[70vh] lg:grid lg:grid-cols-2 gap-[5vw] lg:gap-[30vw]">
                         <!-- 左边区域 -->
-                        <div class="flex flex-col items-center justify-center ">
+                        <div class="flex flex-col items-center justify-center">
                             <img class="w-[50vw] lg:w-[25vw] border-2 rounded-xl shadow-xl max-w-full" :src="contest.qrLink" alt="咨询群二维码" />
-                            <p class="text-[#2C2828] mt-[2vh] mb-[2vh] text-center text-lg">更多赛事相关问题，可加入官方咨询群进行答疑</p>
+                            <p class="text-[#2C2828] mt-[2vh] mb-[2vh] text-center text-lg lg:text-xl 2xl:text-2xl">更多赛事相关问题，可加入官方咨询群进行答疑</p>
                         </div>
                         <!-- 右边区域 -->
-                        <div class="flex flex-col items-center justify-center ">
+                        <div class="flex flex-col items-center justify-center">
                             <img class="w-[50vw] lg:w-[25vw] border-2 rounded-xl shadow-xl max-w-full" :src="contest.userLink" alt="比赛负责人二维码" />
-                            <p class="text-[#2C2828] mt-[2vh] mb-[2vh] text-center text-lg">比赛负责人联系方式</p>
+                            <p class="text-[#2C2828] mt-[2vh] mb-[2vh] text-center text-lg lg:text-xl 2xl:text-2xl">比赛负责人联系方式</p>
                         </div>
                     </div>
                     <div>
-                        <p class="text-[#2C2828] text-lg">主办单位：{{ contest.organizers }}</p>
-                        <p class="text-[#2C2828] text-lg">承办单位：{{ contest.contractors }}</p>
+                        <p class="text-[#2C2828] text-lg lg:text-xl 2xl:text-2xl">主办单位：{{ contest.organizers }}</p>
+                        <p class="text-[#2C2828] text-lg lg:text-xl 2xl:text-2xl">承办单位：{{ contest.contractors }}</p>
                     </div>
                 </div>
             </div>
