@@ -4,6 +4,7 @@ import course from '../api/course';
 import materials from '../api/materials';
 import contest from '../api/contest';
 import team from '../api/team';
+import statistics from '../api/statistics';
 
 import notify from '@/api/notify';
 
@@ -17,6 +18,7 @@ export default {
             contest,
             course,
             team,
+            statistics,
             notify
         };
     }
