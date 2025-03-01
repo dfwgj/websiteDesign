@@ -185,7 +185,6 @@ export default {
             if (res.success) {
                 this.teamList = res.data; // 提取数组字段
                 this.total = res.data.length; // 更新总记录数
-                // console.log(this.tab)
                 this.toggleTab(this.tab); // 默认显示正常队伍
             } else {
                 this.teamList = [];
