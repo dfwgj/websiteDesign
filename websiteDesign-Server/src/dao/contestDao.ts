@@ -96,14 +96,15 @@ export class ContestDao {
       dto.prize,
       dto.amount,
       dto.quantity,
+      dto.type,
       new Date(),
     ]);
     const valuesPlaceholders = values
-      .map(() => '(?, ?, ?, ?, ?, ?, ?, ?)')
+      .map(() => '(?, ?, ?, ?, ?, ?, ?, ?, ?)')
       .join(', ');
     const sql = `
         INSERT INTO
-        contest_awards(id,contest_id,user_id,name,prize,amount,quantity,created_at)
+        contest_awards(id,contest_id,user_id,name,prize,amount,quantity,type,created_at)
         VALUES ${valuesPlaceholders}
         `;
     const sqlParams = [].concat(...values);

@@ -62,6 +62,7 @@
         "@varlet/touch-emulator": "^3.3.7",
         "@varlet/ui": "^3.3.7",
         "dayjs": "^1.11.13",
+        "echarts": "^5.6.0",
         "gsap": "^3.12.5",
         "jwt-decode": "^4.0.0",
         "pinia": "^2.1.7",
