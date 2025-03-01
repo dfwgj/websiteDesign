@@ -1,66 +1,88 @@
 <template>
-  <div class="ml-12 bg-white rounded-lg"> <!-- 添加左边距、边框、内边距、白色背景和圆角 -->
-    <div class="h-8"></div>
-    <h1 class="text-2xl font-bold text-[#5295CD]">您好! 管理员丰川祥子</h1>
-    <div class="h-10"></div>
-    <var-row :gutter="16">
-      <var-col span="7">
-        <var-card class="border-2 border-solid border-[#5295CD] p-4 bg-white rounded-lg"> <!-- 为卡片添加边框、内边距、白色背景和圆角 -->
-          <h2 class="text-xl font-semibold text-[#0B0808]">今日访问量</h2>
-          <p class="text-2xl text-[#0B0808]">114,514</p>
-          <p class="text-[#0B0808]">总数：114514</p>
-        </var-card>
-      </var-col>
-
-      <var-col span="7" class="ml-10">
-        <var-card class="border-2 border-solid border-[#5295CD] p-4 bg-white rounded-lg"> <!-- 为卡片添加边框、内边距、白色背景和圆角 -->
-          <h2 class="text-xl font-semibold text-[#0B0808]">今日新用户数</h2>
-          <p class="text-2xl text-[#0B0808]">114,514</p>
-          <p class="text-[#0B0808]">总数：114514</p>
-        </var-card>
-      </var-col>
-
-      <var-col span="7" class="ml-10">
-        <var-card class="border-2 border-solid border-[#5295CD] p-4 bg-white rounded-lg"> <!-- 为卡片添加边框、内边距、白色背景和圆角 -->
-          <h2 class="text-xl font-semibold text-[#0B0808]">今日新队伍数</h2>
-          <p class="text-2xl text-[#0B0808]">114,514</p>
-          <p class="text-[#0B0808]">总数：114514</p>
-        </var-card>
-      </var-col>
-    </var-row>
-    <div class="h-10"></div>
-    <var-row>
-      <var-col span="16" class="ml-20">
-        <var-card class="border-2 border-solid border-[#5295CD] p-4 bg-white rounded-lg"> <!-- 为卡片添加边框、内边距、白色背景和圆角 -->
-          <h2 class="text-xl font-semibold text-[#0B0808]">数据统计</h2>
-          <div class="h-40"></div>
-          <div class="flex justify-between mt-4 text-[#0B0808]">
-            <span>Mon</span>
-            <span>Tue</span>
-            <span>Wed</span>
-            <span>Thu</span>
-            <span>Fri</span>
-            <span>Sat</span>
-            <span>Sun</span>
-          </div>
-        </var-card>
-      </var-col>
-    </var-row>
-  </div>
+    <div class="w-full h-full bg-white p-[2%]">
+        <var-loading description="LOADING" :loading="loading" color="#5295CD">
+            <h1 class="text-2xl font-bold text-[#5295CD]">您好! 管理员{{ user.name }}</h1>
+            <div class="grid grid-cols-3 gap-[2vw] my-[2vh]">
+                <var-card class="border-2 border-[#5295CD] p-[5%] bg-white">
+                    <h2 class="text-xl font-semibold text-[#0B0808]">今日访问量</h2>
+                    <p class="text-2xl text-[#0B0808]">{{ statisticsData[6]?.pageViews }}</p>
+                    <p class="text-[#0B0808]">总数：{{ totals.totalPageViews }}</p>
+                </var-card>
+                <var-card class="border-2 border-[#5295CD] p-[5%] bg-white">
+                    <h2 class="text-xl font-semibold text-[#0B0808]">今日新增用户数</h2>
+                    <p class="text-2xl text-[#0B0808]">{{ statisticsData[6]?.newUsers }}</p>
+                    <p class="text-[#0B0808]">总数：{{ totals.totalUsers }}</p>
+                </var-card>
+                <var-card class="border-2 border-[#5295CD] p-[5%] bg-white">
+                    <h2 class="text-xl font-semibold text-[#0B0808]">今日新增队伍数</h2>
+                    <p class="text-2xl text-[#0B0808]">{{ statisticsData[6]?.newTeams }}</p>
+                    <p class="text-[#0B0808]">总数：{{ totals.totalTeams }}</p>
+                </var-card>
+            </div>
+            <!-- 图表组件 -->
+            <EChartComponent :chart-data="statisticsData"></EChartComponent>
+        </var-loading>
+    </div>
 </template>
+
 <script>
+import EChartComponent from '../../components/EChartComponent.vue';
+import dayjs from 'dayjs';
 export default {
-  name: '', // 组件的名称
-  components: {}, // 用于注册子组件的地方
-  data() { // 定义组件的响应式数据
-    return {};
-  },
-  computed: {}, // 定义计算属性
-  created() { }, // 组件的生命周期钩子，创建时调用
-  mounted() { }, // 组件的生命周期钩子，挂载时调用
-  updated() { }, // 组件的生命周期钩子，更新时调用
-  methods: {}, // 定义组件的方法
+    components: {
+        EChartComponent
+    },
+    data() {
+        return {
+            statisticsData: [],
+            loading: false,
+            totals: {
+                totalUsers: 0,
+                totalTeams: 0,
+                totalPageViews: 0
+            },
+            endDate: '',
+            startDate: '',
+            timer: null // 用于存储 setInterval 的句柄
+        };
+    },
+    computed: {
+        user() {
+            return this.$store.user;
+        }
+    },
+    mounted() {
+        // 初始化日期
+        const today = dayjs(); // 使用 dayjs 获取当前日期
+        this.endDate = today.format('YYYY-MM-DD'); // 格式化为 YYYY-MM-DD
+        this.startDate = today.subtract(7, 'day').format('YYYY-MM-DD'); // 获取一周前的日期
+        // 首次获取数据
+        this.getStatistics();
+        // 开启 10 秒轮询
+        this.timer = setInterval(() => {
+            this.getStatistics(); // 每 10 秒调用一次
+        }, 10000); // 10000 毫秒 = 10 秒
+    },
+    beforeUnmount() {
+        if (this.timer) {
+            clearInterval(this.timer);
+        }
+    },
+    methods: {
+        async getStatistics() {
+            this.loading = true;
+            const res = await this.$api.statistics.getStatistics({
+                startDate: this.startDate,
+                endDate: this.endDate
+            });
+            if (res.success) {
+                this.statisticsData = res.data.data;
+                this.totals = res.data.totals;
+            } else {
+                this.$notify.error(res.error);
+            }
+            this.loading = false;
+        }
+    }
 };
 </script>
-<!-- css样式 -->
-<style scoped></style>
