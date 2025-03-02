@@ -159,8 +159,8 @@ export class TeamDao {
   async getTeamPlayers(teamId: string) {
     const sql = `
         SELECT
-            u.user_id,
-            u.student_id,
+            u.user_id AS userId,
+            u.student_id AS studentId,
             u.name,
             c.item_label AS college,
             u.valid_flag AS userVaild,
