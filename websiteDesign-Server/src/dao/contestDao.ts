@@ -2,10 +2,11 @@ import { Inject, Provide } from '@midwayjs/core';
 import { query, transaction } from '../dbConnPool/mariadb'; // 引入查询函数
 import {
   ContestDTO,
-  ContestDateDTO,
-  ContestAwardsDTO,
-  ContestDirectionDTO,
   ContestInfoDTO,
+  AwardsDTO,
+  DirectionDTO,
+  DateDTO,
+  ContestGroupDTO
 } from '../dto/contest';
 import { Caching } from '@midwayjs/cache-manager';
 import { Context } from '@midwayjs/koa';
@@ -13,6 +14,7 @@ import { uuidv7 } from 'uuidv7';
 import { pinyin } from 'pinyin-pro';
 import { CachingFactory, MidwayCache } from '@midwayjs/cache-manager';
 import { InjectClient } from '@midwayjs/core';
+import dayjs = require('dayjs');
 @Provide()
 export class ContestDao {
   @Inject()
@@ -58,7 +60,7 @@ export class ContestDao {
     return id;
   }
   //添加比赛时间
-  async createContestDate(contestId: string, contestDateDto: ContestDateDTO[]) {
+  async createContestDate(contestId: string, contestDateDto: DateDTO[]) {
     const userId = this.ctx.state.user.userId;
     const values = contestDateDto.map(dto => [
       uuidv7(),
@@ -85,7 +87,7 @@ export class ContestDao {
   //添加比赛奖项
   async createContestAwards(
     contestId: string,
-    contestAwardsDto: ContestAwardsDTO[]
+    contestAwardsDto: AwardsDTO[]
   ) {
     const userId = this.ctx.state.user.userId;
     const values = contestAwardsDto.map(dto => [
@@ -114,7 +116,7 @@ export class ContestDao {
   //添加比赛方向
   async createContestDirection(
     contestId: string,
-    contestDirectionDto: ContestDirectionDTO[]
+    contestDirectionDto: DirectionDTO[]
   ) {
     const userId = this.ctx.state.user.userId;
     const values = contestDirectionDto.map(dto => [
@@ -310,6 +312,7 @@ export class ContestDao {
             valid_flag AS status,
               created_at AS createdAt
         FROM contest_information
+        ORDER by valid_flag DESC
             `;
     const sqlParams = [];
     return await query(sql, sqlParams);
@@ -318,7 +321,7 @@ export class ContestDao {
   async getContestInfo(id: string) {
     return transaction(async conn => {
       const sql = `
-        SELECT id, name, topic, introduce, double_knots, qr_link AS qrLink, organizers, contractors, year, created_at
+        SELECT id, name, topic, introduce, double_knots AS doubleKnots, qr_link AS qrLink, user_link AS userLink, organizers, contractors, year, created_at
         FROM contest_information
         WHERE id = ?
             `;
@@ -351,7 +354,7 @@ export class ContestDao {
             contest.date = dateData.map(dateData => ({
               id: dateData.id,
               name: dateData.name,
-              date: dateData.date,
+              date: dayjs(dateData.date).format('YYYY-MM-DD'),
               place: dateData.place,
               txt: dateData.txt,
             }));
@@ -359,7 +362,7 @@ export class ContestDao {
           // 获取比赛奖项
           const awardsSql = `
           SELECT
-          id,
+            id,
             name,
             prize,
             amount,
@@ -368,7 +371,7 @@ export class ContestDao {
           FROM
           contest_awards
           WHERE
-          contest_id = ? AND c.valid_flag = 1
+          contest_id = ? AND valid_flag = 1
             `;
           const awardsSqlParams = [contestId];
           const awardsData = await query(awardsSql, awardsSqlParams, false, conn);
@@ -387,7 +390,7 @@ export class ContestDao {
           // 获取比赛方向
           const directionSql = `
           SELECT
-          id,
+            id,
             name,
             txt,
             item_code AS directionCode
@@ -413,6 +416,33 @@ export class ContestDao {
               name: direction.name,
               txt: direction.txt,
               directionCode: direction.directionCode,
+            }));
+          }
+          // 获取比赛组别
+          const groupSql = `
+          SELECT 
+              item_code AS groupCode,
+            item_label AS groupName,
+              remark AS groupRemark
+          FROM
+          sys_dict_item
+          WHERE
+          dict_code = 'MODEL'
+            `;
+          const groupSqlParams = [];
+          const groupData = await query(
+            groupSql,
+            groupSqlParams,
+            false,
+            conn
+          );
+          if (!groupData) {
+            contest.group = [];
+          } else {
+            contest.group = groupData.map(direction => ({
+              groupCode: direction.groupCode,
+              groupName: direction.groupName,
+              groupRemark: direction.groupRemark,
             }));
           }
           return contest;
@@ -441,7 +471,7 @@ export class ContestDao {
     return true;
   }
   //上传图片
-  async uploadImg(url: string, id: string) {
+  async uploadQrLink(url: string, id: string) {
     const sql = `
     UPDATE
           contest_information
@@ -452,17 +482,32 @@ export class ContestDao {
             `;
     const sqlParams = [url, id];
     await query(sql, sqlParams);
+    await this.cache.del('contestList');
+    return url;
+  }
+  async uploadUserLink(url: string, id: string) {
+    const sql = `
+    UPDATE
+          contest_information
+          SET
+          user_link = ?
+            WHERE
+        id = ?
+            `;
+    const sqlParams = [url, id];
+    await query(sql, sqlParams);
+    await this.cache.del('contestList');
     return url;
   }
   //修改比赛主体信息
-  async updateContestInfo(id: string, contestInfoDto: ContestInfoDTO) {
+  async updateContestInfo(contestInfoDto: ContestInfoDTO) {
     const setClause = [];
     const sqlParams = [];
-    for (const [key, value] of Object.entries(contestInfoDto)) {
+    for (const [key, value] of Object.entries(contestInfoDto.info)) {
       setClause.push(`${key} = ?`);
       sqlParams.push(value);
     }
-    sqlParams.push(id);
+    sqlParams.push(contestInfoDto.id);
     const sql = `
           UPDATE
           contest_information
@@ -473,8 +518,9 @@ export class ContestDao {
     return true;
   }
   //修改比赛时间信息
-  async updateContestDate(contestId: string, contestDateDto: ContestDateDTO[]) {
-    const allowedFields = ['name', 'date', 'place', 'txt']; // 允许修改的字段白名单
+  async updateContestDate(contestDateDto: DateDTO[]) {
+    console.log(contestDateDto);
+    const allowedFields = ['name', 'date', 'place', 'txt', 'validFlag']; // 允许修改的字段白名单
     for (const dto of contestDateDto) {
       // 过滤有效字段
       const validUpdates = Object.entries(dto).filter(
@@ -485,30 +531,26 @@ export class ContestDao {
         throw new Error(`时间ID ${dto.id} 未提供有效修改字段`);
       }
       // 构建动态SET语句
-      const setClause = validUpdates.map(([key]) => `${key} = ?`).join(', ');
+      const setClause = validUpdates.map(([key]) => `${this.camelToSnake(key)} = ?`).join(', ');
       // 提取参数值（按字段顺序）
       const params = validUpdates.map(([, value]) => value);
       // 添加用户ID和WHERE条件参数
-      params.push(dto.id, contestId);
+      params.push(dto.id);
       const sql = `
             UPDATE contest_process
           SET 
                 ${setClause}
           WHERE
-          id = ?
-            AND contest_id = ?
-              AND valid_flag = 1`;
+          id = ?`;
       await query(sql, params);
     }
     return true;
   }
-
   // 修改比赛奖项信息（支持部分字段更新）
   async updateContestAwards(
-    contestId: string,
-    contestAwardsDto: ContestAwardsDTO[]
+    contestAwardsDto: AwardsDTO[]
   ) {
-    const allowedFields = ['name', 'prize', 'amount', 'quantity', 'type']; // 允许修改的字段白名单
+    const allowedFields = ['name', 'prize', 'amount', 'quantity', 'type', 'validFlag']; // 允许修改的字段白名单
     for (const dto of contestAwardsDto) {
       // 过滤有效字段
       const validUpdates = Object.entries(dto).filter(
@@ -519,30 +561,26 @@ export class ContestDao {
         throw new Error(`奖项ID ${dto.id} 未提供有效修改字段`);
       }
       // 构建动态SET语句
-      const setClause = validUpdates.map(([key]) => `${key} = ?`).join(', ');
+      const setClause = validUpdates.map(([key]) => `${this.camelToSnake(key)} = ?`).join(', ');
       // 提取参数值（按字段顺序）
       const params = validUpdates.map(([, value]) => value);
       // 添加用户ID和WHERE条件参数
-      params.push(dto.id, contestId);
+      params.push(dto.id);
       const sql = `
             UPDATE contest_awards
           SET 
                 ${setClause}
           WHERE
-          id = ?
-            AND contest_id = ?
-              AND valid_flag = 1`;
+          id = ?`;
       await query(sql, params);
     }
     return true;
   }
   // 修改比赛方向描述信息（支持部分字段更新）
   async updateContestDirection(
-    contestId: string,
-    contestDirectionDto: ContestDirectionDTO[]
+    contestDirectionDto: DirectionDTO[]
   ) {
-    const allowedFields = ['txt']; // 允许修改的字段白名单
-    const updatePromises = [];
+    const allowedFields = ['txt', 'validFlag']; // 允许修改的字段白名单
     for (const dto of contestDirectionDto) {
       // 过滤有效字段
       const validUpdates = Object.entries(dto).filter(
@@ -553,24 +591,32 @@ export class ContestDao {
         throw new Error(`方向ID ${dto.id} 未提供有效修改字段`);
       }
       // 构建动态SET语句
-      const setClause = validUpdates.map(([key]) => `${key} = ?`).join(', ');
+      const setClause = validUpdates.map(([key]) => `${this.camelToSnake(key)} = ?`).join(', ');
       // 提取参数值（按字段顺序）
       const params = validUpdates.map(([, value]) => value);
       // 添加用户ID和WHERE条件参数
-      params.push(dto.id, contestId);
+      params.push(dto.id);
       const sql = `
         UPDATE contest_direction
           SET 
             ${setClause}
           WHERE
-          id = ?
-            AND contest_id = ?
-              AND valid_flag = 1`;
-      updatePromises.push(query(sql, params));
+          id = ?`;
+      await query(sql, params);
     }
-    // 等待所有更新操作完成
-    await Promise.all(updatePromises);
-    await this.cache.del('contestList');
+    return true;
+  }
+  //修改组别备注
+  async updateGroupRemark(contestGroupDto: ContestGroupDTO[]) {
+    for (const dto of contestGroupDto) {
+      const sql = `
+      UPDATE sys_dict_item
+      SET remark = ?
+      WHERE item_code = ?  AND item_label = ?
+      `;
+      const sqlParams = [dto.groupRemark, dto.groupCode, dto.groupName];
+      await query(sql, sqlParams);
+    }
     return true;
   }
   // 工具函数：驼峰命名转下划线命名

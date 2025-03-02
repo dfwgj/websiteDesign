@@ -102,9 +102,9 @@ const routes = [
         },
         children: [
             {
-                path: 'managerHome', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                path: 'managerHome',
                 name: 'managerHome',
-                component: () => import('../pages/manager/managerHome.vue'), // 假设这是默认显示的组件
+                component: () => import('../pages/manager/managerHome.vue'),
                 meta: {
                     title: '首页',
                     freeAuth: false,
@@ -112,9 +112,9 @@ const routes = [
                 }
             },
             {
-                path: 'userManagement', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                path: 'userManagement',
                 name: 'userManagement',
-                component: () => import('../pages/manager/userManagement.vue'), // 假设这是默认显示的组件
+                component: () => import('../pages/manager/userManagement.vue'),
                 meta: {
                     title: '用户管理',
                     freeAuth: false,
@@ -122,9 +122,9 @@ const routes = [
                 }
             },
             {
-                path: 'contestManagement', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                path: 'contestManagement',
                 name: 'contestManagement',
-                component: () => import('../pages/manager/contestManagement.vue'), // 假设这是默认显示的组件
+                component: () => import('../pages/manager/contestManagement.vue'),
                 meta: {
                     title: '比赛管理',
                     freeAuth: false,
@@ -132,19 +132,29 @@ const routes = [
                 }
             },
             {
-                path: 'contestThings', // 默认子路由，当访问 /engineer 时会匹配这个子路由
-                name: 'contestThings',
-                component: () => import('../pages/manager/contestThings.vue'), // 假设这是默认显示的组件
+                path: 'createContest',
+                name: 'createContest',
+                component: () => import('../pages/manager/createContest.vue'),
                 meta: {
-                    title: '尾页',
+                    title: '创建比赛',
                     freeAuth: false,
                     requireAuth: true
                 }
             },
             {
-                path: 'teamManagement', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                path: 'contestDetail',
+                name: 'contestDetail',
+                component: () => import('../pages/manager/contestDetail.vue'),
+                meta: {
+                    title: '比赛详情',
+                    freeAuth: false,
+                    requireAuth: true
+                }
+            },
+            {
+                path: 'teamManagement',
                 name: 'teamManagement',
-                component: () => import('../pages/manager/teamManagement.vue'), // 假设这是默认显示的组件
+                component: () => import('../pages/manager/teamManagement.vue'),
                 meta: {
                     title: '团队管理',
                     freeAuth: false,
@@ -152,9 +162,9 @@ const routes = [
                 }
             },
             {
-                path: 'courseManagement', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                path: 'courseManagement',
                 name: 'courseManagement',
-                component: () => import('../pages/manager/courseManagement.vue'), // 假设这是默认显示的组件
+                component: () => import('../pages/manager/courseManagement.vue'),
                 meta: {
                     title: '课程管理',
                     freeAuth: false,
@@ -162,9 +172,9 @@ const routes = [
                 }
             },
             {
-                path: 'materialsManagement', // 默认子路由，当访问 /engineer 时会匹配这个子路由
+                path: 'materialsManagement',
                 name: 'materialsManagement',
-                component: () => import('../pages/manager/materialsManagement.vue'), // 假设这是默认显示的组件
+                component: () => import('../pages/manager/materialsManagement.vue'),
                 meta: {
                     title: '资源管理',
                     freeAuth: false,

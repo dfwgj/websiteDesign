@@ -12,7 +12,7 @@ import {
 } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { ContestService } from '../service/api.contest.service';
-import { ContestDTO, startContestDTO, updateContestDTO } from '../dto/contest';
+import { ContestDTO, startContestDTO, ContestDateDTO, ContestGroupDTO, ContestAwardsDTO, ContestDirectionDTO, ContestInfoDTO } from '../dto/contest';
 import { AuthGuard } from '../guard/auth.guard';
 import { UploadMiddleware } from '@midwayjs/busboy';
 import { UploadFileInfo } from '@midwayjs/busboy';
@@ -94,15 +94,15 @@ export class ContestController {
     return await this.contestService.startContest(id);
   }
   /**
-   * @name uploadImg 上传二维码图片
-   * @description Put /contest/uploadImg
+   * @name uploadQrLink 上传咨询群二维码图片
+   * @description Put /contest/uploadQrLink
    * @param {File} files - 上传的图片文件
    * @param {string} id - 比赛id
    * @returns {string} - 上传的图片url
    */
   @UseGuard(AuthGuard)
-  @Put('/uploadImg', { middleware: [UploadMiddleware] })
-  async uploadImg(
+  @Put('/uploadQrLink', { middleware: [UploadMiddleware] })
+  async uploadQrLink(
     @Files('files') files: Array<UploadFileInfo>,
     @Fields() startContestDTO: startContestDTO
   ): Promise<string> {
@@ -111,27 +111,118 @@ export class ContestController {
     if (!result) {
       throw new Error('该比赛不存在');
     }
-    return await this.contestService.uploadImg(files, id);
+    return await this.contestService.uploadQrLink(files, id);
   }
   /**
-   * @name updateContestInfo 修改比赛详情
+   * @name uploadUserLink 上传管理员二维码图片
+   * @description Put /contest/uploadUserLink
+   * @param {File} files - 上传的图片文件
+   * @param {string} id - 比赛id
+   * @returns {string} - 上传的图片url
+   */
+  @UseGuard(AuthGuard)
+  @Put('/uploadUserLink', { middleware: [UploadMiddleware] })
+  async uploadUserLink(
+    @Files('files') files: Array<UploadFileInfo>,
+    @Fields() startContestDTO: startContestDTO
+  ): Promise<string> {
+    const { id } = startContestDTO;
+    const result = await this.contestService.checkContest('id', id);
+    if (!result) {
+      throw new Error('该比赛不存在');
+    }
+    return await this.contestService.uploadUserLink(files, id);
+  }
+  /**
+   * @name updateContestInfo 修改比赛主体详情
    * @description PUT /contest/ updateContestInfo
    * @param {string} id - 比赛id
    * @param {object} - 更改详情
-   * @returns {object} - 修改成功的信息
+   * @returns {boolean} - 修改成功的信息
    */
   @UseGuard(AuthGuard)
   @Put('/updateContestInfo')
   async updateContestInfo(
-    @Body() updateContestDto: updateContestDTO
-  ): Promise<object> {
-    const result = await this.contestService.checkContest(
-      'id',
-      updateContestDto.id
-    );
+    @Body() ContestInfoDto: ContestInfoDTO
+  ): Promise<boolean> {
+    const { id } = ContestInfoDto;
+    const result = await this.contestService.checkContest('id', id);
     if (!result) {
       throw new Error('该比赛不存在');
     }
-    return await this.contestService.updateContestInfo(updateContestDto);
+    return await this.contestService.updateContestInfo(ContestInfoDto);
+  }
+  /**
+  * @name updateContestDate 管理员修改比赛流程
+  * @description PUT /contest/updateContestDate
+  * @param {string} id - 比赛id
+  * @param {object} - 更改日期信息
+  * @returns {boolean} - 修改成功的信息
+  */
+  @UseGuard(AuthGuard)
+  @Put('/updateContestDate')
+  async updateContestDate(
+    @Body() ContestDateDto: ContestDateDTO
+  ): Promise<boolean> {
+    const { id } = ContestDateDto;
+    const result = await this.contestService.checkContest('id', id);
+    if (!result) {
+      throw new Error('该比赛不存在');
+    }
+    return await this.contestService.updateContestDate(ContestDateDto);
+  }
+  /**
+   * @name updateAwardInfo 管理员修改获奖信息
+   * @description PUT /contest/updateAwardInfo
+   * @param {string} id - 比赛id
+   * @param {object} - 更改获奖信息
+   * @returns {boolean} - 修改成功的信息
+   */
+  @UseGuard(AuthGuard)
+  @Put('/updateAwardInfo')
+  async updateAwardInfo(
+    @Body() ContestAwardsDto: ContestAwardsDTO
+  ): Promise<boolean> {
+    const { id } = ContestAwardsDto;
+    const result = await this.contestService.checkContest('id', id);
+    if (!result) {
+      throw new Error('该比赛不存在');
+    }
+    return await this.contestService.updateAwardInfo(ContestAwardsDto);
+  }
+  /**
+   * @name updateContestDirection 管理员修改比赛方向
+   * @description PUT /contest/updateContestDirection
+   * @param {string} id - 比赛id
+   * @param {object} - 更改方向信息
+   * @returns {boolean} - 修改成功的信息
+   */
+  @UseGuard(AuthGuard)
+  @Put('/updateContestDirection')
+  async updateContestDirection(
+    @Body() ContestDirectionDto: ContestDirectionDTO
+  ): Promise<boolean> {
+    const { id } = ContestDirectionDto;
+    const result = await this.contestService.checkContest('id', id);
+    if (!result) {
+      throw new Error('该比赛不存在');
+    }
+    return await this.contestService.updateContestDirection(
+      ContestDirectionDto
+    );
+  }
+  /**
+   * @name updateGroupRemark 管理员修改组别信息
+   * @description PUT /contest/updateGroupRemark
+   * @param {object} - 更改组别信息
+   * @returns {boolean} - 修改成功的信息
+   */
+  @UseGuard(AuthGuard)
+  @Put('/updateGroupRemark')
+  async updateGroupRemark(
+    @Body() ContestGroupDto: ContestGroupDTO[]
+  ): Promise<boolean> {
+    console.log(ContestGroupDto);
+    return await this.contestService.updateGroupRemark(ContestGroupDto);
   }
 }

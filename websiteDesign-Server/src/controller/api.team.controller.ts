@@ -10,7 +10,8 @@ import {
 } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
 import { TeamService } from '../service/api.team.service';
-import { TeamDTO, TeamUpdateDTO } from '../dto/team';
+import { UserService } from '../service/api.user.service';
+import { TeamDTO, TeamUpdateDTO, LeaderDTO } from '../dto/team';
 import { AuthGuard } from '../guard/auth.guard';
 
 @Controller('/team')
@@ -19,6 +20,8 @@ export class TeamController {
   ctx: Context;
   @Inject()
   teamService: TeamService;
+  @Inject()
+  userService: UserService;
   /**
    * @name registerTeam 报名比赛
    * @description POST /team/registerTeam
@@ -129,5 +132,26 @@ export class TeamController {
       throw new Error('队伍不存在');
     }
     return await this.teamService.delTeam(teamId);
+  }
+  /**
+   * @name setTeamLeader 管理员设置队长
+   * @description PUT /team/setTeamLeader
+   * @param {string} teamId - 队伍信息
+   * @param {string} studentId - 学生学号
+   * @returns {boolean}  是否成功
+   */
+  @UseGuard(AuthGuard)
+  @Put('/setTeamLeader')
+  async setTeamLeader(@Body() teamLeaderDto: LeaderDTO): Promise<boolean> {
+    const { teamId, studentId } = teamLeaderDto;
+    const result = await this.teamService.findTeam(teamId);
+    if (!result) {
+      throw new Error('队伍不存在');
+    }
+    const user = await this.userService.findStudentIdById(studentId);
+    if (!user) {
+      throw new Error('用户不存在');
+    }
+    return await this.teamService.setTeamLeader(teamLeaderDto);
   }
 }
