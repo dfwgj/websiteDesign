@@ -114,7 +114,7 @@ export class ContestController {
     return await this.contestService.uploadQrLink(files, id);
   }
   /**
-   * @name uploadUserLink 上传用户二维码图片
+   * @name uploadUserLink 上传管理员二维码图片
    * @description Put /contest/uploadUserLink
    * @param {File} files - 上传的图片文件
    * @param {string} id - 比赛id

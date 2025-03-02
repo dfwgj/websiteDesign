@@ -1,6 +1,6 @@
 import { Provide, Inject } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
-import { TeamDTO, TeamUpdateDTO } from '../dto/team';
+import { TeamDTO, TeamUpdateDTO, LeaderDTO } from '../dto/team';
 import { TeamDao } from '../dao/teamDao';
 
 @Provide()
@@ -14,8 +14,8 @@ export class TeamService {
     return await this.teamDao.findTeam(teamId);
   }
   //验证是否已经报名
-  async isRegister(studentId: string,name: string) {
-    return await this.teamDao.isRegister(studentId,name);
+  async isRegister(studentId: string, name: string) {
+    return await this.teamDao.isRegister(studentId, name);
   }
   //比赛报名
   async registerTeam(
@@ -42,5 +42,9 @@ export class TeamService {
   //管理员删除队伍信息
   async delTeam(teamId: string) {
     return await this.teamDao.delTeam(teamId);
+  }
+  //管理员设置队长
+  async setTeamLeader(leaderDTO: LeaderDTO) {
+    return await this.teamDao.setTeamLeader(leaderDTO);
   }
 }

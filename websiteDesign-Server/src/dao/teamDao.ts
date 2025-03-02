@@ -1,6 +1,6 @@
 import { Inject, Provide } from '@midwayjs/core';
 import { query, transaction } from '../dbConnPool/mariadb'; // 引入查询函数
-import { TeamDTO, TeamUpdateDTO } from '../dto/team';
+import { TeamDTO, TeamUpdateDTO, LeaderDTO } from '../dto/team';
 //import { Caching } from '@midwayjs/cache-manager';
 import { Context } from '@midwayjs/koa';
 import { uuidv7 } from 'uuidv7';
@@ -212,6 +212,27 @@ export class TeamDao {
     const sqlParams = [teamId];
     await query(sql, sqlParams);
     return true;
+  }
+  //管理员设置队长
+  async setTeamLeader(leaderDTO: LeaderDTO) {
+    const { teamId, studentId } = leaderDTO;
+    return transaction(async conn => {
+      const sql = `
+        UPDATE user
+        SET captain_flag = 0
+        WHERE team_id = ? AND captain_flag = 1
+        `;
+      const sqlParams = [teamId];
+      await query(sql, sqlParams, true, conn);
+      const sql2 = `
+        UPDATE user
+        SET captain_flag = 1
+        WHERE team_id = ? AND student_id = ?
+        `;
+      const sqlParams2 = [teamId, studentId];
+      await query(sql2, sqlParams2, true, conn);
+      return true;
+    });
   }
   // 工具函数：驼峰命名转下划线命名
   camelToSnake(str: string): string {

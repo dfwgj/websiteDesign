@@ -36,3 +36,9 @@ export class TeamUpdateDTO {
   @Rule(RuleType.number().min(0).max(5))
   stateFlag: number;
 }
+export class LeaderDTO {
+  @Rule(requiredString.min(1).max(200))
+  teamId: string;
+  @Rule(requiredString.min(1).max(200))
+  studentId: string;
+}
