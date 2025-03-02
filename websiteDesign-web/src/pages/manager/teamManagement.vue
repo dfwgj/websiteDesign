@@ -12,7 +12,7 @@
         <div class="h-10"></div>
     </div>
 
-    <div class="border-[2px] border-[#5295CD] w-[750px] ml-[90px] rounded-lg">
+    <div class="border-[2px] border-[#5295CD] h-[70vh] w-[75vw] ml-[5vw] rounded-lg">
 
         <table class="w-full text-left border-collapse border border-gray-300 rounded-lg">
             <thead>
@@ -42,7 +42,7 @@
                 </tr>
             </tbody>
         </table>
-        <div class="mt-4 flex justify-center items-center">
+        <div class="mt-4 flex justify-center items-center ">
             <div class="space-x-4">
                 <button class="text-gray-500">&lt;</button>
                 <span class="font-medium">1</span>

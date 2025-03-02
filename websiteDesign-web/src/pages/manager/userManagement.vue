@@ -12,7 +12,7 @@
     <div class="h-10"></div>
   </div>
 
-  <div class="border-[2px] border-[#5295CD] w-[750px] ml-[90px] rounded-lg">
+  <div class="border-[2px] border-[#5295CD] w-[75vw] h-[70vh] ml-[5vw] rounded-lg">
 
     <table class="w-full text-left border-collapse border border-gray-300 rounded-lg">
       <thead>
