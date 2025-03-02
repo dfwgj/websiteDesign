@@ -27,11 +27,11 @@
                             <div class="grid grid-cols-2 gap-[2vw]">
                                 <div class="flex flex-col items-center justify-center px-[33%]">
                                     <var-uploader v-model="qrLink" maxlength="1"></var-uploader>
-                                    <var-button text outline text-color="#5295CD" @click="uploadQrLink" :maxsize="1000000" accept="image/*" style="margin-top: 1rem">上传咨询群二维码</var-button>
+                                    <var-button text outline :loading="uploadQrLinkLoding" text-color="#5295CD" @click="uploadQrLink" :maxsize="1000000" accept="image/*" style="margin-top: 1rem">上传咨询群二维码</var-button>
                                 </div>
                                 <div class="flex flex-col items-center justify-center px-[33%]">
                                     <var-uploader v-model="userLink" maxlength="1"></var-uploader>
-                                    <var-button text outline text-color="#5295CD" @click="uploadUserLink" :maxsize="1000000" accept="image/*" style="margin-top: 1rem">上传用户群二维码</var-button>
+                                    <var-button text outline :loading="uploadUserLinkLoding" text-color="#5295CD" @click="uploadUserLink" :maxsize="1000000" accept="image/*" style="margin-top: 1rem">上传用户群二维码</var-button>
                                 </div>
                             </div>
                         </div>
@@ -134,10 +134,14 @@
             <var-loading :description="updatePopupMsg" type="circle" radius="3vw" :loading="updateLoading" color="#5295CD">
                 <div class="flex flex-col items-center justify-center h-[40vh]">
                     <var-result v-show="updateLoading == false" title="成功" description="修改比赛信息成功">
-                    <template #footer>
-                        <var-button type="success" @click="showUpdateInfo = false">确定</var-button>
-                    </template>
-                </var-result>
+                        <template #footer>
+                            需要启动该比赛使其生效吗？
+                            <div class="flex flex-col items-center justify-center w-full">
+                                <var-button class="my-[0.5vh]" text :loading="startLoading" outline block type="success" @click="startContest">立即启动</var-button>
+                                <var-button class="my-[0.5vh]" text outline block type="warning" @click="showUpdateInfo = false">稍后再说</var-button>
+                            </div>
+                        </template>
+                    </var-result>
                 </div>
             </var-loading>
         </var-popup>
@@ -160,6 +164,9 @@ export default {
             showForm: false,
             loading: false,
             showUpdateInfo: false,
+            uploadQrLinkLoding: false,
+            uploadUserLinkLoding: false,
+            startLoading: false,
             updateLoading: false, // 弹窗加载状态，默认true表示正在更新
             updatePopupMsg: '', // 弹窗中显示的进度消息
             contest: {},
@@ -304,12 +311,15 @@ export default {
                 const formData = new FormData();
                 formData.append('files', rawFile);
                 formData.append('id', this.contest.id);
+                this.uploadQrLinkLoding = true;
                 const res = await this.$api.contest.uploadQrLink(formData);
                 if (res.success) {
                     this.contestInfo(this.$route.query.id);
                     this.$api.notify.success('上传图片成功');
+                    this.uploadQrLinkLoding = false;
                 } else {
                     this.$api.notify.error('上传图片失败');
+                    this.uploadQrLinkLoding = false;
                 }
             } else {
                 this.$api.notify.error('图片未修改，无需上传');
@@ -321,12 +331,15 @@ export default {
                 const formData = new FormData();
                 formData.append('files', rawFile);
                 formData.append('id', this.contest.id);
+                this.uploadUserLinkLoding = true;
                 const res = await this.$api.contest.uploadUserLink(formData);
                 if (res.success) {
                     this.contestInfo(this.$route.query.id);
                     this.$api.notify.success('上传图片成功');
+                    this.uploadUserLinkLoding = false;
                 } else {
                     this.$api.notify.error('上传图片失败');
+                    this.uploadUserLinkLoding = false;
                 }
             } else {
                 this.$api.notify.error('图片未修改，无需上传');
@@ -383,8 +396,8 @@ export default {
             // 检查原数组中被删除的项：存在于原数组，但新数组中未出现的 id
             oldArray.forEach((oldItem) => {
                 if (oldItem.id && !newIds.has(oldItem.id)) {
-                    // 以删除格式提交（附上原 id 和 vailFlag:0）
-                    diff.push({ id: oldItem.id, vailFlag: 0 });
+                    // 以删除格式提交（附上原 id 和 validFlag:0）
+                    diff.push({ id: oldItem.id, validFlag: 0 });
                 }
             });
             return diff;
@@ -424,18 +437,15 @@ export default {
             const awardsDiff = this.getArrayDiff(this.contest.awards, updatedAwards);
             const directionDiff = this.getArrayDiff(this.contest.direction, this.updateContest.direction);
             const dateDiff = this.getArrayDiff(this.contest.date, this.updateContest.date);
-            const groupDiff = this.getDiff(this.contest.group, this.updateContest.group);
-
+            const groupDiff = this.getArrayDiff(this.contest.group, this.updateContest.group);
             // 如果所有部分都没有修改，则提示错误
-            if (Object.keys(diffData).length === 0 && awardsDiff.length === 0 && directionDiff.length === 0 && dateDiff.length === 0 && Object.keys(groupDiff).length === 0) {
+            if (Object.keys(diffData).length === 0 && awardsDiff.length === 0 && directionDiff.length === 0 && dateDiff.length === 0 && groupDiff.length === 0) {
                 this.$api.notify.error('没有任何修改内容');
                 return;
             }
-
             // 打开弹窗，显示加载信息
             this.showUpdateInfo = true;
             this.updateLoading = true;
-
             try {
                 // 逐个处理更新，更新弹窗中的提示信息
                 if (Object.keys(diffData).length > 0) {
@@ -458,17 +468,30 @@ export default {
                     let res = await this.updateContestDate(this.contest.id, dateDiff);
                     if (res !== true) throw new Error('比赛流程信息更新失败');
                 }
-                if (Object.keys(groupDiff).length > 0) {
+                if (groupDiff.length > 0) {
                     this.updatePopupMsg = '比赛组别信息修改中...';
                     let res = await this.updateGroupRemark(groupDiff);
                     if (res !== true) throw new Error('比赛组别信息更新失败');
                 }
-                this.contestInfo(this.$route.query.id);
+                await this.contestInfo(this.$route.query.id);
                 this.updateLoading = false;
             } catch (error) {
                 this.updateLoading = false;
                 this.showUpdateInfo = false;
                 this.$api.notify.error(error.message);
+            }
+        },
+        //启动该比赛
+        async startContest() {
+            this.startLoading = true;
+            const res = await this.$api.contest.startContest({ id: this.contest.id });
+            if (res.success) {
+                this.$api.notify.success('比赛启动成功');
+                this.startLoading = false;
+                this.showUpdateInfo = false;
+            } else {
+                this.$api.notify.error('比赛启动失败');
+                this.startLoading = false;
             }
         },
         //更新奖项信息
@@ -504,7 +527,7 @@ export default {
         //更新比赛主体信息
         async updateThisContestInfo(id, info) {
             console.log({ id: id, info: info });
-            const res = await this.$api.contest.updateContestInfo({ id: id, info: info });
+            const res = await this.$api.contest.updateContestInfo({ id: id, info });
             if (res.success) {
                 return true;
             } else {
@@ -514,7 +537,7 @@ export default {
         // 更新组别备注
         async updateGroupRemark(group) {
             console.log(group);
-            const res = await this.$api.contest.updateGroupRemark({ group: group });
+            const res = await this.$api.contest.updateGroupRemark( group );
             if (res.success) {
                 return true;
             } else {

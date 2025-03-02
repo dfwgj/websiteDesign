@@ -11,7 +11,10 @@
                             <p class="text-sm">创建时间：{{ formatDate(contest.createdAt) }}</p>
                         </div>
                         <var-button class="mt-[1vh]" v-if="contest.status == '0'" text outline type="success" @click="startContest(contest)">启动该比赛</var-button>
-                        <var-button class="mt-[1vh]" v-if="contest.status == '1'" loading text outline loading-type="wave" type="info">该比赛进行中</var-button>
+                        <div class="flex flex-row items-center justify-center mt-[1vh]">
+                            <var-button class="w-[60%] mx-[10%]" v-if="contest.status == '1'" loading text outline loading-type="wave" type="info">该比赛进行中</var-button>
+                            <img class="w-[20%] h-full" v-if="contest.status == '1'" src="@/assets/重新上传.svg" @click="startContest(contest)" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -20,7 +23,8 @@
             <var-loading description="LOADING" :loading="loading" color="#5295CD">
                 <template #title>确定要启动{{ this.selectContest.name }}吗？</template>
                 <template #default>
-                    <p>启动后，进行中的比赛将禁用</p>
+                    <p v-if="this.selectContest.status == '0' ">启动后，进行中的比赛将禁用</p>
+                    <p v-if="this.selectContest.status == '1' ">重新启动该比赛</p>
                 </template>
             </var-loading>
         </var-dialog>

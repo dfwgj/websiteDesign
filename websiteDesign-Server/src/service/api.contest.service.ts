@@ -1,6 +1,6 @@
 import { Provide, Inject } from '@midwayjs/core';
 import { Context } from '@midwayjs/koa';
-import { ContestDTO, updateContestDTO } from '../dto/contest';
+import { ContestDTO, ContestDateDTO, ContestGroupDTO, ContestAwardsDTO, ContestDirectionDTO, ContestInfoDTO } from '../dto/contest';
 import { ContestDao } from '../dao/contestDao';
 import { StatisticsDao } from '../dao/statisticsDao';
 import { UploadFileInfo } from '@midwayjs/busboy';
@@ -112,8 +112,8 @@ export class ContestService {
       throw new Error('上传图片失败');
     }
   }
-   //上传二维码图片
-   async uploadUserLink(files: Array<UploadFileInfo>, id: string) {
+  //上传二维码图片
+  async uploadUserLink(files: Array<UploadFileInfo>, id: string) {
     // 获取文件扩展名
     const originalFilename = this.getFileExtension.getFileExtension(files);
     // 使用 UUID 创建唯一文件名
@@ -130,58 +130,67 @@ export class ContestService {
       throw new Error('上传图片失败');
     }
   }
-  //修改比赛详情
-  async updateContestInfo(updateContestDto: updateContestDTO) {
-    const data = {
-      updateContest: '',
-      updateContestDate: '',
-      updateContestAwards: '',
-      updateContestDirection: '',
-    };
-    if (updateContestDto.info) {
-      const info = await this.contestDao.updateContestInfo(
-        updateContestDto.id,
-        updateContestDto.info
-      );
-      if (info) {
-        data.updateContest = '修改比赛主体信息成功';
-      } else {
-        data.updateContest = '修改比赛主体信息失败';
-      }
+  //修改比赛主体详情
+  async updateContestInfo(contestInfoDto: ContestInfoDTO) {
+    return await this.contestDao.updateContestInfo(contestInfoDto);
+  }
+  async updateContestDate(ContestDateDto: ContestDateDTO): Promise<boolean> {
+    // 分离成两个数组
+    const updateItems = ContestDateDto.date.filter((item) => item.id !== undefined);
+    const newItems = ContestDateDto.date.filter((item) => item.id === undefined);
+    const id = ContestDateDto.id;
+    let successUpdate = true;
+    let successCreate = true;
+    // 处理需要更新的项
+    if (updateItems.length !== 0) {
+      successUpdate = await this.contestDao.updateContestDate(updateItems);
     }
-    if (updateContestDto.date) {
-      const date = await this.contestDao.updateContestDate(
-        updateContestDto.id,
-        updateContestDto.date
-      );
-      if (date) {
-        data.updateContestDate = '修改比赛流程成功';
-      } else {
-        data.updateContestDate = '修改比赛流程失败';
-      }
+    // 处理需要创建的项
+    if (newItems.length !== 0) {
+      successCreate = await this.contestDao.createContestDate(id, newItems);
     }
-    if (updateContestDto.awards) {
-      const awards = await this.contestDao.updateContestAwards(
-        updateContestDto.id,
-        updateContestDto.awards
-      );
-      if (awards) {
-        data.updateContestAwards = '修改比赛奖项成功';
-      } else {
-        data.updateContestAwards = '修改比赛奖项失败';
-      }
+    // 返回结果
+    return successUpdate && successCreate;
+  }
+  //修改比赛奖项
+  async updateAwardInfo(contestAwardsDto: ContestAwardsDTO) {
+  // 分离成两个数组
+  const updateItems = contestAwardsDto.award.filter((item) => item.id !== undefined);
+  const newItems = contestAwardsDto.award.filter((item) => item.id === undefined);
+  const id = contestAwardsDto.id;
+  let successUpdate = true; 
+  let successCreate = true;
+  // 处理需要更新的项
+  if (updateItems.length !== 0) {
+    successUpdate = await this.contestDao.updateContestAwards(updateItems);
+  }
+  // 处理需要创建的项
+  if (newItems.length !== 0) {
+    successCreate = await this.contestDao.createContestAwards(id, newItems);
+  }
+  // 返回结果
+  return successUpdate && successCreate;
+  }
+  //修改比赛方向
+  async updateContestDirection(contestDirectionDto: ContestDirectionDTO) {
+    const updateItems = contestDirectionDto.direction.filter((item) => item.id !== undefined);
+    const newItems = contestDirectionDto.direction.filter((item) => item.id === undefined);
+    const id = contestDirectionDto.id;
+    let successUpdate = true;
+    let successCreate = true;
+    // 处理需要更新的项
+    if (updateItems.length !== 0) {
+      successUpdate = await this.contestDao.updateContestDirection(updateItems);
     }
-    if (updateContestDto.direction) {
-      const direction = await this.contestDao.updateContestDirection(
-        updateContestDto.id,
-        updateContestDto.direction
-      );
-      if (direction) {
-        data.updateContestDirection = '修改比赛方向成功';
-      } else {
-        data.updateContestDirection = '修改比赛方向失败';
-      }
+    // 处理需要创建的项
+    if (newItems.length !== 0) {
+      successCreate = await this.contestDao.createContestDirection(id, newItems);
     }
-    return data;
+    // 返回结果
+    return successUpdate && successCreate;
+  }
+  //修改比赛组别
+  async updateGroupRemark(contestGroupDto: ContestGroupDTO[]) {
+    return await this.contestDao.updateGroupRemark(contestGroupDto);
   }
 }

@@ -37,7 +37,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- 资料部分 -->
                 <div v-if="ismaterials">
                     <div class="border-[#5295CD] w-full h-full flex justify-between items-center">
