@@ -20,8 +20,12 @@ const contest = {
         return request.put(`${moduleUrl}/startContest`, data);
     },
     // 管理员上传比赛群二维码图片
-    uploadImg(data) {
-        return request.put(`${moduleUrl}/uploadImg`, data);
+    uploadQrLink(data) {
+        return request.upload(`${moduleUrl}/uploadQrLink`, data);
+    },
+    // 管理员上传比赛负责人二维码图片
+    uploadUserLink(data) {
+        return request.upload(`${moduleUrl}/uploadUserLink`, data);
     },
     // 管理员获取单个比赛信息
     contestInfo(data) {

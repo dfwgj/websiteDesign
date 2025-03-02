@@ -94,15 +94,15 @@ export class ContestController {
     return await this.contestService.startContest(id);
   }
   /**
-   * @name uploadImg 上传二维码图片
-   * @description Put /contest/uploadImg
+   * @name uploadQrLink 上传咨询群二维码图片
+   * @description Put /contest/uploadQrLink
    * @param {File} files - 上传的图片文件
    * @param {string} id - 比赛id
    * @returns {string} - 上传的图片url
    */
   @UseGuard(AuthGuard)
-  @Put('/uploadImg', { middleware: [UploadMiddleware] })
-  async uploadImg(
+  @Put('/uploadQrLink', { middleware: [UploadMiddleware] })
+  async uploadQrLink(
     @Files('files') files: Array<UploadFileInfo>,
     @Fields() startContestDTO: startContestDTO
   ): Promise<string> {
@@ -111,7 +111,27 @@ export class ContestController {
     if (!result) {
       throw new Error('该比赛不存在');
     }
-    return await this.contestService.uploadImg(files, id);
+    return await this.contestService.uploadQrLink(files, id);
+  }
+  /**
+   * @name uploadUserLink 上传咨询群二维码图片
+   * @description Put /contest/uploadUserLink
+   * @param {File} files - 上传的图片文件
+   * @param {string} id - 比赛id
+   * @returns {string} - 上传的图片url
+   */
+  @UseGuard(AuthGuard)
+  @Put('/uploadUserLink', { middleware: [UploadMiddleware] })
+  async uploadUserLink(
+    @Files('files') files: Array<UploadFileInfo>,
+    @Fields() startContestDTO: startContestDTO
+  ): Promise<string> {
+    const { id } = startContestDTO;
+    const result = await this.contestService.checkContest('id', id);
+    if (!result) {
+      throw new Error('该比赛不存在');
+    }
+    return await this.contestService.uploadUserLink(files, id);
   }
   /**
    * @name updateContestInfo 修改比赛详情

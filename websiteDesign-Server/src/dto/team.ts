@@ -1,5 +1,11 @@
-import { Rule, RuleType } from '@midwayjs/validate';
+import { Rule, RuleType, getSchema } from '@midwayjs/validate';
 const requiredString = RuleType.string().required();
+export class PlayerDTO {
+  @Rule(requiredString.length(11))
+  studentId: string;
+  @Rule(requiredString.min(1).max(16))
+  name: string;
+}
 export class TeamDTO {
   @Rule(RuleType.string().min(1).max(200))
   teamId: string;
@@ -13,7 +19,7 @@ export class TeamDTO {
   direction: string;
   @Rule(requiredString.min(1).max(64))
   opusName: string;
-  @Rule(RuleType.array().required())
+  @Rule(RuleType.array().required().items(getSchema(PlayerDTO)))
   players: PlayerDTO[];
 }
 export class TeamUpdateDTO {
@@ -29,10 +35,4 @@ export class TeamUpdateDTO {
   opusName: string;
   @Rule(RuleType.number().min(0).max(5))
   stateFlag: number;
-}
-export class PlayerDTO {
-  @Rule(requiredString.length(11))
-  studentId: string;
-  @Rule(requiredString.min(1).max(16))
-  name: string;
 }

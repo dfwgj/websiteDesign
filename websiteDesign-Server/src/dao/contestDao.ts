@@ -13,6 +13,7 @@ import { uuidv7 } from 'uuidv7';
 import { pinyin } from 'pinyin-pro';
 import { CachingFactory, MidwayCache } from '@midwayjs/cache-manager';
 import { InjectClient } from '@midwayjs/core';
+import dayjs = require('dayjs');
 @Provide()
 export class ContestDao {
   @Inject()
@@ -310,6 +311,7 @@ export class ContestDao {
             valid_flag AS status,
               created_at AS createdAt
         FROM contest_information
+        ORDER by valid_flag DESC
             `;
     const sqlParams = [];
     return await query(sql, sqlParams);
@@ -318,7 +320,7 @@ export class ContestDao {
   async getContestInfo(id: string) {
     return transaction(async conn => {
       const sql = `
-        SELECT id, name, topic, introduce, double_knots, qr_link AS qrLink, organizers, contractors, year, created_at
+        SELECT id, name, topic, introduce, double_knots AS doubleKnots, qr_link AS qrLink, user_link AS userLink, organizers, contractors, year, created_at
         FROM contest_information
         WHERE id = ?
             `;
@@ -351,7 +353,7 @@ export class ContestDao {
             contest.date = dateData.map(dateData => ({
               id: dateData.id,
               name: dateData.name,
-              date: dateData.date,
+              date: dayjs(dateData.date).format('YYYY-MM-DD'),
               place: dateData.place,
               txt: dateData.txt,
             }));
@@ -359,7 +361,7 @@ export class ContestDao {
           // 获取比赛奖项
           const awardsSql = `
           SELECT
-          id,
+            id,
             name,
             prize,
             amount,
@@ -368,7 +370,7 @@ export class ContestDao {
           FROM
           contest_awards
           WHERE
-          contest_id = ? AND c.valid_flag = 1
+          contest_id = ? AND valid_flag = 1
             `;
           const awardsSqlParams = [contestId];
           const awardsData = await query(awardsSql, awardsSqlParams, false, conn);
@@ -387,7 +389,7 @@ export class ContestDao {
           // 获取比赛方向
           const directionSql = `
           SELECT
-          id,
+            id,
             name,
             txt,
             item_code AS directionCode
@@ -413,6 +415,33 @@ export class ContestDao {
               name: direction.name,
               txt: direction.txt,
               directionCode: direction.directionCode,
+            }));
+          }
+          // 获取比赛组别
+          const groupSql = `
+          SELECT 
+              item_code AS groupCode,
+            item_label AS groupName,
+              remark AS groupRemark
+          FROM
+          sys_dict_item
+          WHERE
+          dict_code = 'MODEL'
+            `;
+          const groupSqlParams = [];
+          const groupData = await query(
+            groupSql,
+            groupSqlParams,
+            false,
+            conn
+          );
+          if (!groupData) {
+            contest.group = [];
+          } else {
+            contest.group = groupData.map(direction => ({
+              groupCode: direction.groupCode,
+              groupName: direction.groupName,
+              groupRemark: direction.groupRemark,
             }));
           }
           return contest;
@@ -441,7 +470,7 @@ export class ContestDao {
     return true;
   }
   //上传图片
-  async uploadImg(url: string, id: string) {
+  async uploadQrLink(url: string, id: string) {
     const sql = `
     UPDATE
           contest_information
@@ -452,6 +481,21 @@ export class ContestDao {
             `;
     const sqlParams = [url, id];
     await query(sql, sqlParams);
+    await this.cache.del('contestList');
+    return url;
+  }
+  async uploadUserLink(url: string, id: string) {
+    const sql = `
+    UPDATE
+          contest_information
+          SET
+          user_link = ?
+            WHERE
+        id = ?
+            `;
+    const sqlParams = [url, id];
+    await query(sql, sqlParams);
+    await this.cache.del('contestList');
     return url;
   }
   //修改比赛主体信息

@@ -22,6 +22,7 @@
     "@opentelemetry/exporter-jaeger": "^1.29.0",
     "@opentelemetry/sdk-node": "^0.56.0",
     "bcryptjs": "^2.4.3",
+    "dayjs": "^1.11.13",
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.4.0",
     "pinyin-pro": "^3.26.0",

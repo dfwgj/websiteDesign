@@ -91,6 +91,10 @@ export default {
                     break;
                 case '/manager/contestManagement':
                     selectValue = 'contest';
+                case '/manager/createContest':
+                    selectValue = 'contest';
+                case '/manager/contestDetail':
+                    selectValue = 'contest';
                     break;
                 default:
                     selectValue = '';

@@ -95,7 +95,7 @@ export class ContestService {
     return await this.contestDao.startContest(id);
   }
   //上传二维码图片
-  async uploadImg(files: Array<UploadFileInfo>, id: string) {
+  async uploadQrLink(files: Array<UploadFileInfo>, id: string) {
     // 获取文件扩展名
     const originalFilename = this.getFileExtension.getFileExtension(files);
     // 使用 UUID 创建唯一文件名
@@ -107,7 +107,25 @@ export class ContestService {
     if (result) {
       // 上传成功，保存文件的 URL 地址到数据库
       const fileUrl = result.url;
-      return await this.contestDao.uploadImg(fileUrl, id); // 假设 userDao.uploadImg 保存 URL 到数据库
+      return await this.contestDao.uploadQrLink(fileUrl, id); // 假设 userDao.uploadImg 保存 URL 到数据库
+    } else {
+      throw new Error('上传图片失败');
+    }
+  }
+   //上传二维码图片
+   async uploadUserLink(files: Array<UploadFileInfo>, id: string) {
+    // 获取文件扩展名
+    const originalFilename = this.getFileExtension.getFileExtension(files);
+    // 使用 UUID 创建唯一文件名
+    const filename = uuidv7() + '.' + originalFilename;
+    // 构建上传文件的目标路径（根据需求可以更改路径）
+    const targetPath = join('oss', filename);
+    // 上传文件到 OSS
+    const result = await this.ossService.put(targetPath, files[0].data); // 这里传递文件的路径
+    if (result) {
+      // 上传成功，保存文件的 URL 地址到数据库
+      const fileUrl = result.url;
+      return await this.contestDao.uploadUserLink(fileUrl, id); // 假设 userDao.uploadImg 保存 URL 到数据库
     } else {
       throw new Error('上传图片失败');
     }
