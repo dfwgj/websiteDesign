@@ -45,9 +45,7 @@ export class UserDao {
   async findStudentIdById(studentId: UserDTO['studentId']) {
     const sql = `
       SELECT  
-        user_id AS userId,
-        is_admin AS role,
-        is_deleted AS deleted
+        COUNT(*) AS count
       FROM 
         user
       WHERE 
