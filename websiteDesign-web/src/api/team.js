@@ -22,6 +22,10 @@ const team = {
     // 管理员删除队伍信息
     delTeam(data) {
         return request.put(`${moduleUrl}/delTeam`, data);
+    },
+    // 管理员设置队长
+    setTeamLeader(data) {
+        return request.put(`${moduleUrl}/setTeamLeader`, data);
     }
 };
 
