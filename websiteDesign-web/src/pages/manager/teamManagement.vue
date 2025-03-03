@@ -50,7 +50,7 @@
                             </td>
                             <!-- 注册时间 -->
                             <td class="px-6 py-1 text-center text-base text-gray-500">{{ formatDate(record.teamCreated)
-                            }}</td>
+                                }}</td>
                             <!-- 查看队伍成员 -->
                             <!-- text-center 使表格内容在单元格中居中显示 -->
                             <td class="px-6 py-1 text-center text-base text-blue-500 hover:text-blue-800">
@@ -148,14 +148,14 @@
             <var-loading description="LOADING" color="#5295CD" :loading="loading">
                 <div class="p-10 w-[700px] h-[370px] bg-white shadow-lg">
                     <!-- 弹窗内容 -->
-                    <h3 class="text-xl mb-5">{{ TeamInfo.teamName }} 的队伍成员</h3>
+                    <h3 class="text-xl mb-5">{{ selectedRecord.teamName }} 的队伍成员</h3>
                     <table class="w-full">
                         <thead>
                             <tr>
                                 <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">成员姓名</th>
                                 <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">成员学号</th>
                                 <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">学院</th>
-                                <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">设为队长</th>
+                                <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">队长</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -163,7 +163,11 @@
                                 <td class="px-6 py-1 text-center text-base text-gray-900">{{ member.name }}</td>
                                 <td class="px-6 py-1 text-center text-base text-gray-500">{{ member.studentId }}</td>
                                 <td class="px-6 py-1 text-center text-base text-gray-500">{{ member.college }}</td>
-                                <td class="px-6 py-1 text-center text-base text-gray-500"></td>
+                                <td class="px-6 py-1 text-center text-base text-gray-500 flex justify-center">
+                                    <img v-if="member.captain == 1" :src="Link" class="w-8 h-8" />
+                                    <var-button v-else class="inline-block" type="success"
+                                        @click="settingCaptain(member)">设为队长</var-button>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -176,6 +180,7 @@
 
 <script>
 import dayjs from 'dayjs';
+import captain from '@/assets/队伍.svg';
 export default {
     name: 'managerUser',
     data() {
@@ -196,6 +201,7 @@ export default {
             TeamInfo: {}, // 用于临时存储修改后的队伍信息
             showMessage: false,
             members: [], // 队伍成员列表
+            Link: captain, // 队长图标
         };
     },
     async mounted() {
@@ -227,11 +233,27 @@ export default {
         },
         // 管理员获取队伍成员信息
         async getTeamPlayers() {
+            this.loading = true;
             const res = await this.$api.team.getTeamPlayers({ teamId: this.selectedRecord.id });
+            this.loading = false;
             if (res.success) {
                 this.members = res.data; // 提取数组字段
             } else {
                 this.members = [];
+            }
+        },
+        // 管理员设置队长
+        async setTeamLeader(member) {
+            this.loading = true;
+            const res = await this.$api.team.setTeamLeader({
+                teamId: this.selectedRecord.id,
+                studentId: member.studentId
+            });
+            this.loading = false;
+            if (res.success) {
+                this.message('success', '队长设置成功');
+            } else {
+                this.message('error', res.error || '队长设置失败');
             }
         },
         // 管理员保存队伍信息
@@ -295,9 +317,9 @@ export default {
         },
         // 查看队伍成员
         viewMembers(record) {
+            this.members = [];
             this.selectedRecord = record;
             this.showMemberPopup = true; // 显示弹窗
-            this.TeamInfo = { ...record }; // 显示当前队伍信息(目的为同步队伍名称)
             this.getTeamPlayers(); // 当点击查看队伍成员时，请求队伍成员信息
         },
         // 处理分页变化
@@ -307,6 +329,17 @@ export default {
             }
             this.currentPage = page;
             this.getTeam();
+        },
+        // 设置队长
+        async settingCaptain(member) {
+            const oldCaptain = this.members.find((item) => item.captain === 1);
+            const success = await this.setTeamLeader(member);
+            if (success) {
+                if (oldCaptain) {
+                    oldCaptain.captain = 0;
+                }
+                member.captain = 1;
+            }
         }
     }
 };
