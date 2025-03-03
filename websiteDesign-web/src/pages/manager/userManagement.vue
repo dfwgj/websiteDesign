@@ -68,7 +68,6 @@
                 </div>
             </var-loading>
         </var-dialog>
-
         <!-- 居中弹窗 -->
         <var-popup v-model:show="showCenterPopup">
             <var-loading description="LOADING" color="#5295CD" :loading="loading">
@@ -141,9 +140,11 @@ export default {
             list: [],
             currentPage: 1, // 当前页码
             pageSize: 10, // 每页显示的记录数
+            recoverLoading: false, // 控制恢复用户弹窗显示
             total: 0, // 总条数
             loading: false,
             listLoading: false,
+            deleteLoading: false,
             activeTab: 0,
             showCenterPopup: false,
             showConfirm: false,
@@ -261,10 +262,12 @@ export default {
         //恢复用户操作
         async recoverUser(action, done) {
             if (action === 'confirm') {
+                this.recoverLoading = true;
                 const res = await this.$api.user.adminUpdateUserInfo({
                     userId: this.selectedRecord.userId,
                     validFlag: 1
                 });
+                this.recoverLoading = false;
                 if (res.success) {
                     this.$api.notify.success('此用户已恢复');
                     this.showRecoverConfirm = false;

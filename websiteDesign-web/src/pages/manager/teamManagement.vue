@@ -10,8 +10,8 @@
             <div class="bg-white p-4 rounded-lg shadow-md mx-auto border-[1px] border-[#5295CD]">
                 <var-tabs indicator-color="#5295CD" active-color="#5295CD" v-model:active="activeTab">
                     <!-- 点击切换显示正常和禁用的队伍，正常为1，禁用为0 -->
-                    <var-tab @click="toggleTab(1)">正常</var-tab>
-                    <var-tab @click="toggleTab(0)">禁用</var-tab>
+                    <var-tab>正常</var-tab>
+                    <var-tab>禁用</var-tab>
                 </var-tabs>
                 <table class="min-w-full">
                     <thead>
@@ -190,9 +190,13 @@ export default {
             Link: captain // 队长图标
         };
     },
+    watch: {
+        activeTab(newVal) {
+            this.toggleTab(newVal);
+        }
+    },
     async mounted() {
         await this.getTeam();
-        this.toggleTab(1); // 默认显示正常队伍
         this.directions = this.contest.direction;
     },
     computed: {
@@ -209,12 +213,11 @@ export default {
     methods: {
         // 切换显示正常和禁用的队伍
         toggleTab(tab) {
-            // 方法 toggleTab 接收一个参数 tab，用于切换正常和禁用队伍
-            // 根据 teamValid 字段筛选队伍
-            // filter() 方法遍历原数组 teamList，筛选并分类出目标数据，存入 tab 中，并返回到新数组 teamListByValid
-            // tab 为 1 显示为正常，tab 为 0 显示为禁用
-            this.teamListByValid = this.teamList.filter((team) => team.teamValid == tab);
-            this.tab = tab; // 更新当前 tab 状态
+            const typeMap = [1, 0];
+            const type = typeMap[tab];
+            this.teamListByValid = this.teamList.filter((team) => team.teamValid == type);
+            this.total = this.teamListByValid.length;
+            this.currentPage = 1;
         },
         // 管理员获取队伍信息
         async getTeam() {
@@ -222,8 +225,8 @@ export default {
             const res = await this.$api.team.getTeam();
             if (res.success) {
                 this.teamList = res.data; // 提取数组字段
-                this.total = res.data.length; // 更新总记录数
-                this.toggleTab(this.tab); // 默认显示正常队伍
+                this.total = this.teamList.length;
+                this.toggleTab(this.activeTab); // 默认显示正常队伍
                 this.listLoading = false;
             } else {
                 this.teamList = [];

@@ -10,8 +10,8 @@
             <div class="bg-white p-4 rounded-lg shadow-md mx-auto border-[1px] border-[#5295CD]">
                 <var-tabs indicator-color="#5295CD" active-color="#5295CD" v-model:active="activeTab">
                     <!-- 点击切换显示正常和禁用的队伍，正常为1，禁用为0 -->
-                    <var-tab @click="toggleTab(1)">正常</var-tab>
-                    <var-tab @click="toggleTab(0)">禁用</var-tab>
+                    <var-tab>正常</var-tab>
+                    <var-tab>禁用</var-tab>
                 </var-tabs>
                 <table class="min-w-full">
                     <thead>
@@ -117,7 +117,7 @@
         <var-popup v-model:show="showCreateMaterials">
             <var-loading description="LOADING" color="#5295CD" :loading="createLoading">
                 <var-form ref="form" scroll-to-error="start">
-                    <div class="p-10 w-[500px] h-[550px] bg-white ">
+                    <div class="p-10 w-[500px] h-[550px] bg-white">
                         <p class="text-lg text-gray-900 mb-5">新增资料</p>
                         <div class="mb-5">
                             <var-input v-model="newMaterials.name" focus-color="#5295CD" placeholder="资料名称" variant="outlined" :rules="(v) => !!v || '资料名称不能为空'" />
@@ -183,9 +183,13 @@ export default {
             materialsInfo: {} // 用于临时存储修改后的队伍信息
         };
     },
+    watch: {
+        activeTab(newVal) {
+            this.toggleTab(newVal);
+        }
+    },
     async mounted() {
         await this.getMaterials();
-        this.toggleTab(1); // 默认显示正常队伍
     },
     computed: {
         pagedMaterials() {
@@ -198,12 +202,11 @@ export default {
     methods: {
         // 切换显示正常和禁用的队伍
         toggleTab(tab) {
-            // 方法 toggleTab 接收一个参数 tab，用于切换正常和禁用队伍
-            // 根据 materialsValid 字段筛选队伍
-            // filter() 方法遍历原数组 materialsList，筛选并分类出目标数据，存入 tab 中，并返回到新数组 materialsListByValid
-            // tab 为 1 显示为正常，tab 为 0 显示为禁用
-            this.materialsListByValid = this.materialsList.filter((materials) => materials.validFlag == tab);
-            this.tab = tab; // 更新当前 tab 状态
+            const typeMap = [1, 0];
+            const type = typeMap[tab];
+            this.materialsListByValid = this.materialsList.filter((materials) => materials.validFlag == type);
+            this.total = this.materialsListByValid.length; // 更新总条数
+            this.currentPage = 1; // 切换tab时重置页码到第一页
         },
         // 管理员获取队伍信息
         async getMaterials() {
@@ -211,8 +214,8 @@ export default {
             const res = await this.$api.materials.getAllMaterialsList();
             if (res.success) {
                 this.materialsList = res.data; // 提取数组字段
-                this.total = res.data.length; // 更新总记录数
-                this.toggleTab(this.tab); // 默认显示正常队伍
+                this.total = this.materialsList.length;
+                this.toggleTab(this.activeTab); // 默认显示正常队伍
                 this.listLoading = false;
             } else {
                 this.materialsList = [];
