@@ -141,7 +141,7 @@ export class TeamDao {
             m.item_label AS model,
             d.item_label AS direction,
             t.state_flag AS teamState,
-            t.valid_flag AS teamVaild,
+            t.valid_flag AS teamValid,
             t.created_at AS teamCreated
         FROM
             team t
@@ -163,7 +163,7 @@ export class TeamDao {
             u.student_id AS studentId,
             u.name,
             c.item_label AS college,
-            u.valid_flag AS userVaild,
+            u.valid_flag AS userValid,
             u.captain_flag AS captain
         FROM
             user u

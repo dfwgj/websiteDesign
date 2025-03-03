@@ -64,13 +64,13 @@ export class MaterialsController {
     return await this.materialsService.updateMaterials(filteredData);
   }
   /**
-   * @name getMaterialsList 管理员获取资料列表
-   * @description GET /materials/getMaterialsList
+   * @name getAllMaterialsList 管理员获取资料列表
+   * @description GET /materials/getAllMaterialsList
    * returns {object}  资料列表
    */
   @UseGuard(AuthGuard)
-  @Get('/getMaterialsList')
-  async getMaterialsList(): Promise<object> {
+  @Get('/getAllMaterialsList')
+  async getAllMaterialsList(): Promise<object> {
     return await this.materialsService.getMaterialsList();
   }
   /**

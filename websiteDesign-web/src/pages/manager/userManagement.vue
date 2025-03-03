@@ -34,9 +34,9 @@
                         </tr>
                         <tr v-for="(record, index) in list" :key="index" class="odd:bg-white even:bg-gray-50" v-hover="{ color: 'var(--color-on-primary)', background: '#F0F0F0' }">
                             <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.studentId }}</td>
-                            <td class="px-6 py-1 text-center text-base text-gray-900">{{ record.name }}</td>
-                            <td class="px-6 py-1 text-center text-base text-gray-900">{{ record.teamName || '-' }}</td>
-                            <td class="px-6 py-1 text-center text-base text-gray-900">{{ record.college }}</td>
+                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.name }}</td>
+                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.teamName || '-' }}</td>
+                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.college }}</td>
                             <td class="px-6 py-1 text-center text-base text-gray-500">{{ formatDate(record.createdAt) }}</td>
                             <td class="px-6 py-1 text-base text-blue-500 hover:text-blue-800 flex justify-center items-center">
                                 <var-space :size="[10, 10]">

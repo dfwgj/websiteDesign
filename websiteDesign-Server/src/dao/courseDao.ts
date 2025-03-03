@@ -73,7 +73,7 @@ export class CourseDao {
   async getCourseList() {
     const sql = `
         SELECT
-        course.id AS courseId,
+        course.id,
         user.name AS userName,
         course.name AS courseName, 
         course.link,

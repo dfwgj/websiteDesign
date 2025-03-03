@@ -34,7 +34,7 @@
                         <tr v-if="teamListByValid.length === 0 && listLoading === false">
                             <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">暂无数据</td>
                         </tr>
-                        <tr v-for="(record, index) in teamListByValid" :key="index" class="odd:bg-white even:bg-gray-50" v-hover="{ color: 'var(--color-on-primary)', background: '#F0F0F0' }">
+                        <tr v-for="(record, index) in pagedTeamList" :key="index" class="odd:bg-white even:bg-gray-50" v-hover="{ color: 'var(--color-on-primary)', background: '#F0F0F0' }">
                             <!-- 队伍名称 -->
                             <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.teamName }}</td>
                             <!-- 队长 -->
@@ -124,7 +124,7 @@
                     <!-- 按钮容器 -->
                     <div class="mt-auto flex justify-center">
                         <var-space :size="[10, 30]">
-                            <var-button v-if="selectedRecord.teamVaild === '1'" type="danger" @click="showConfirm = true">删除队伍</var-button>
+                            <var-button v-if="selectedRecord.teamValid === '1'" type="danger" @click="showConfirm = true">删除队伍</var-button>
                             <var-button block color="#5295CD" text-color="white" @click="updateTeamInfo">保存修改</var-button>
                         </var-space>
                     </div>
@@ -199,6 +199,12 @@ export default {
         contest() {
             return this.$store.contest;
         },
+        pagedTeamList() {
+            // 计算当前页显示的资料
+            const startIndex = (this.currentPage - 1) * this.pageSize;
+            const endIndex = this.currentPage * this.pageSize;
+            return this.teamListByValid.slice(startIndex, endIndex);
+        }
     },
     methods: {
         // 切换显示正常和禁用的队伍
@@ -207,7 +213,7 @@ export default {
             // 根据 teamValid 字段筛选队伍
             // filter() 方法遍历原数组 teamList，筛选并分类出目标数据，存入 tab 中，并返回到新数组 teamListByValid
             // tab 为 1 显示为正常，tab 为 0 显示为禁用
-            this.teamListByValid = this.teamList.filter((team) => team.teamVaild == tab);
+            this.teamListByValid = this.teamList.filter((team) => team.teamValid == tab);
             this.tab = tab; // 更新当前 tab 状态
         },
         // 管理员获取队伍信息
@@ -311,13 +317,8 @@ export default {
             this.showMemberPopup = true; // 显示弹窗
             this.getTeamPlayers(); // 当点击查看队伍成员时，请求队伍成员信息
         },
-        // 处理分页变化
         handlePageChange(page) {
-            if (page === this.currentPage) {
-                return;
-            }
-            this.currentPage = page;
-            this.getTeam();
+            this.currentPage = page; // 更新当前页码
         }
     }
 };

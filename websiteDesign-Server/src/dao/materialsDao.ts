@@ -73,7 +73,7 @@ export class MaterialsDao {
   async getMaterialsList() {
     const sql = `
         SELECT
-        materials.id AS materialsId,
+        materials.id,
         user.name AS userName,
         materials.name AS materialsName, 
         materials.link,

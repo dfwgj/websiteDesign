@@ -12,8 +12,8 @@ const materials = {
         return request.post(`${moduleUrl}/createMaterials`, data);
     },
     // 管理员获取资料列表
-    getMaterialsList(data) {
-        return request.get(`${moduleUrl}/getMaterialsList`, data);
+    getAllMaterialsList(data) {
+        return request.get(`${moduleUrl}/getAllMaterialsList`, data);
     },
     // 管理员更改资料信息
     updateMaterials(data) {

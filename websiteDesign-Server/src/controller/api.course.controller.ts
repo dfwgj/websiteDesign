@@ -64,13 +64,13 @@ export class CourseController {
     return await this.courseService.updateCourse(filteredData);
   }
   /**
-   * @name getCourseList 管理员获取课程列表
-   * @description GET /course/getCourseList
+   * @name getAllCourseList 管理员获取所有课程列表
+   * @description GET /course/getAllCourseList
    * returns {object}  课程列表
    */
   @UseGuard(AuthGuard)
-  @Get('/getCourseList')
-  async getCourseList(): Promise<object> {
+  @Get('/getAllCourseList')
+  async getAllCourseList(): Promise<object> {
     return await this.courseService.getCourseList();
   }
   /**

@@ -12,8 +12,8 @@ const course = {
         return request.post(`${moduleUrl}/createCourse`, data);
     },
     // 管理员获取课程列表
-    getCourseList(data) {
-        return request.get(`${moduleUrl}/getCourseList`, data);
+    getAllCourseList(data) {
+        return request.get(`${moduleUrl}/getAllCourseList`, data);
     },
     // 管理员更改课程信息
     updateCourse(data) {
