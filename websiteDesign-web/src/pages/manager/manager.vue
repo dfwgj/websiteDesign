@@ -9,8 +9,10 @@
                 <span class="w-[90%] h-[5vh] mb-[1vh] flex justify-center items-center border-2 border-blue-500" @click="gotoCourse" :class="{ 'bg-blue-50': select === 'course' }">课程管理</span>
                 <span class="w-[90%] h-[5vh] mb-[1vh] flex justify-center items-center border-2 border-blue-500" @click="gotoMaterials" :class="{ 'bg-blue-50': select === 'materials' }">资料管理</span>
                 <span class="w-[90%] h-[5vh] mb-[1vh] flex justify-center items-center border-2 border-blue-500" @click="gotoContest" :class="{ 'bg-blue-50': select === 'contest' }">比赛信息管理</span>
+                <div class="mt-[2vh] h-[70vh] flex justify-center items-center ">
+                    <img class=" h-[6vh] " src="@/assets/exit.svg" @click="goHome" />
+                </div>
             </div>
-            <div class="h-[200px]"></div>
         </div>
         <div class="bg-white h-[100vh] w-[85vw] float-right">
             <span>
@@ -22,20 +24,23 @@
 
 <script>
 export default {
-    name: 'ManagerLayout', // 修正组件名称，避免为空
+    name: 'ManagerLayout',
     data() {
         return {
-            select: this.getInitialSelect() // 从路由或 localStorage 获取初始值
+            select: '' // 初始值为空，由 updateSelectFromRoute 方法设置
         };
     },
     async created() {
         await this.$store.contest.getContest();
+        this.updateSelectFromRoute(); // 初始化时根据路由设置选中状态
     },
     methods: {
+        goHome() {
+            this.$router.push('/');
+        },
         gotoHome() {
             this.select = 'home';
-            this.saveSelect(); // 保存到 localStorage
-            console.log(this.select);
+            this.saveSelect();
             this.$router.push('/manager/managerHome');
         },
         gotoUser() {
@@ -64,19 +69,11 @@ export default {
             this.$router.push('/manager/contestManagement');
         },
         saveSelect() {
-            // 将当前选中的菜单项存储到 localStorage
             localStorage.setItem('selectedMenu', this.select);
         },
-        getInitialSelect() {
-            // 从 localStorage 或路由获取当前选中的菜单项
-            return localStorage.getItem('selectedMenu') || 'home'; // 默认选中主页
-        }
-    },
-    watch: {
-        $route(to) {
-            // 根据路由路径动态更新 select 的值
+        updateSelectFromRoute() {
             let selectValue = '';
-            switch (to.path) {
+            switch (this.$route.path) {
                 case '/manager/managerHome':
                     selectValue = 'home';
                     break;
@@ -93,17 +90,20 @@ export default {
                     selectValue = 'materials';
                     break;
                 case '/manager/contestManagement':
-                    selectValue = 'contest';
                 case '/manager/createContest':
-                    selectValue = 'contest';
                 case '/manager/contestDetail':
                     selectValue = 'contest';
                     break;
                 default:
-                    selectValue = '';
+                    selectValue = 'home'; // 默认选中主页
             }
             this.select = selectValue;
             this.saveSelect(); // 更新存储的值
+        }
+    },
+    watch: {
+        $route(to) {
+            this.updateSelectFromRoute();
         }
     }
 };

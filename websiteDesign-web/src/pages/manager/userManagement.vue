@@ -40,7 +40,7 @@
                             <td class="px-6 py-1 text-center text-base text-gray-500">{{ formatDate(record.createdAt) }}</td>
                             <td class="px-6 py-1 text-base text-blue-500 hover:text-blue-800 flex justify-center items-center">
                                 <var-space :size="[10, 10]">
-                                    <var-button block color="#5295CD" text-color="white" @click="viewRecord(record)" class="w-35" style="border-radius: 8px">操 作</var-button>
+                                    <var-button block color="#5295CD" text-color="white" @click="viewRecord(record)" class="w-35" style="border-radius: 8px">修 改</var-button>
                                 </var-space>
                             </td>
                         </tr>

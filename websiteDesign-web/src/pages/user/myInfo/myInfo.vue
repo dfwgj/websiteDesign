@@ -1,14 +1,14 @@
 <template>
-    <div class="w-full h-full mx-auto py-6 lg:flex  opacity-0 " :class="{ 'title-visible': isMounted }">
+    <div class="w-full h-full mx-auto py-6 lg:flex opacity-0" :class="{ 'title-visible': isMounted }">
         <!-- 图标部分 -->
-        <div class="lg:w-1/4 lg:max-h-[400px] lg:max-w-[256px]  mx-[5vw] lg:mt-5 lg:ml-16 lg:mr-2 flex lg:flex-col justify-center items-center">
+        <div class="lg:w-1/4 lg:max-h-[400px] lg:max-w-[256px] mx-[5vw] lg:mt-5 lg:ml-16 lg:mr-2 flex lg:flex-col justify-center items-center">
             <div v-for="(icon, index) in icons" :key="index" class="w-full h-[8vh] border-2 border-[#5295CD] lg:p-2 lg:m-2 rounded-[10px] mx-[1vw] lg:rounded-[20px]" :class="{ 'bg-[#E8F3FF]': selectedType === icon.type }" @click="handleIconClick(icon.type)">
                 <div class="w-full h-full flex flex-col lg:flex-row items-center justify-center">
-                    <div class="flex items-center justify-center h-[60%] lg:h-[80%] lg:w-2/5 ">
+                    <div class="flex items-center justify-center h-[60%] lg:h-[80%] lg:w-2/5">
                         <img :title="icon.type" :alt="icon.type" :src="icon.iconLink" class="w-[6vw] lg:w-2/5" />
                     </div>
                     <div class="h-[60%] lg:w-3/5 flex items-center justify-center">
-                        <div class="text-[#5295CD] lg:text-[1.4rem] text-sm ">{{ icon.type }}</div>
+                        <div class="text-[#5295CD] lg:text-[1.4rem] text-sm">{{ icon.type }}</div>
                     </div>
                 </div>
             </div>
@@ -17,7 +17,7 @@
         <div class="lg:w-3/4 h-full mx-[5%] mt-4 lg:mr-16 flex-col overflow-auto">
             <router-view></router-view>
         </div>
-        <var-dialog title="确定要退出登录吗？" class="w-[80vw] lg:w-[40vw] rounded-[10px]" v-model:show="show"confirm-button-text-color="red" persistent cancel-button-text-color="#5295CD" @before-close="handleBeforeClose"  />
+        <var-dialog title="确定要退出登录吗？" class="w-[80vw] lg:w-[40vw] rounded-[10px]" v-model:show="show" confirm-button-text-color="red" persistent cancel-button-text-color="#5295CD" @before-close="handleBeforeClose" />
     </div>
 </template>
 
@@ -84,8 +84,7 @@ export default {
                 this.$store.user.clearUserInfo();
                 this.$router.push('/home');
             } else {
-                this.selectedType ='我的队伍',
-                this.$router.push(this.icons.find((icon) => icon.type === '我的队伍').route);
+                (this.selectedType = '我的队伍'), this.$router.push(this.icons.find((icon) => icon.type === '我的队伍').route);
                 done();
             }
         }

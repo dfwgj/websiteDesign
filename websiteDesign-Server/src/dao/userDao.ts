@@ -116,7 +116,6 @@ export class UserDao {
         u.email,
         t.name AS teamName,
         u.captain_flag AS captainFlag,
-        u.is_admin AS role,
         u.created_at AS createdAt,
         u.valid_flag AS validFlag
       FROM
@@ -126,7 +125,7 @@ export class UserDao {
       LEFT JOIN
         team t ON u.team_id = t.id
       WHERE
-        u.valid_flag = ?
+        u.valid_flag = ? AND u.is_admin = 0
       ORDER BY
         u.user_id
       LIMIT

@@ -62,7 +62,7 @@
                             </td>
                             <!-- 操作 -->
                             <td class="px-6 py-1 text-center text-base text-blue-500 hover:text-blue-800">
-                                <var-button class="inline-block w-35" color="#5295CD" text-color="white" @click="viewRecord(record)" style="border-radius: 8px">操 作</var-button>
+                                <var-button class="inline-block w-35" color="#5295CD" text-color="white" @click="viewRecord(record)" style="border-radius: 8px">修 改</var-button>
                             </td>
                         </tr>
                     </tbody>
@@ -193,7 +193,6 @@ export default {
     async mounted() {
         await this.getTeam();
         this.toggleTab(1); // 默认显示正常队伍
-        console.log(this.contest);
         this.directions = this.contest.direction;
     },
     computed: {
