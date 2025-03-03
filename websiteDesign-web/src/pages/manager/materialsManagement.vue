@@ -158,6 +158,8 @@ export default {
     name: 'managerUser',
     data() {
         return {
+            loading: false,
+            createLoading: false, // 新增资料加载状态
             deleteLoading: false, // 删除资料加载状态
             recoverLoading: false, // 恢复资料加载状态
             listLoading: false, // 列表加载状态
@@ -166,8 +168,6 @@ export default {
             currentPage: 1, // 当前页码
             pageSize: 10, // 每页显示的记录数
             total: 0, // 总条数
-            loading: false,
-            createLoading: false, // 新增资料加载状态
             activeTab: 0, // 当前显示的 tab 状态
             showCenterPopup: false, // 操作弹窗
             showCreateMaterials: false,
@@ -212,9 +212,9 @@ export default {
         async getMaterials() {
             this.listLoading = true;
             const res = await this.$api.materials.getAllMaterialsList();
+            console.log(res);
             if (res.success) {
                 this.materialsList = res.data; // 提取数组字段
-                this.total = this.materialsList.length;
                 this.toggleTab(this.activeTab); // 默认显示正常队伍
                 this.listLoading = false;
             } else {
@@ -315,8 +315,11 @@ export default {
         },
         // 查看课资料信息
         viewRecord(record) {
+            console.log(record);
             this.selectedRecord = record;
+            console.log(this.selectedRecord);
             this.materialsInfo = { ...record };
+            console.log(this.materialsInfo);
             this.showCenterPopup = true;
         },
         handlePageChange(page) {

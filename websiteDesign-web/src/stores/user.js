@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { jwtDecode } from 'jwt-decode';
+import notify from '@/api/notify';
 
 export const userStore = defineStore('userStore', {
     state: () => ({
@@ -28,7 +29,13 @@ export const userStore = defineStore('userStore', {
             const token = localStorage.getItem('token'); // 从 localStorage 获取 token
             if (token) {
                 try {
-                    const decodedToken = jwtDecode(token); // 解密 token
+                    const decodedToken = jwtDecode(token); // 使用 jwt-decode 解码 token
+                    const currentTime = Math.floor(Date.now() / 1000); // 当前时间戳（秒）
+                    // 检查 token 是否过期
+                    if (decodedToken.exp && decodedToken.exp < currentTime) {
+                        throw new Error('Token expired');
+                    }
+                    // 将解码后的 token 信息赋值给实例属性
                     this.userId = decodedToken.userId;
                     this.studentId = decodedToken.studentId;
                     this.teamId = decodedToken.teamId;
@@ -45,7 +52,8 @@ export const userStore = defineStore('userStore', {
                     this.team.direction = decodedToken.team.direction;
                     this.team.players = decodedToken.team.players;
                 } catch (error) {
-                    console.log(error);
+                    localStorage.removeItem('token');
+                    notify.error('登录信息已过期，请重新登录');
                 }
             }
         },
