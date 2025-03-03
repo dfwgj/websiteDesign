@@ -116,34 +116,36 @@
         <!-- 新增资料弹窗 -->
         <var-popup v-model:show="showCreateMaterials">
             <var-loading description="LOADING" color="#5295CD" :loading="createLoading">
-                <div class="p-10 w-[500px] h-[550px] bg-white shadow-lg">
-                    <p class="text-lg text-gray-900 mb-5">新增资料</p>
-                    <div class="mb-5">
-                        <var-input v-model="newMaterials.name" focus-color="#5295CD" placeholder="资料名称" variant="outlined" />
+                <var-form ref="form" scroll-to-error="start">
+                    <div class="p-10 w-[500px] h-[550px] bg-white ">
+                        <p class="text-lg text-gray-900 mb-5">新增资料</p>
+                        <div class="mb-5">
+                            <var-input v-model="newMaterials.name" focus-color="#5295CD" placeholder="资料名称" variant="outlined" :rules="(v) => !!v || '资料名称不能为空'" />
+                        </div>
+                        <div class="mb-5">
+                            <var-space direction="column" size="large" class="w-full rounded-xl">
+                                <var-select v-model="newMaterials.type" variant="outlined" placeholder="资料分类" size="large" focus-color="#5295CD" class="w-full text-center bg-white text-black rounded-xl" :rules="(v) => !!v || '资料分类不能为空'">
+                                    <var-option label="服务器部署" value="FWQ" />
+                                    <var-option label="后端开发" value="HDKF" />
+                                    <var-option label="前端开发" value="QDKF" />
+                                    <var-option label="数据库设计" value="SJK" />
+                                    <var-option label="UI设计" value="UISJ" />
+                                    <var-option label="网站设计大赛宣传网站" value="WZSJDSXCWZ" />
+                                    <var-option label="其他" value="QT" />
+                                </var-select>
+                            </var-space>
+                        </div>
+                        <div class="mb-5">
+                            <var-input v-model="newMaterials.description" focus-color="#5295CD" placeholder="资料描述" variant="outlined" :rules="(v) => !!v || '资料描述不能为空'" />
+                        </div>
+                        <div class="mb-5">
+                            <var-input v-model="newMaterials.link" textarea rows="4" focus-color="#5295CD" placeholder="资料链接" variant="outlined" :rules="(v) => !!v || '资料链接不能为空'" />
+                        </div>
+                        <div class="mt-auto px-[5vw] flex justify-center">
+                            <var-button block outline text text-color="#5295CD" @click="createMaterials">创建资料</var-button>
+                        </div>
                     </div>
-                    <div class="mb-5">
-                        <var-space direction="column" size="large" class="w-full rounded-xl">
-                            <var-select v-model="newMaterials.type" variant="outlined" placeholder="资料分类" size="large" focus-color="#5295CD" class="w-full text-center bg-white text-black rounded-xl">
-                                <var-option label="服务器部署" value="FWQ" />
-                                <var-option label="后端开发" value="HDKF" />
-                                <var-option label="前端开发" value="QDKF" />
-                                <var-option label="数据库设计" value="SJK" />
-                                <var-option label="UI设计" value="UISJ" />
-                                <var-option label="网站设计大赛宣传网站" value="WZSJDSXCWZ" />
-                                <var-option label="其他" value="QT" />
-                            </var-select>
-                        </var-space>
-                    </div>
-                    <div class="mb-5">
-                        <var-input v-model="newMaterials.description" focus-color="#5295CD" placeholder="资料描述" variant="outlined" />
-                    </div>
-                    <div class="mb-5">
-                        <var-input v-model="newMaterials.link" textarea rows="4" focus-color="#5295CD" placeholder="资料链接" variant="outlined" />
-                    </div>
-                    <div class="mt-auto px-[5vw] flex justify-center">
-                        <var-button block outline text text-color="#5295CD" @click="createMaterials">创建资料</var-button>
-                    </div>
-                </div>
+                </var-form>
             </var-loading>
         </var-popup>
     </div>
@@ -281,21 +283,27 @@ export default {
         },
         // 新增资料
         async createMaterials() {
-            this.createLoading = true;
-            const res = await this.$api.materials.createMaterials(this.newMaterials);
-            this.createLoading = false;
-            if (res.success) {
-                this.getMaterials();
-                this.$api.notify.success('新增资料成功');
-                this.showCreateMaterials = false;
-                this.newMaterials = {
-                    name: '',
-                    type: '',
-                    description: '',
-                    link: ''
-                };
+            const valid = await this.$refs.form.validate();
+            if (valid) {
+                this.createLoading = true;
+                const res = await this.$api.materials.createMaterials(this.newMaterials);
+                this.createLoading = false;
+                if (res.success) {
+                    this.getMaterials();
+                    this.$api.notify.success('新增资料成功');
+                    this.showCreateMaterials = false;
+                    this.newMaterials = {
+                        name: '',
+                        type: '',
+                        description: '',
+                        link: ''
+                    };
+                } else {
+                    this.$api.notify.error(res.error || '新增资料失败');
+                }
             } else {
-                this.$api.notify.error(res.error || '新增资料失败');
+                // 表单验证失败
+                this.$api.notify.error('表单验证失败，请检查输入');
             }
         },
         // 日期变正常
