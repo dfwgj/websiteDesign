@@ -1,18 +1,18 @@
 <template>
     <div class="w-full h-5/6 p-[5%] border-2 rounded-xl border-[#5295CD] bg-[#FFFFFF] overflow-auto bg-opacity-70 lg:grid lg:grid-cols-2">
-        <div class="mb-2 lg:h-[10vh] lg:mb-0 w-full flex flex-col items-center">
+        <div class="mb-2 lg:h-[10dvh] lg:mb-0 w-full flex flex-col items-center">
             <div>
                 <div class="lg:justify-start lg:text-2xl">真实姓名</div>
                 <var-input size="small" variant="outlined" focus-color="#5295CD" blur-color="#5295CD" class="w-[70vw] lg:w-[20vw]" v-model="tempForm.name" :rules="[(v) => !!v || '姓名不能为空', (v) => /^[\u4e00-\u9fa5]{2,16}$/.test(v) || '姓名格式不正确']" />
             </div>
         </div>
-        <div class="mb-2 lg:h-[10vh] lg:mb-0 w-full flex flex-col items-center">
+        <div class="mb-2 lg:h-[10dvh] lg:mb-0 w-full flex flex-col items-center">
             <div>
                 <div class="lg:justify-start lg:text-2xl">学号</div>
                 <var-input size="small" variant="outlined" focus-color="#5295CD" disabled blur-color="#5295CD" class="w-[70vw] lg:w-[20vw]" v-model="tempForm.studentId" :rules="[(v) => !!v || '学号不能为空', (v) => /^\d{11}$/.test(v.trim()) || '学号格式不正确']" />
             </div>
         </div>
-        <div class="mb-2 lg:h-[10vh] lg:mb-0 w-full flex flex-col items-center">
+        <div class="mb-2 lg:h-[10dvh] lg:mb-0 w-full flex flex-col items-center">
             <div>
                 <div class="lg:justify-start lg:text-2xl">学院</div>
                 <var-select v-model="tempForm.college" clearable variant="outlined" size="small" blur-color="#5295CD" focus-color="#5295CD" class="w-[70vw] lg:w-[20vw] bg-white text-black rounded-xl">
@@ -28,31 +28,31 @@
                 </var-select>
             </div>
         </div>
-        <div class="mb-2 lg:h-[10vh] lg:mb-0 w-full flex flex-col items-center">
+        <div class="mb-2 lg:h-[10dvh] lg:mb-0 w-full flex flex-col items-center">
             <div>
                 <div class="lg:justify-start lg:text-2xl">专业</div>
                 <var-input size="small" variant="outlined" focus-color="#5295CD" blur-color="#5295CD" class="w-[70vw] lg:w-[20vw]" v-model="tempForm.major" :rules="[(v) => !!v || '专业不能为空', (v) => /^[\u4e00-\u9fa5]{2,10}$/.test(v) || '专业格式不正确']" />
             </div>
         </div>
-        <div class="mb-2 lg:h-[10vh] lg:mb-0 w-full flex flex-col items-center">
+        <div class="mb-2 lg:h-[10dvh] lg:mb-0 w-full flex flex-col items-center">
             <div>
                 <div class="lg:justify-start lg:text-2xl">手机号</div>
                 <var-input size="small" variant="outlined" focus-color="#5295CD" blur-color="#5295CD" class="w-[70vw] lg:w-[20vw]" v-model="tempForm.phone" :rules="[(v) => !!v || '手机号不能为空', (v) => /^\d{11}$/.test(v) || '手机号格式不正确']" />
             </div>
         </div>
-        <div class="mb-2 lg:h-[10vh] lg:mb-0 w-full flex flex-col items-center">
+        <div class="mb-2 lg:h-[10dvh] lg:mb-0 w-full flex flex-col items-center">
             <div>
                 <div class="lg:justify-start lg:text-2xl">邮箱</div>
                 <var-input size="small" variant="outlined" focus-color="#5295CD" blur-color="#5295CD" class="w-[70vw] lg:w-[20vw]" v-model="tempForm.email" :rules="[(v) => !!v || '邮箱不能为空', (v) => /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/.test(v) || '邮箱格式不正确']" />
             </div>
         </div>
-        <div class="mb-2 lg:h-[10vh] lg:mb-0 w-full flex flex-col items-center">
+        <div class="mb-2 lg:h-[10dvh] lg:mb-0 w-full flex flex-col items-center">
             <div>
                 <div class="lg:justify-start lg:text-2xl">密码</div>
                 <var-input size="small" variant="outlined" focus-color="#5295CD" blur-color="#5295CD" class="w-[70vw] lg:w-[20vw]" v-model="tempForm.password" :rules="[(v) => !!v || '密码不能为空', (v) => /^[A-Za-z0-9!@#$%^&*()]{6,16}$/.test(v) || '密码只能为6到16位的数字、字母组成']" />
             </div>
         </div>
-        <div class="mt-2 h-[8vh] lg:h-[10vh] lg:mb-0 w-full flex justify-center items-center">
+        <div class="mt-2 h-[8dvh] lg:h-[10dvh] lg:mb-0 w-full flex justify-center items-center">
             <button class="w-[60%] h-[55%] rounded-full font-bold border-[#5295CD] border text-[#5295CD] text-xl bg-[#E8F3FF]" @click="show = true">提交更改</button>
         </div>
     </div>
@@ -107,7 +107,7 @@ export default {
                     done();
                     return;
                 }
-                if ( !this.validate(name, /^[\u4e00-\u9fa5]{2,16}$/) || !this.validate(major, /^[\u4e00-\u9fa5]{2,10}$/) || !this.validate(phone, /^\d{11}$/) || !this.validate(email, /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/)) {
+                if (!this.validate(name, /^[\u4e00-\u9fa5]{2,16}$/) || !this.validate(major, /^[\u4e00-\u9fa5]{2,10}$/) || !this.validate(phone, /^\d{11}$/) || !this.validate(email, /^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/)) {
                     this.$api.notify.warning('请检查输入信息是否符合规范');
                     return;
                 }

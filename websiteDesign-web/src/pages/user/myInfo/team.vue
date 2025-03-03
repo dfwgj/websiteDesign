@@ -2,12 +2,14 @@
     <div v-if="!team.teamName" class="w-full h-5/6 border-2 rounded-xl border-[#5295CD] bg-[#FFFFFF] bg-opacity-70 flex items-center justify-center">
         <p class="hidden lg:flex items-center justify-center text-center mx-auto text-3xl 2xl:text-5xl text-[#5295CD]">
             还没报名比赛，请先报名比赛！
-            <img class="h-[8vh]" :src="ZunjingImg" />
+            <img class="h-[8dvh]" :src="ZunjingImg" />
         </p>
         <p class="lg:hidden text-center text-2xl text-[#5295CD]">
-            还没报名比赛，<br />请先报名比赛！
+            还没报名比赛，
+            <br />
+            请先报名比赛！
         </p>
-        <img class="lg:hidden  h-[8vh]" :src="ZunjingImg" />
+        <img class="lg:hidden h-[8dvh]" :src="ZunjingImg" />
     </div>
     <div v-else class="w-full h-5/6 border-2 rounded-xl border-[#5295CD] bg-[#FFFFFF] bg-opacity-70">
         <!-- 队伍名称栏 -->
@@ -22,9 +24,9 @@
             </div>
         </div>
         <!-- 队伍成员栏 -->
-        <div class="w-full h-[70px] flex items-center text-lg lg:text-xl ml-4 lg:ml-8">队伍成员：</div>     
+        <div class="w-full h-[70px] flex items-center text-lg lg:text-xl ml-4 lg:ml-8">队伍成员：</div>
         <div v-for="(player, index) in team.players" :key="index" class="w-full flex justify-center items-center mb-2">
-            <div class="w-full h-[6vh] lg:h-[8vh] flex justify-center items-center border-2 border-[#5295CD] rounded-[30px] mx-1 lg:mx-8">
+            <div class="w-full h-[6dvh] lg:h-[8dvh] flex justify-center items-center border-2 border-[#5295CD] rounded-[30px] mx-1 lg:mx-8">
                 <div class="w-1/12 h-full flex justify-center items-center">
                     <img v-if="player.captain == '1'" class="pl-[5%]" :src="teamImg" />
                 </div>
@@ -41,11 +43,11 @@
         </div>
         <div class="flex-1">
             <!-- 保持最小高度 -->
-            <div v-if="team.model == '网页设计组'" class="w-full h-[12vh] lg:h-[16vh] mt-4 transition-all duration-300"></div>
+            <div v-if="team.model == '网页设计组'" class="w-full h-[12dvh] lg:h-[16dvh] mt-4 transition-all duration-300"></div>
         </div>
         <!-- 队伍流程栏 -->
-        <div class="w-full h-[5vh] mt-[2vh] flex items-center text-lg lg:text-xl ml-4 lg:ml-8">队伍流程：</div>
-        <div class="h-[18vh] mt-[2vh] lg:h-[8vh] flex justify-center items-center">
+        <div class="w-full h-[5dvh] mt-[2dvh] flex items-center text-lg lg:text-xl ml-4 lg:ml-8">队伍流程：</div>
+        <div class="h-[18dvh] mt-[2dvh] lg:h-[8dvh] flex justify-center items-center">
             <div class="w-[90%] h-full flex justify-center items-center relative">
                 <div class="w-[18vw] lg:w-full h-full border-2 border-[#5295CD] rounded-full lg:rounded-[40px] flex items-center justify-center" :class="{ 'bg-[#E8F3FF]': team.teamState == '0' }">
                     <div class="process-step flex items-center relative">

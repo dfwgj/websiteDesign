@@ -150,7 +150,7 @@ export default {
             showConfirm: false,
             showRecoverConfirm: false, // 控制信息确认弹窗显示
             selectedRecord: {}, // 当前选中的记录
-            updateUser: {}, // 用于临时存储修改后的用户信息
+            updateUser: {} // 用于临时存储修改后的用户信息
         };
     },
     mounted() {

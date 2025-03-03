@@ -50,8 +50,7 @@ const contest = {
     // 管理员修改比赛状态
     updateAwardInfo(data) {
         return request.put(`${moduleUrl}/updateAwardInfo`, data);
-    },
-
+    }
 };
 
 export default contest;

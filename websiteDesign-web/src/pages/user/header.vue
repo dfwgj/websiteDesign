@@ -3,7 +3,7 @@
     <LoadingSpinner />
     <div class="h-full w-full bg-[#FFFFFF]">
         <div class="hidden lg:block">
-            <div class="w-full h-[10vh] py-4 flex items-center">
+            <div class="w-full h-[10dvh] py-4 flex items-center">
                 <p class="flex w-[25%] justify-center text-2xl xl:text-3xl font-black text-[#71A9D7]">{{ contest.name }}</p>
                 <div class="flex-grow"></div>
                 <p v-if="user.userRole == 1" class="flex w-[10%] justify-center text-lg text-[#71A9D7] border-2 border-[#5295CD]" @click="goManager">进入管理员后台</p>
@@ -15,7 +15,7 @@
             </div>
         </div>
         <div class="lg:hidden">
-            <div class="w-full h-[10vh] py-4 flex items-center">
+            <div class="w-full h-[10dvh] py-4 flex items-center">
                 <p class="flex w-[60%] justify-center text-xl sm:text-2xl font-black text-[#71A9D7]">{{ contest.name }}</p>
                 <div class="flex-grow"></div>
                 <Icon type="caidan" extraclass="icon" size="25" color="#71A9D7" class="flex w-[15%] justify-center" @click="right = true"></Icon>
@@ -30,7 +30,7 @@
                 </div>
             </var-popup>
         </div>
-        <div class="w-full h-[90vh] bg-[#FFFFFF] overflow-auto">
+        <div class="w-full h-[90dvh] bg-[#FFFFFF] overflow-auto">
             <router-view></router-view>
             <var-popup v-model:show="LoginShow" class="w-3/4 lg:w-1/3 rounded-2xl border-2 border-[#5295CD] lg:block">
                 <Login @go-register="handleRegisterShow" @login-success="handleLoginSuccess" />

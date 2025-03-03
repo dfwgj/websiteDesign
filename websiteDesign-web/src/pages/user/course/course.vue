@@ -22,11 +22,11 @@
             </h2>
         </div>
         <!-- 展示卡片区域 -->
-        <div class="flex w-full top-[30vh] flex-row justify-center items-start relative z-1">
+        <div class="flex w-full top-[30dvh] flex-row justify-center items-start relative z-1">
             <div
                 v-for="(card, index) in cards"
                 :key="index"
-                class="w-[140px] h-[200px] lg:w-[280px] lg:h-[400px] flex-shrink-0 border-[3px] bg-white bg-opacity-70 lg:bg-opacity-90 border-[#5295CD] rounded-[10px] lg:rounded-[20px] grid grid-cols-[30%_70%] lg:grid-cols-[35%_65%] gap-1 justify-items-stretch "
+                class="w-[140px] h-[200px] lg:w-[280px] lg:h-[400px] flex-shrink-0 border-[3px] bg-white bg-opacity-70 lg:bg-opacity-90 border-[#5295CD] rounded-[10px] lg:rounded-[20px] grid grid-cols-[30%_70%] lg:grid-cols-[35%_65%] gap-1 justify-items-stretch"
                 :style="cardStyle(index)"
                 :data-index="index"
                 @touchstart="handleMouseEnter(index)"
@@ -43,14 +43,12 @@
                 </div>
             </div>
         </div>
-        <div class=" lg:hidden fixed bottom-[15vh] left-0 right-0 flex justify-center bg-white bg-opacity-90 ">
-            <button class=" py-2 rounded-full w-[60vw] font-bold border-[#5295CD] border text-[#5295CD] text-lg bg-[#E8F3FF]" @click="handleMouseClick('网页设计')">
-                获取比赛资料 >
-            </button>
+        <div class="lg:hidden fixed bottom-[15dvh] left-0 right-0 flex justify-center bg-white bg-opacity-90">
+            <button class="py-2 rounded-full w-[60vw] font-bold border-[#5295CD] border text-[#5295CD] text-lg bg-[#E8F3FF]" @click="handleMouseClick('网页设计')">获取比赛资料 ></button>
         </div>
     </div>
     <var-popup v-model:show="LoginShow" class="w-3/4 lg:w-1/3 rounded-2xl border-2 border-[#5295CD] lg:block">
-        <Login @go-register="handleRegisterShow"  @login-success="handleLoginSuccess" />
+        <Login @go-register="handleRegisterShow" @login-success="handleLoginSuccess" />
     </var-popup>
     <var-popup v-model:show="RegisterShow" class="w-3/4 lg:w-1/3 rounded-2xl border-2 border-[#5295CD] lg:block">
         <Register @go-login="handleLoginShow" />
@@ -143,7 +141,7 @@ export default {
             } else {
                 const { translateX, translateY, rotate, isHovered } = this.cards[index];
                 return {
-                    transition: isHovered ? 'transform 0.3s ease' : 'transform 1s ease',
+                    'transition': isHovered ? 'transform 0.3s ease' : 'transform 1s ease',
                     'transform': `
                         translateX(${translateX}px) 
                         translateY(${isHovered ? translateY - 80 : translateY}px) /* 动画效果：鼠标悬停时卡片上移 */
