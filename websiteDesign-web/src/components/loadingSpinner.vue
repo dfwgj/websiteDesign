@@ -22,7 +22,7 @@ export default {
     data() {
         return {
             isLoading: true, // 控制加载页面的显示和隐藏
-            isDataLoaded: false, // 数据是否加载完成
+            isDataLoaded: false // 数据是否加载完成
         };
     },
     created() {
@@ -104,7 +104,6 @@ export default {
         }
     }
 };
-
 </script>
 
 <style scoped>

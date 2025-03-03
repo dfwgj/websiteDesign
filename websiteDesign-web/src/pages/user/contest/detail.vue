@@ -8,7 +8,7 @@
                     :key="btn.id"
                     @click="changeContent(btn.id)"
                     :class="{ 'bg-[#E8F3FF]': content === btn.id }"
-                    class="min-h-[16vh] min-w-[9vw] border-4 border-[#5D9CD0] rounded-[10px] flex flex-col items-center justify-center text-[3vh] font-extrabold text-[#5D9CD0] cursor-pointer transition-all hover:scale-105 p-1 aspect-ratio-[1]">
+                    class="min-h-[16dvh] min-w-[9vw] border-4 border-[#5D9CD0] rounded-[10px] flex flex-col items-center justify-center text-[3dvh] font-extrabold text-[#5D9CD0] cursor-pointer transition-all hover:scale-105 p-1 aspect-ratio-[1]">
                     <img :src="btn.iconLink" alt="" class="w-2/5 mb-2" />
                     <!-- 图片 -->
                     {{ btn.label }}
@@ -26,12 +26,12 @@
                                 <div class="text-5xl 2xl:text-6xl text-[#5D9CD0] font-bold py-[1%]">{{ contest?.topic }}</div>
                                 <div class="text-3xl 2xl:text-4xl py-[1%]">选手可以选择以下四个方向进行创作：</div>
                             </header>
-                            <div class="flex justify-between flex-1 max-h-[9vh]" style="padding-left: 89px; padding-right: 89px">
-                                <div v-for="theme in contest.direction" :key="theme.id" v-if="content === 'theme'" @click="changeTheme(theme)" :class="{ 'bg-[#E8F3FF]': currentTheme === theme.name }" class="w-[18%] h-[8vh] flex items-center justify-center border-4 border-[#5D9CD0] p-1 rounded-[20px] text-2xl text-[#5D9CD0]">
+                            <div class="flex justify-between flex-1 max-h-[9dvh]" style="padding-left: 89px; padding-right: 89px">
+                                <div v-for="theme in contest.direction" :key="theme.id" v-if="content === 'theme'" @click="changeTheme(theme)" :class="{ 'bg-[#E8F3FF]': currentTheme === theme.name }" class="w-[18%] h-[8dvh] flex items-center justify-center border-4 border-[#5D9CD0] p-1 rounded-[20px] text-2xl text-[#5D9CD0]">
                                     {{ theme.name }}
                                 </div>
                             </div>
-                            <div class="h-[20vh] w-[100%] border-4 border-[#5D9CD0] rounded-[15px] flex items-center justify-center text-xl 2xl:text-3xl py-[1%] px-4">
+                            <div class="h-[20dvh] w-[100%] border-4 border-[#5D9CD0] rounded-[15px] flex items-center justify-center text-xl 2xl:text-3xl py-[1%] px-4">
                                 <!-- 显示对应主题的详细内容 -->
                                 <p>{{ theme.txt }}</p>
                             </div>
@@ -46,11 +46,11 @@
                                 <p class="text-3xl 2xl:text-5xl">选手可以从以下两个组别中选择参赛：</p>
                             </header>
                             <div class="w-[90%] flex justify-between pt-[1%] flex-1 mx-auto">
-                                <div v-for="group in groups" :key="group.groupCode" @click="changeGroup(group)" :class="{ 'bg-[#E8F3FF]': currentGroup === group.groupCode }" class="w-[40%] h-[8vh] flex items-center justify-center border-4 border-[#5D9CD0] rounded-[20px] text-[#5D9CD0] text-3xl 2xl:text-5xl px-10 mt-2">
+                                <div v-for="group in groups" :key="group.groupCode" @click="changeGroup(group)" :class="{ 'bg-[#E8F3FF]': currentGroup === group.groupCode }" class="w-[40%] h-[8dvh] flex items-center justify-center border-4 border-[#5D9CD0] rounded-[20px] text-[#5D9CD0] text-3xl 2xl:text-5xl px-10 mt-2">
                                     {{ group.groupName }}
                                 </div>
                             </div>
-                            <div class="h-[35vh] pt-[1%]">
+                            <div class="h-[35dvh] pt-[1%]">
                                 <div class="h-full flex-1 flex justify-center border-4 border-[#5D9CD0] rounded-[15px] text-xl 2xl:text-3xl p-8">
                                     {{ group.groupRemark }}
                                 </div>
@@ -99,7 +99,7 @@
                         <div v-else-if="content === 'process'" class="flex flex-col h-full space-y-4">
                             <div class="px-5 pt-[2%] text-3xl 2xl:text-4xl">
                                 本届大赛流程：
-                                <div class="flex items-center pt-[5%] justify-center h-[14vh]">
+                                <div class="flex items-center pt-[5%] justify-center h-[14dvh]">
                                     <!-- 移除gap -->
                                     <template v-for="(processStep, index) in dates" :key="processStep.id">
                                         <!-- 方块元素 -->
@@ -110,8 +110,8 @@
                                         <div v-if="index !== dates.length - 1" class="w-[5%] h-[4px] bg-[#5D9CD0]"></div>
                                     </template>
                                 </div>
-                                <div class="h-[50vh] pt-[10vh]">
-                                    <div class="h-full flex-1 flex flex-col space-y-[2vh] items-start border-4 border-[#5D9CD0] rounded-[15px] text-2xl 2xl:text-4xl p-8">
+                                <div class="h-[50dvh] pt-[10dvh]">
+                                    <div class="h-full flex-1 flex flex-col space-y-[2dvh] items-start border-4 border-[#5D9CD0] rounded-[15px] text-2xl 2xl:text-4xl p-8">
                                         <div>时间：{{ formatDate(date.date) }}</div>
                                         <div>地点：{{ date.place }}</div>
                                         <div>{{ date.txt }}</div>
@@ -127,16 +127,16 @@
     <div class="lg:hidden w-full h-full bg-[url('@/assets/生工院标.svg')] bg-contain bg-center bg-no-repeat flex-col lg:flex-row items-center justify-center opacity-0" :class="{ 'title-visible': isMounted }">
         <div class="bg-[#FFFFFF] bg-opacity-60">
             <!-- 导航区 -->
-            <div class="w-[88%] h-[9vh] flex justify-center items-center mx-auto mb-8">
+            <div class="w-[88%] h-[9dvh] flex justify-center items-center mx-auto mb-8">
                 <div class="flex h-full justify-between flex-1">
-                    <div v-for="btn in buttons" :key="btn.id" @click="changeContent(btn.id)" :class="{ 'bg-[#E8F3FF]': content === btn.id }" class="min-h-[8vh] border-4 border-[#5D9CD0] rounded-[10px] flex flex-col items-center justify-center text-[2vh] font-extrabold text-[#5D9CD0] cursor-pointer transition-all p-1 aspect-ratio-[1]">
+                    <div v-for="btn in buttons" :key="btn.id" @click="changeContent(btn.id)" :class="{ 'bg-[#E8F3FF]': content === btn.id }" class="min-h-[8dvh] border-4 border-[#5D9CD0] rounded-[10px] flex flex-col items-center justify-center text-[2dvh] font-extrabold text-[#5D9CD0] cursor-pointer transition-all p-1 aspect-ratio-[1]">
                         <img :src="btn.iconLink" alt="" class="w-2/5 mb-2" />
                         {{ btn.label }}
                     </div>
                 </div>
             </div>
             <!-- 内容 -->
-            <div class="w-[88%] h-[74vh] border-4 border-[#5D9CD0] rounded-[15px] flex justify-center p-4 mx-auto overflow-auto">
+            <div class="w-[88%] h-[74dvh] border-4 border-[#5D9CD0] rounded-[15px] flex justify-center p-4 mx-auto overflow-auto">
                 <!-- 主题内容 -->
                 <transition name="fade" mode="out-in" :duration="300">
                     <div :key="content + '-mobile'">
@@ -149,7 +149,7 @@
                                     {{ theme.name }}
                                 </div>
                             </div>
-                            <div class="w-[95%] h-[30vh] border-4 border-[#5D9CD0] rounded-[15px] p-2 text-xl mx-auto mt-6">
+                            <div class="w-[95%] h-[30dvh] border-4 border-[#5D9CD0] rounded-[15px] p-2 text-xl mx-auto mt-6">
                                 <p>{{ theme.txt }}</p>
                             </div>
                             <footer class="text-gray-500 pt-4 px-2">
@@ -161,11 +161,11 @@
                         <div v-else-if="content === 'group'" class="w-full h-full">
                             <div class="text-2xl text-center p-4">选手可以从以下两个组别中选择参赛：</div>
                             <div class="flex flex-wrap justify-center gap-4 items-center">
-                                <div v-for="group in groups" :key="group.groupCode" @click="changeGroup(group)" :class="{ 'bg-[#E8F3FF]': currentGroup === group.groupCode }" class="w-[40%] h-[6vh] flex items-center justify-center border-4 border-[#5D9CD0] rounded-[20px] text-xl text-[#5D9CD0]">
+                                <div v-for="group in groups" :key="group.groupCode" @click="changeGroup(group)" :class="{ 'bg-[#E8F3FF]': currentGroup === group.groupCode }" class="w-[40%] h-[6dvh] flex items-center justify-center border-4 border-[#5D9CD0] rounded-[20px] text-xl text-[#5D9CD0]">
                                     {{ group.groupName }}
                                 </div>
                             </div>
-                            <div class="w-[95%] h-[40vh] border-4 border-[#5D9CD0] rounded-[15px] p-3 text-xl mx-auto mt-6 leading-relaxed">
+                            <div class="w-[95%] h-[40dvh] border-4 border-[#5D9CD0] rounded-[15px] p-3 text-xl mx-auto mt-6 leading-relaxed">
                                 {{ group.groupRemark }}
                             </div>
                             <footer class="w-full text-gray-500 pt-4 px-2">
@@ -184,7 +184,7 @@
                                     <!-- 奖项设置 -->
                                     <div class="flex pt-2">
                                         <div class="w-[30vw] text-lg text-[#70A7D6]">奖项设置：</div>
-                                        <div class="w-[50vw]  flex-grow text-lg text-[#2C2828C2]">
+                                        <div class="w-[50vw] flex-grow text-lg text-[#2C2828C2]">
                                             <template v-for="(group, index) in sortedGroups" :key="group.groupCode">
                                                 {{ index === 0 ? '' : '、' }}{{ group.groupName }}
                                                 {{ getAwardQuantity(group.groupCode, awardGroup.awards) }}
@@ -195,13 +195,15 @@
                                     </div>
                                     <!-- 奖品 -->
                                     <div class="flex pt-2">
-                                        <div class="w-[30vw]  text-lg text-[#70A7D6]">奖品：</div>
-                                        <div class="w-[50vw] flex-grow text-lg text-[#2C2828C2]"> <template v-for="(group, index) in sortedGroups" :key="group.groupCode">
-                                                    {{ group.groupName }}每位队员将获得价值
-                                                    {{ getAwardAmount(group.groupCode, awardGroup.awards) }}
-                                                    元的{{ getAwardPrize(group.groupCode, awardGroup.awards) || '精美礼品' }}及校级荣誉证书
-                                                    <br />
-                                                </template></div>
+                                        <div class="w-[30vw] text-lg text-[#70A7D6]">奖品：</div>
+                                        <div class="w-[50vw] flex-grow text-lg text-[#2C2828C2]">
+                                            <template v-for="(group, index) in sortedGroups" :key="group.groupCode">
+                                                {{ group.groupName }}每位队员将获得价值
+                                                {{ getAwardAmount(group.groupCode, awardGroup.awards) }}
+                                                元的{{ getAwardPrize(group.groupCode, awardGroup.awards) || '精美礼品' }}及校级荣誉证书
+                                                <br />
+                                            </template>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -214,17 +216,17 @@
                                     <div class="w-[45%] pt-[5%]">
                                         <template v-for="(processStep, index) in dates" :key="processStep.id">
                                             <!-- 方块元素 -->
-                                            <div @click="changeProcess(processStep)" :class="{ 'bg-[#E8F3FF]': currentProcess === processStep.name }" class="w-[25vw] h-[7vh] flex justify-center items-center border-4 border-[#5D9CD0] rounded-[25px] text-[#5D9CD0E6] text-xl relative">
+                                            <div @click="changeProcess(processStep)" :class="{ 'bg-[#E8F3FF]': currentProcess === processStep.name }" class="w-[25vw] h-[7dvh] flex justify-center items-center border-4 border-[#5D9CD0] rounded-[25px] text-[#5D9CD0E6] text-xl relative">
                                                 {{ processStep.name }}
                                             </div>
                                             <!-- 在方块之间添加连接线 -->
                                             <div v-if="index !== dates.length - 1" class="w-[25vw] flex justify-center items-center">
-                                                <div class="w-[4px] h-[4vh] bg-[#5D9CD0]"></div>
+                                                <div class="w-[4px] h-[4dvh] bg-[#5D9CD0]"></div>
                                             </div>
                                         </template>
                                     </div>
                                     <div class="w-[55%] pt-[5%]">
-                                        <div class="h-full flex-1 flex flex-col space-y-[1vh] items-start text-lg">
+                                        <div class="h-full flex-1 flex flex-col space-y-[1dvh] items-start text-lg">
                                             <div>时间：{{ formatDate(date.date) }}</div>
                                             <div>地点：{{ date.place }}</div>
                                             <div>{{ date.txt }}</div>
