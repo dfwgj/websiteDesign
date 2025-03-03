@@ -9,8 +9,8 @@
                 <span class="w-[90%] h-[5vh] mb-[1vh] flex justify-center items-center border-2 border-blue-500" @click="gotoCourse" :class="{ 'bg-blue-50': select === 'course' }">课程管理</span>
                 <span class="w-[90%] h-[5vh] mb-[1vh] flex justify-center items-center border-2 border-blue-500" @click="gotoMaterials" :class="{ 'bg-blue-50': select === 'materials' }">资料管理</span>
                 <span class="w-[90%] h-[5vh] mb-[1vh] flex justify-center items-center border-2 border-blue-500" @click="gotoContest" :class="{ 'bg-blue-50': select === 'contest' }">比赛信息管理</span>
-                <div class="mt-[2vh] h-[70vh] flex justify-center items-center ">
-                    <img class=" h-[6vh] " src="@/assets/exit.svg" @click="goHome" />
+                <div class="mt-[2vh] h-[70vh] flex justify-center items-center">
+                    <img class="h-[6vh]" src="@/assets/exit.svg" @click="goHome" />
                 </div>
             </div>
         </div>

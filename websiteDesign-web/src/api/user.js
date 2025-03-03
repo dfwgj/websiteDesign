@@ -7,8 +7,8 @@ const user = {
     updateUserInfo(data) {
         return request.put(`${moduleUrl}/updateUserInfo`, data);
     },
-     //获取用户信息
-    getUserInfo(data){
+    //获取用户信息
+    getUserInfo(data) {
         return request.get(`${moduleUrl}/getUserInfo`, data);
     },
     // 管理员获取所有用户信息

@@ -39,7 +39,7 @@ export const contestStore = defineStore('contestStore', {
                 this.awards = res.data[0].awards;
                 this.direction = res.data[0].direction;
                 return true;
-            }else {
+            } else {
                 return false;
             }
         },

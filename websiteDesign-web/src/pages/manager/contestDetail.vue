@@ -538,7 +538,7 @@ export default {
         // 更新组别备注
         async updateGroupRemark(group) {
             console.log(group);
-            const res = await this.$api.contest.updateGroupRemark( group );
+            const res = await this.$api.contest.updateGroupRemark(group);
             if (res.success) {
                 return true;
             } else {

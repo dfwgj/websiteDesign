@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import notify from '@/api/notify';
-import { userStore } from '../stores/user'
+import { userStore } from '../stores/user';
 
 const routes = [
     {
@@ -180,10 +180,9 @@ const routes = [
                     freeAuth: false,
                     requireAuth: true
                 }
-            },
-        ],
-    },
-
+            }
+        ]
+    }
 ];
 
 const router = createRouter({
@@ -217,6 +216,5 @@ router.beforeEach((to, from, next) => {
     // 通过验证，允许访问目标路由
     next();
 });
-
 
 export default router;

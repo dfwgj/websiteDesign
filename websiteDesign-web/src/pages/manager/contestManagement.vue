@@ -23,8 +23,8 @@
             <var-loading description="LOADING" :loading="loading" color="#5295CD">
                 <template #title>确定要启动{{ this.selectContest.name }}吗？</template>
                 <template #default>
-                    <p v-if="this.selectContest.status == '0' ">启动后，进行中的比赛将禁用</p>
-                    <p v-if="this.selectContest.status == '1' ">重新启动该比赛</p>
+                    <p v-if="this.selectContest.status == '0'">启动后，进行中的比赛将禁用</p>
+                    <p v-if="this.selectContest.status == '1'">重新启动该比赛</p>
                 </template>
             </var-loading>
         </var-dialog>

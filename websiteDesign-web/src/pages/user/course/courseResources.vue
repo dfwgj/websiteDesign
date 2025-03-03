@@ -17,7 +17,7 @@
             <var-loading description="LOADING" :loading="loading" color="#5295CD">
                 <div v-if="!ismaterials" class="space-y-[0.5%]">
                     <div v-for="(course, index) in coursesByType" :key="index" class="w-full flex justify-between items-center">
-                        <div @click="openNewTab(course.link)" class="w-full h-[9vh] p-4 lg:p-2 border-2 border-[#5295CD] rounded-[10px]">
+                        <div @click="openNewTab(course.link)" class="w-full h-[9dvh] p-4 lg:p-2 border-2 border-[#5295CD] rounded-[10px]">
                             <div class="h-1/2 flex justify-between items-center">
                                 <div class="w-1/2 h-full flex justify-start items-center">
                                     <span class="text-sm lg:text-lg font-bold" style="color: black">{{ course.courseName }}</span>
