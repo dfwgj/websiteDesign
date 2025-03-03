@@ -74,6 +74,7 @@ export default {
                 const res = await this.$api.contest.startContest({ id: this.selectContest.id });
                 if (res.success) {
                     await this.getAllContest();
+                    await this.$store.contest.getContest();
                     this.$api.notify.success('启动成功');
                     this.loading = false;
                     this.show = false;

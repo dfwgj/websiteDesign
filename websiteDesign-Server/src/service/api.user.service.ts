@@ -87,6 +87,6 @@ export class UserService {
   }
   //管理员获取所有用户信息
   async getAllUser(allUserDto: allUserDTO) {
-    return await this.userDao.getAllUser(allUserDto);
+    return this.bigIntService.bigInt(await this.userDao.getAllUser(allUserDto));
   }
 }

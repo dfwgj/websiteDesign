@@ -486,6 +486,7 @@ export default {
             this.startLoading = true;
             const res = await this.$api.contest.startContest({ id: this.contest.id });
             if (res.success) {
+                await this.$store.contest.getContest();
                 this.$api.notify.success('比赛启动成功');
                 this.startLoading = false;
                 this.showUpdateInfo = false;

@@ -49,6 +49,8 @@ export class allUserDTO {
   pageNum: number;
   @Rule(RuleType.number().required().min(1).max(100))
   pageSize: number;
+  @Rule(RuleType.number().required().min(0).max(1))
+  type: number;
 }
 export class LoginDTO extends PickDto(UserDTO, [
   'studentId',

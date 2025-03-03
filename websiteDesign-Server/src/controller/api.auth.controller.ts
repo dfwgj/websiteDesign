@@ -108,7 +108,7 @@ export class AuthController {
    */
   @UseGuard(AuthGuard)
   @Del('/del')
-  async delUser(@Body('userId') userId: UserDTO['userId']): Promise<object> {
+  async delUser(@Body('userId') userId: UserDTO['userId']): Promise<boolean> {
     const user = await this.userService.findUserById(userId);
     if (!user) {
       throw new Error('用户不存在');

@@ -458,7 +458,7 @@ export class ContestDao {
   async startContest(id: string) {
     // 更新所有记录的 valid_flag 为 0
     const sql1 = `
-        UPDATE contest_information SET valid_flag = 0
+        UPDATE contest_information SET valid_flag = 0 where valid_flag = 1
             `;
     await query(sql1, []);
     // 更新指定记录的 valid_flag 为 1

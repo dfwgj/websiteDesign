@@ -28,6 +28,9 @@ export default {
             select: this.getInitialSelect() // 从路由或 localStorage 获取初始值
         };
     },
+    async created() {
+        await this.$store.contest.getContest();
+    },
     methods: {
         gotoHome() {
             this.select = 'home';

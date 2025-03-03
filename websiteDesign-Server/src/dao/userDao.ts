@@ -1,5 +1,5 @@
 import { Inject, Provide } from '@midwayjs/core';
-import { query } from '../dbConnPool/mariadb'; // 引入查询函数
+import { query, transaction } from '../dbConnPool/mariadb'; // 引入查询函数
 import { UserDTO, UpdateUserDTO, allUserDTO } from '../dto/user';
 import { Caching } from '@midwayjs/cache-manager';
 import { Context } from '@midwayjs/koa';
@@ -70,19 +70,6 @@ export class UserDao {
     return result[0].count;
   }
 
-  //删除用户
-  async delUser(userId: UserDTO['userId']) {
-    const sql = `
-    UPDATE
-        user
-      SET
-        is_deleted = 1
-      WHERE
-        user_id = ?
-    `;
-    const sqlParams = [userId];
-    return await query(sql, sqlParams);
-  }
   //更新用户信息
   @InjectClient(CachingFactory, 'redis')
   cache1: MidwayCache; //redis缓存
@@ -115,8 +102,9 @@ export class UserDao {
   }
   //管理员获取所有用户信息
   async getAllUser(allUserDto: allUserDTO) {
-    const { pageNum, pageSize } = allUserDto;
-    const sql = `
+    const { pageNum, pageSize, type } = allUserDto;
+    return transaction(async conn => {
+      const sql = `
       SELECT
         u.user_id AS userId,
         u.student_id AS studentId,
@@ -129,6 +117,7 @@ export class UserDao {
         t.name AS teamName,
         u.captain_flag AS captainFlag,
         u.is_admin AS role,
+        u.created_at AS createdAt,
         u.valid_flag AS validFlag
       FROM
         user u
@@ -136,14 +125,28 @@ export class UserDao {
         sys_dict_item c ON u.college = c.item_code AND c.dict_code = 'COLLEGE'
       LEFT JOIN
         team t ON u.team_id = t.id
+      WHERE
+        u.valid_flag = ?
       ORDER BY
         u.user_id
       LIMIT
         ?,?
     `;
-    const sqlParams = [(pageNum - 1) * pageSize, pageSize];
-    return await query(sql, sqlParams);
-  }
+      const sqlParams = [type, (pageNum - 1) * pageSize, pageSize];
+      const list = await query(sql, sqlParams, false, conn);
+      const totalCountSql = `
+      SELECT
+        COUNT(*) AS totalCount
+      FROM
+        user
+      WHERE
+        valid_flag = ?
+    `;
+      const totalCountParams = [type];
+      const total = (await query(totalCountSql, totalCountParams, false, conn))[0]
+        .totalCount;
+      return {total,list };
+    })}
   // 工具函数：驼峰命名转下划线命名
   camelToSnake(str: string): string {
     return str.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();

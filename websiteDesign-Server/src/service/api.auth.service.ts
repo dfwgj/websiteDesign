@@ -109,6 +109,5 @@ export class AuthService {
   }
   //删除用户
   async delUser(userId: UserDTO['userId']) {
-    return this.bigIntService.bigInt(await this.userDao.delUser(userId));
-  }
-}
+    return true;
+}}

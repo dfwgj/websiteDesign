@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-gray-100 flex-1">
+    <div class="flex-1">
         <!-- 右侧内容区域 -->
         <div class="flex-1 p-4">
             <!-- 标题 -->
@@ -7,7 +7,7 @@
                 <h2 class="text-3xl text-[#5295CD]">队伍管理</h2>
             </div>
             <!-- 历史记录表格 -->
-            <div class="bg-white p-4 rounded-lg shadow-md mx-auto">
+            <div class="bg-white p-4 rounded-lg shadow-md mx-auto border-[1px] border-[#5295CD]">
                 <var-tabs indicator-color="#5295CD" active-color="#5295CD" v-model:active="activeTab">
                     <!-- 点击切换显示正常和禁用的队伍，正常为1，禁用为0 -->
                     <var-tab @click="toggleTab(1)">正常</var-tab>
@@ -26,11 +26,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-if="teamListByValid.length === 0">
+                        <tr v-if="listLoading">
+                            <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">
+                                <var-loading description="LOADING" color="#5295CD" />
+                            </td>
+                        </tr>
+                        <tr v-if="teamListByValid.length === 0 && listLoading === false">
                             <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">暂无数据</td>
                         </tr>
-                        <tr v-for="(record, index) in teamListByValid" :key="index" class="odd:bg-white even:bg-gray-50"
-                            v-hover="{ color: 'var(--color-on-primary)', background: '#F0F0F0' }">
+                        <tr v-for="(record, index) in teamListByValid" :key="index" class="odd:bg-white even:bg-gray-50" v-hover="{ color: 'var(--color-on-primary)', background: '#F0F0F0' }">
                             <!-- 队伍名称 -->
                             <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.teamName }}</td>
                             <!-- 队长 -->
@@ -49,33 +53,28 @@
                                 <span v-if="record.teamState === '4'" class="text-blue-500">决赛</span>
                             </td>
                             <!-- 注册时间 -->
-                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ formatDate(record.teamCreated)
-                                }}</td>
+                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ formatDate(record.teamCreated) }}</td>
                             <!-- 查看队伍成员 -->
                             <!-- text-center 使表格内容在单元格中居中显示 -->
                             <td class="px-6 py-1 text-center text-base text-blue-500 hover:text-blue-800">
                                 <!-- inline-block 将块元素 var-button 转换为行内块元素，可以使其在同一行显示 -->
-                                <var-button class="inline-block w-35" color="#5295CD" text-color="white"
-                                    @click="viewMembers(record)" style="border-radius: 8px">查 看</var-button>
+                                <var-button class="inline-block w-35" color="#5295CD" text-color="white" @click="viewMembers(record)" style="border-radius: 8px">查 看</var-button>
                             </td>
                             <!-- 操作 -->
                             <td class="px-6 py-1 text-center text-base text-blue-500 hover:text-blue-800">
-                                <var-button class="inline-block w-35" color="#5295CD" text-color="white"
-                                    @click="viewRecord(record)" style="border-radius: 8px">操 作</var-button>
+                                <var-button class="inline-block w-35" color="#5295CD" text-color="white" @click="viewRecord(record)" style="border-radius: 8px">操 作</var-button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
                 <!-- 分页组件 -->
                 <div class="flex justify-center mt-6">
-                    <var-pagination :current="currentPage" :total="total" :size-option="[10]" :simple="true"
-                        @change="handlePageChange" style="color: #5295cd" />
+                    <var-pagination :current="currentPage" :total="total" :size-option="[10]" :simple="true" @change="handlePageChange" style="color: #5295cd" />
                 </div>
             </div>
         </div>
         <!-- 删除信息确认弹窗 -->
-        <var-dialog v-model:show="showConfirm" title="删除提示" confirm-button-text-color="red" persistent
-            cancel-button-text-color="#5295CD" width="35vw" @before-close="deleteUser">
+        <var-dialog v-model:show="showConfirm" title="删除提示" confirm-button-text-color="red" persistent cancel-button-text-color="#5295CD" width="35vw" @before-close="deleteUser">
             <var-loading description="LOADING" color="red" :loading="deleteLoading">
                 <div class="p-4">
                     <p class="text-lg text-gray-900">确认删除此队伍？请谨慎操作！</p>
@@ -93,35 +92,26 @@
                     </div>
                     <!--队伍名称-->
                     <div class="mb-5">
-                        <var-input label="队伍名称" focus-color="#5295CD" v-model="TeamInfo.teamName" placeholder="队伍名称"
-                            variant="outlined" />
+                        <var-input label="队伍名称" focus-color="#5295CD" v-model="TeamInfo.teamName" placeholder="队伍名称" variant="outlined" />
                     </div>
                     <!--作品名称-->
                     <div class="mb-5">
-                        <var-input label="作品名称" v-model="TeamInfo.opusName" focus-color="#5295CD" placeholder="作品名称"
-                            variant="outlined" />
+                        <var-input label="作品名称" v-model="TeamInfo.opusName" focus-color="#5295CD" placeholder="作品名称" variant="outlined" />
                     </div>
                     <!--右边-->
                     <div>
                         <!-- 主题方向 -->
                         <div class="mb-5">
                             <var-space direction="column" size="large" class="w-full rounded-xl">
-                                <var-select v-model="TeamInfo.direction" variant="outlined" placeholder="主题方向"
-                                    size="large" focus-color="#5295CD"
-                                    class="w-full text-center bg-white text-black rounded-xl">
-                                    <var-option label="红色文化" value="HSWH" />
-                                    <var-option label="校园风采" value="XYFC" />
-                                    <var-option label="人工智能" value="RGZN" />
-                                    <var-option label="健康医疗" value="JKYL" />
+                                <var-select v-model="TeamInfo.direction" variant="outlined" placeholder="主题方向" size="large" focus-color="#5295CD" class="w-full text-center bg-white text-black rounded-xl">
+                                    <var-option v-for="direct in directions" :label="direct.name" :value="direct.directionCode" />
                                 </var-select>
                             </var-space>
                         </div>
                         <!-- 比赛进程 -->
                         <div class="mb-14">
                             <var-space direction="column" size="large" class="w-full rounded-xl">
-                                <var-select v-model="TeamInfo.teamState" variant="outlined" placeholder="比赛进程"
-                                    size="large" focus-color="#5295CD"
-                                    class="w-full text-center bg-white text-black rounded-xl">
+                                <var-select v-model="TeamInfo.teamState" variant="outlined" placeholder="比赛进程" size="large" focus-color="#5295CD" class="w-full text-center bg-white text-black rounded-xl">
                                     <var-option label="信息审核中" value="0" />
                                     <var-option label="报名成功" value="1" />
                                     <var-option label="作品已提交" value="2" />
@@ -134,10 +124,8 @@
                     <!-- 按钮容器 -->
                     <div class="mt-auto flex justify-center">
                         <var-space :size="[10, 30]">
-                            <var-button v-if="selectedRecord.teamVaild === '1'" type="danger"
-                                @click="showConfirm = true">删除队伍</var-button>
-                            <var-button block color="#5295CD" text-color="white"
-                                @click="updateTeamInfo">保存修改</var-button>
+                            <var-button v-if="selectedRecord.teamVaild === '1'" type="danger" @click="showConfirm = true">删除队伍</var-button>
+                            <var-button block color="#5295CD" text-color="white" @click="updateTeamInfo">保存修改</var-button>
                         </var-space>
                     </div>
                 </div>
@@ -165,8 +153,7 @@
                                 <td class="px-6 py-1 text-center text-base text-gray-500">{{ member.college }}</td>
                                 <td class="px-6 py-1 text-center text-base text-gray-500 flex justify-center">
                                     <img v-if="member.captain == 1" :src="Link" class="w-8 h-8" />
-                                    <var-button v-else class="inline-block" type="success"
-                                        @click="settingCaptain(member)">设为队长</var-button>
+                                    <var-button v-else class="inline-block" type="success" @click="setTeamLeader(member)">设为队长</var-button>
                                 </td>
                             </tr>
                         </tbody>
@@ -174,7 +161,6 @@
                 </div>
             </var-loading>
         </var-popup>
-        <var-snackbar v-model:show="showMessage" :type="messageType">{{ messageContent }}</var-snackbar>
     </div>
 </template>
 
@@ -185,6 +171,7 @@ export default {
     name: 'managerUser',
     data() {
         return {
+            listLoading: false, // 列表加载状态
             teamList: [], // 原始队伍列表
             teamListByValid: [], // 根据 teamValid 分组后的队伍列表
             currentPage: 1, // 当前页码
@@ -192,23 +179,28 @@ export default {
             total: 0, // 总条数
             loading: false,
             activeTab: 0, // 当前显示的 tab 状态
-            // (1 显示正常，0 显示禁用,但是逻辑出现错误，两者互换，此处为了默认情况显示正常队伍，只能出此下策)
+            directions: [], // 作品方向
             showCenterPopup: false, // 操作弹窗
             showConfirm: false,
             showMemberPopup: false, // 查看队伍成员弹窗
             showRecoverConfirm: false, // 控制信息确认弹窗显示
             selectedRecord: {}, // 当前选中的记录
             TeamInfo: {}, // 用于临时存储修改后的队伍信息
-            showMessage: false,
             members: [], // 队伍成员列表
-            Link: captain, // 队长图标
+            Link: captain // 队长图标
         };
     },
     async mounted() {
         await this.getTeam();
         this.toggleTab(1); // 默认显示正常队伍
+        console.log(this.contest);
+        this.directions = this.contest.direction;
     },
-    computed: {},
+    computed: {
+        contest() {
+            return this.$store.contest;
+        },
+    },
     methods: {
         // 切换显示正常和禁用的队伍
         toggleTab(tab) {
@@ -221,14 +213,17 @@ export default {
         },
         // 管理员获取队伍信息
         async getTeam() {
+            this.listLoading = true;
             const res = await this.$api.team.getTeam();
             if (res.success) {
                 this.teamList = res.data; // 提取数组字段
                 this.total = res.data.length; // 更新总记录数
                 this.toggleTab(this.tab); // 默认显示正常队伍
+                this.listLoading = false;
             } else {
                 this.teamList = [];
                 this.total = 0;
+                this.listLoading = false;
             }
         },
         // 管理员获取队伍成员信息
@@ -251,9 +246,10 @@ export default {
             });
             this.loading = false;
             if (res.success) {
-                this.message('success', '队长设置成功');
+                this.getTeamPlayers(); // 刷新队伍成员列表
+                this.$api.notify.success('队长设置成功');
             } else {
-                this.message('error', res.error || '队长设置失败');
+                this.$api.notify.error(res.error || '队长设置失败');
             }
         },
         // 管理员保存队伍信息
@@ -273,12 +269,11 @@ export default {
             const res = await this.$api.team.updateTeamInfo(changes);
             this.loading = false;
             if (res.success) {
-                this.message('success', '已保存');
+                this.$api.notify.success('信息更新成功');
                 this.showCenterPopup = false;
                 this.getTeam(); // 刷新队伍列表
-                this.getTeamPlayers(); // 刷新队伍成员列表
             } else {
-                this.message('error', res.error || '队伍信息更新失败');
+                this.$api.notify.error(res.error || '队伍信息更新失败');
             }
         },
         // 删除队伍操作
@@ -290,12 +285,12 @@ export default {
                 });
                 this.deleteLoading = false;
                 if (res.success) {
-                    this.message('success', '此队伍删除成功');
+                    this.$api.notify.success('删除队伍成功');
                     this.showConfirm = false;
                     this.showCenterPopup = false;
-                    await this.getTeam();
+                    this.getTeam();
                 } else {
-                    this.message('error', res.error || '删除队伍失败');
+                    this.$api.notify.error(res.error || '删除队伍失败');
                 }
             }
             done();
@@ -303,11 +298,6 @@ export default {
         // 日期变正常
         formatDate(date) {
             return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
-        },
-        message(type, content) {
-            this.messageType = type;
-            this.messageContent = content;
-            this.showMessage = true;
         },
         // 查看队伍信息
         viewRecord(record) {
@@ -329,17 +319,6 @@ export default {
             }
             this.currentPage = page;
             this.getTeam();
-        },
-        // 设置队长
-        async settingCaptain(member) {
-            const oldCaptain = this.members.find((item) => item.captain === 1);
-            const success = await this.setTeamLeader(member);
-            if (success) {
-                if (oldCaptain) {
-                    oldCaptain.captain = 0;
-                }
-                member.captain = 1;
-            }
         }
     }
 };
