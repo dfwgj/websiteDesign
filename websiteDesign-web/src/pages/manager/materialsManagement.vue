@@ -1,72 +1,62 @@
 <template>
-    <div class="form-container mx-auto p-4 max-w-5xl">
-        <!-- 标题部分 -->
-        <div class="title-section bg-white rounded-lg p-4 mb-4">
-            <h1 class="text-xl font-bold text-[#5295CD]">信息管理</h1> <!-- 字体大小调整为text-xl -->
-        </div>
+    <div class="relative bg-white rounded-lg ml-10"><!-- 使用 flex 布局将标题和搜索框放在同一行 -->
+        <div class="p-9 flex items-center justify-between"><!-- 标题 -->
+            <h1 class="text-2xl font-bold text-[#5295CD]">资料管理</h1><!-- 搜索框 -->
+            <div class="relative">
+                <input type="text" placeholder="搜索..."
+                    class="rounded-lg px-3 py-2 text w-64 mr-10 border-2 border-solid border-[#5295CD]" /><!-- 搜索按钮 -->
+                <button class="absolute inset-y-0 right-0 pr-3 flex items-center "><!-- 搜索图标 -->
+                </button>
+            </div>
+        </div><!-- 分隔空间 -->
+        <div class="h-10"></div>
+    </div>
 
-        <!-- 表单部分 -->
-        <div
-            class="scrollable-container border-2 border-[#5295CD] rounded-lg p-4 overflow-y-auto max-h-[500px] ml-10 mr-12">
-            <form @submit.prevent="onSubmit" class="ml-5 mr-20">
-                <div v-for="(fields, index) in fieldGroups" :key="index" class="input-row flex gap-4 mb-4">
-                    <div v-for="field in fields" :key="field.key"
-                        class="input-with-label flex items-center gap-2 w-full">
-                        <span class="label text-sm ml-[10px]">{{ field.label }}：</span> <!-- 字体大小调整为text-sm -->
-                        <input v-model="form[field.key]" type="text"
-                            class="input-item flex-1 min-w-0 px-2 py-1 text-sm rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 border-2 border-[#5295CD] mr-[10px]">
-                        <!-- 输入框高度通过py-1调整，字体大小调整为text-sm -->
-                    </div>
-                </div>
-                <button type="submit"
-                    class="w-[150px] bg-white text-sm text-[#5295CD] py-2 rounded-md border-2 border-[#5295CD] ml-[600px]">保存信息</button>
-                <!-- 按钮字体大小调整为text-sm -->
-            </form>
+    <div class="border-[2px] border-[#5295CD] w-[75vw] h-[70vh] ml-[5vw] rounded-lg">
+
+        <table class="w-full text-left border-collapse border border-gray-300 rounded-lg">
+            <thead>
+                <tr class="bg-white text-[#0B0808] border-b border-[#5295CD]">
+                    <th class="px-4 py-2">文件名称</th>
+                    <th class="px-4 py-2">文件来源</th>
+                    <th class="px-4 py-2">文件涉及方面</th>
+                    <th class="px-4 py-2">文件接收时间</th>
+                    <th class="px-4 py-2">是否上传</th>
+                    <th class="px-4 py-2">修改</th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="border-t border-b border-[#5295CD]">
+                    <td class="px-4 py-2">论打工人的悲惨人生</td>
+                    <td class="px-4 py-2">老板</td>
+                    <td class="px-4 py-2">牛马</td>
+                    <td class="px-4 py-2">2025/1/1</td>
+                    <td class="px-4 py-2">
+                        <span
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">上传</span>
+                    </td>
+                    <td class="px-4 py-2">
+                        <button
+                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-500 text-white">修改</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="mt-4 flex justify-center items-center">
+            <div class="space-x-4">
+                <button class="text-gray-500">&lt;</button>
+                <span class="font-medium">1</span>
+                <span>/ 1</span>
+                <button class="text-gray-500">&gt;</button>
+                <span>10条 / 页 -</span>
+                <button class="">添加</button>
+                <!-- 下拉菜单选择每页显示的条目数 -->
+            </div>
         </div>
     </div>
 </template>
-
 <script>
-export default {
-    data() {
-        return {
-            form: {
-
-            },
-            fieldGroups: [
-                [{ label: '前端', key: '' }, { label: '后端', key: '' }],
-                [{ label: '', key: '' }, { label: '', key: '' }],
-                [{ label: '', key: '' }, { label: '', key: '' }],
-                [{ label: '', key: '' }, { label: '', key: '' }],
-                [{ label: '', key: '' }, { label: '', key: '' }],
-                [{ label: '', key: '' }, { label: '', key: '' }],
-                [{ label: '', key: '' }, { label: '', key: '' }],
-                [{ label: '', key: '' }, { label: '', key: '' }],
-                [{ label: '', key: '' }, { label: '', key: '' }],
-                [{ label: '', key: '' }, { label: '', key: '' }],
-                [{ label: '', key: '' }, { label: '', key: '' }],
-                [{ label: '', key: '' }, { label: '', key: '' }],
-                [{ label: '', key: '' }, { label: '', key: '' }]
-            ]
-        };
-    },
-    methods: {
-        onSubmit() {
-            console.log('Form submitted:', this.form);
-        }
-    }
-};
 </script>
-
-<style scoped>
-.label {
-    /* 固定宽度以便于对齐 */
-    width: 150px;
-    /* 根据实际情况调整 */
-    display: inline-block;
-    text-align: right;
-    /* 文字右对齐，使得冒号对齐更美观 */
-    padding-right: 10px;
-    /* 给标签和输入框之间增加一些空间 */
-}
-</style>
+<!-- css样式 -->
+<style scoped></style>
