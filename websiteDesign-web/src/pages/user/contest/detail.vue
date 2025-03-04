@@ -31,7 +31,7 @@
                                     {{ theme.name }}
                                 </div>
                             </div>
-                            <div class="h-[20dvh] w-[100%] border-4 border-[#5D9CD0] rounded-[15px] flex items-center justify-center text-xl 2xl:text-3xl py-[1%] px-4">
+                            <div class="h-[20dvh] w-[100%] border-4 border-[#5D9CD0] rounded-[15px] flex items-center justify-center text-xl 2xl:text-3xl  p-4 overflow-auto">
                                 <!-- 显示对应主题的详细内容 -->
                                 <p>{{ theme.txt }}</p>
                             </div>
@@ -51,14 +51,14 @@
                                 </div>
                             </div>
                             <div class="h-[35dvh] pt-[1%]">
-                                <div class="h-full flex-1 flex justify-center border-4 border-[#5D9CD0] rounded-[15px] text-xl 2xl:text-3xl p-8">
+                                <div class="h-full flex-1 flex justify-center border-4 border-[#5D9CD0] rounded-[15px] text-xl 2xl:text-3xl p-8 overflow-auto">
                                     {{ group.groupRemark }}
                                 </div>
                             </div>
                             <footer class="text-xl 2xl:text-3xl text-gray-500 px-5 py-[1%] 2xl:py-[2%]">注意：每名同学只能选择一个组别参赛</footer>
                         </div>
                         <!-- 奖项设置 -->
-                        <div v-else-if="content === 'awards'" class="flex flex-col h-full space-y-[3%]">
+                        <div v-else-if="content === 'awards'" class="flex flex-col h-full space-y-[3%] overflow-auto">
                             <header class="space-y-4 px-5 pt-[2%] text-2xl 2xl:text-4xl">
                                 <p>在这场创意与技术的盛宴中，我们为获奖者设置了以下奖项：</p>
                                 <p>致敬每一位不懈追求卓越的参赛者！</p>
@@ -149,7 +149,7 @@
                                     {{ theme.name }}
                                 </div>
                             </div>
-                            <div class="w-[95%] h-[30dvh] border-4 border-[#5D9CD0] rounded-[15px] p-2 text-xl mx-auto mt-6">
+                            <div class="w-[95%] h-[30dvh] border-4 border-[#5D9CD0] rounded-[15px] p-2 text-xl mx-auto mt-6 overflow-auto">
                                 <p>{{ theme.txt }}</p>
                             </div>
                             <footer class="text-gray-500 pt-4 px-2">
@@ -275,9 +275,7 @@ export default {
     created() {},
     computed: {
         contest() {
-            if (this.$store.contest.direction.length > 0) {
                 return this.$store.contest;
-            }
         },
         groupedAwards() {
             // 根据奖项名称（例如一等奖、二等奖、三等奖）分组，保证只渲染三次
@@ -302,10 +300,13 @@ export default {
             });
         }
     },
-    mounted() {
+    async mounted() {
         setTimeout(() => {
             this.isMounted = true;
         }, 200);
+        if (this.$store.contest.direction.length === 0) {
+        await this.$store.contest.getContest();
+        }
         this.themes = this.contest.direction;
         this.groups = this.contest.group;
         this.awards = this.contest.awards;

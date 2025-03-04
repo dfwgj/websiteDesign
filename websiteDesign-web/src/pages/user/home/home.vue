@@ -18,7 +18,7 @@
             <div class="page" data-index="1" ref="page1">
                 <div class="h-screen flex flex-col lg:flex-row items-center justify-center opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 1 }">
                     <img ref="poeme" class="ml-[0vw] lg:ml-[10vw] w-[80%] lg:w-[40%] mt-[-15dvh] lg:mt-[-20dvh]" src="@/assets/大赛简介.svg" alt="大赛简介" />
-                    <p ref="introText" class="text-[#5295CD] p-10 mt-[80px] lg:mt-0 text-3xl lg:text-5xl 2xl:text-7xl">
+                    <p ref="introText" class="text-[#5295CD] p-10 mt-[80px] lg:mt-0 text-3xl lg:text-3xl 2xl:text-5xl">
                         <span v-for="(char, index) in contest.introduce" :key="index" class="inline-block">
                             {{ char }}
                         </span>
@@ -30,9 +30,9 @@
                 <div class="h-[90dvh] flex flex-col lg:flex-row justify-center lg:p-[2%] opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 2 }">
                     <img ref="gourp1" src="@/assets/组合 7.svg" class="transition-transform ease-out hidden lg:block w-1/3 ml-[8vw]" alt="分组图标" />
                     <p ref="groupText" class="text-[#5295CD] flex flex-col lg:flex-row items-center justify-center mx-[5vw] sm:mt-10dvh">
-                        <span v-for="(char, index) in contest.group" :key="index" class="flex lg:flex-col items-center bg-[white] bg-opacity-80 justify-center border-[#5295CD] p-[2%] my-[1dvh] border-2 rounded-xl lg:mx-4">
-                            <p class="text-3xl lg:text-4xl 2xl:text-6xl mr-[2vw]">{{ char.groupName }}</p>
-                            <p class="text-lg lg:text-2xl 2xl:text-3xl text-[#2C2828]">{{ char.groupRemark }}</p>
+                        <span v-for="(char, index) in contest.group" :key="index" class="flex lg:flex-col lg:w-[25dvw] lg:h-[45dvh] items-center bg-[white] bg-opacity-80 justify-center border-[#5295CD] p-[2%] my-[1dvh] border-2 rounded-xl lg:mx-4">
+                            <p class=" lg:h-[20%] text-2xl lg:text-4xl 2xl:text-5xl ">{{ char.groupName }}</p>
+                            <p class="lg:h-[80%]  text-lg lg:text-2xl 2xl:text-3xl text-[#2C2828]">{{ char.groupRemark }}</p>
                         </span>
                     </p>
                     <img ref="gourp2" src="@/assets/组合 7.svg" class="mt-[5dvh] lg:hidden transition-transform ease-out w-3/5" alt="分组图标" />
@@ -40,11 +40,11 @@
             </div>
             <!-- 页面 3：赛程及方向 -->
             <div class="page" data-index="3" ref="page3">
-                <div class="h-[90dvh] flex flex-col lg:flex-row items-center justify-center lg:p-[2%] opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 3 }">
-                    <p ref="directionText" class="text-[#2C2828] lg:w-1/2 h-[60dvh] border-[2px] border-[#5295CD] p-[2%] bg-[white] bg-opacity-80 rounded-xl overflow-auto mx-[5vw] lg:mx-[1vw]">
-                        <span v-for="(char, index) in contest.direction" :key="index" class="flex flex-row items-center justify-center">
-                            <p class="text-2xl lg:text-4xl 2xl:text-6xl mr-[2vw] lg:mr-0 text-[#5295CD] w-[40%] my-[5%]">{{ char.name }}</p>
-                            <p class="text-md lg:text-xl 2xl:text-2xl w-[70%] lg:w-[60%] my-[5%]">{{ char.txt }}</p>
+                <div class="h-[90dvh] flex flex-col lg:flex-row items-center justify-center p-[2%] opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 3 }">
+                    <p ref="directionText" class="text-[#2C2828] lg:w-1/2 h-[65dvh] border-[2px] border-[#5295CD] bg-[white] bg-opacity-80 rounded-xl overflow-auto mx-[5vw] lg:mx-[3vw]">
+                        <span v-for="(char, index) in contest.direction" :key="index" class="flex flex-row items-center px-[2%] justify-center">
+                            <p class="text-xl lg:text-4xl 2xl:text-5xl ml-[2vw] lg:mr-0 text-[#5295CD] w-[30%] lg:w-[30%] my-[3%]">{{ char.name }}</p>
+                            <p class="text-md lg:text-2xl 2xl:text-2xl w-[70%] lg:w-[70%] my-[3%]">{{ char.txt }}</p>
                         </span>
                     </p>
                     <img ref="direction" src="@/assets/组合 6.svg" class="transition-transform lg:place-self-center lg:ml-[5vw] order-2 self-end w-2/5 lg:w-1/4 ease-out" alt="方向图标" />
@@ -53,7 +53,7 @@
             <!-- 页面 4：奖品设置（分两组渲染） -->
             <div class="page" data-index="4" ref="page4">
                 <div class="h-[90dvh] lg:h-[100dvh] flex flex-col items-center justify-center p-5 lg:p-8 opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 4 }">
-                    <div class="h-[60%] w-full lg:p-8">
+                    <div class="h-[70%] w-full lg:p-[2%]">
                         <div class="grid grid-cols-2 gap-[5vw] lg:gap-[20vw] lg:p-8">
                             <!-- 遍历经过排序的组（两组） -->
                             <span v-for="group in sortedGroups" :key="group.groupCode" :ref="groupItemRef">
@@ -61,14 +61,14 @@
                                     <p class="text-3xl lg:text-5xl 2xl:text-7xl mb-[1dvh] text-[#5295CD]">{{ group.groupName }}</p>
                                     <div class="flex flex-col lg:flex-row mb-[8dvh] lg:mb-0 items-center">
                                         <!-- 显示该组对应的奖项设置（例如：一等奖、二等奖、三等奖各自的数量） -->
-                                        <span v-for="(award, index) in getAwardsByGroup(group.groupCode)" :key="award.id" class="mb-[2dvh] lg:mb-[10dvh] flex flex-row text-lg lg:text-3xl 2xl:text-4xl text-[#2C2828] items-center">
-                                            {{ award.name }}{{ award.quantity }}名
+                                        <span v-for="(award, index) in getAwardsByGroup(group.groupCode)" :key="award.id" class="mb-[2dvh] lg:mb-[10dvh] flex flex-row text-lg lg:text-2xl 2xl:text-4xl text-[#2C2828] items-center">
+                                            {{ award.name }}{{ award.quantity }}组
                                             <span class="hidden lg:block" v-if="index !== getAwardsByGroup(group.groupCode).length - 1">、</span>
                                         </span>
                                     </div>
                                     <p class="text-3xl lg:text-5xl 2xl:text-7xl mb-[1dvh] text-[#5295CD]">奖品划分</p>
                                     <div class="flex flex-col items-center">
-                                        <span v-for="award in getAwardsByGroup(group.groupCode)" :key="award.id" class="mb-[2dvh] flex flex-row text-md lg:text-3xl 2xl:text-4xl text-[#2C2828] items-center">{{ award.name }}: 价值{{ award.amount }}元的{{ award.prize }}</span>
+                                        <span v-for="award in getAwardsByGroup(group.groupCode)" :key="award.id" class="mb-[2dvh] flex flex-row text-md lg:text-3xl 2xl:text-4xl text-[#2C2828] items-center">{{ award.name }}: {{ award.prize }}</span>
                                     </div>
                                 </div>
                             </span>

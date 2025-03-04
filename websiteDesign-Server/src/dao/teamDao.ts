@@ -151,6 +151,8 @@ export class TeamDao {
             sys_dict_item d ON t.direction = d.item_code AND d.dict_code = 'DIRECTION'
         LEFT JOIN
         user u ON t.id = u.team_id AND u.captain_flag = 1
+        ORDER BY
+            t.id DESC
         `;
     const result = await query(sql, [], false);
     return result;
@@ -171,6 +173,8 @@ export class TeamDao {
         sys_dict_item c ON u.college = c.item_code AND c.dict_code = 'COLLEGE'
         WHERE
             u.team_id = ? 
+        ORDER BY
+            u.team_id DESC
         `;
     const sqlParams = [teamId];
     return await query(sql, sqlParams);

@@ -120,7 +120,7 @@ export class UserDao {
       WHERE
         u.valid_flag = ? AND u.is_admin = 0
       ORDER BY
-        u.user_id
+        u.user_id DESC
       LIMIT
         ?,?
     `;
