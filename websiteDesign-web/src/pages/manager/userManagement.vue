@@ -281,7 +281,7 @@ export default {
         },
         //日期变正常
         formatDate(date) {
-            return dayjs(date).format('YYYY年MM月DD日 HH:mm:ss');
+            return dayjs(date).format('YYYY-MM-DD HH:mm:ss');
         },
         // 查看记录
         viewRecord(record) {
