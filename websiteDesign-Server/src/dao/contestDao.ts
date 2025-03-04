@@ -504,7 +504,7 @@ export class ContestDao {
     const setClause = [];
     const sqlParams = [];
     for (const [key, value] of Object.entries(contestInfoDto.info)) {
-      setClause.push(`${key} = ?`);
+      setClause.push(`${this.camelToSnake(key)} = ?`);
       sqlParams.push(value);
     }
     sqlParams.push(contestInfoDto.id);
@@ -580,7 +580,7 @@ export class ContestDao {
   async updateContestDirection(
     contestDirectionDto: DirectionDTO[]
   ) {
-    const allowedFields = ['txt', 'validFlag']; // 允许修改的字段白名单
+    const allowedFields = ['txt', 'name', 'validFlag']; // 允许修改的字段白名单
     for (const dto of contestDirectionDto) {
       // 过滤有效字段
       const validUpdates = Object.entries(dto).filter(

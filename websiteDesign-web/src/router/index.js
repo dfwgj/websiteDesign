@@ -200,13 +200,11 @@ router.beforeEach((to, from, next) => {
     const requireAuthMeta = currentRecord.meta.requireAuth;
     // 通过状态管理获取用户信息
     const user = userStore();
-
     // 如果不是免认证的页面并且没有 token，则跳转到首页
     if (!freeAuthMeta && !token) {
         notify.error('请先登录！');
         return next({ name: 'header' });
     }
-
     // 如果当前页面需要管理员权限，并且用户的权限不满足要求，则跳转到首页
     if (requireAuthMeta && user.userRole !== '1') {
         notify.error('你没有权限访问该页面！');

@@ -165,16 +165,21 @@ export default {
                 return;
             }
             if (model === 'WYSJ') {
-                this.teamInfo.players[1].name = '';
-                this.teamInfo.players[1].studentId = '';
-                this.teamInfo.players[2].name = '';
-                this.teamInfo.players[2].studentId = '';
+                this.teamInfo.players.splice(1, 2);
             }
+            if (model === 'WZKF') {
+                // 假设 WZKF 是网站开发组对应的代码
+                // 确保玩家数组的长度在 2 到 3 之间
+                this.teamInfo.players = players.slice(0, 3); // 如果超过 3 人，只保留前 3 人
+                // 可选：检查是否有空值，并删除空值
+                this.teamInfo.players = this.teamInfo.players.filter((player) => player.name !== '' || player.studentId !== '');
+            }
+
             this.loading = true;
             const res = await this.$api.team.registerTeam(this.teamInfo);
             this.loading = false;
             if (res.success) {
-                this.getUserInfo();
+                await this.getUserInfo();
                 this.$api.notify.success('报名成功，请等待审核');
             } else {
                 this.$api.notify.error(res.error);

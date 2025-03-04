@@ -18,7 +18,7 @@
                 <var-select v-model="tempForm.college" clearable variant="outlined" size="small" blur-color="#5295CD" focus-color="#5295CD" class="w-[70vw] lg:w-[20vw] bg-white text-black rounded-xl">
                     <var-option label="生物医学工程学院" value="SWYXGCXY" />
                     <var-option label="第二临床医学院" value="DELCYXY" />
-                    <var-option label="药学院" value="YYXY" />
+                    <var-option label="药学院" value="YXY" />
                     <var-option label="公共卫生学院" value="GGSWXY" />
                     <var-option label="护理学院" value="HLXY" />
                     <var-option label="医学技术学院" value="YXJSXY" />

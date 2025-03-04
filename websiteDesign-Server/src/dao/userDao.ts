@@ -1,7 +1,7 @@
 import { Inject, Provide } from '@midwayjs/core';
 import { query, transaction } from '../dbConnPool/mariadb'; // 引入查询函数
 import { UserDTO, UpdateUserDTO, allUserDTO } from '../dto/user';
-import { Caching } from '@midwayjs/cache-manager';
+//import { Caching } from '@midwayjs/cache-manager';
 import { Context } from '@midwayjs/koa';
 import { CachingFactory, MidwayCache } from '@midwayjs/cache-manager';
 import { InjectClient } from '@midwayjs/core';
@@ -9,13 +9,6 @@ import { InjectClient } from '@midwayjs/core';
 export class UserDao {
   @Inject()
   ctx: Context;
-  //通过id查找用户
-  @Caching('redis', ctx => {
-    if (ctx.methodArgs.length > 0) {
-      return `userId:${ctx.methodArgs[0]}`;
-    }
-    return null;
-  })
   async findUserById(userId: UserDTO['userId']) {
     const sql = `
       SELECT

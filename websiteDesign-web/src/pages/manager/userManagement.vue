@@ -86,7 +86,7 @@
                         <var-select label="学院" v-model="updateUser.college" focus-color="#5295CD" placeholder="学院" variant="outlined">
                             <var-option label="生物医学工程学院" value="SWYXGCXY" />
                             <var-option label="第二临床医学院" value="DELCYXY" />
-                            <var-option label="药学院" value="YYXY" />
+                            <var-option label="药学院" value="YXY" />
                             <var-option label="公共卫生学院" value="GGSWXY" />
                             <var-option label="护理学院" value="HLXY" />
                             <var-option label="医学技术学院" value="YXJSXY" />

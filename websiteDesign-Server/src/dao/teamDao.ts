@@ -150,7 +150,7 @@ export class TeamDao {
         LEFT JOIN
             sys_dict_item d ON t.direction = d.item_code AND d.dict_code = 'DIRECTION'
         LEFT JOIN
-        user u ON t.user_id = u.user_id
+        user u ON t.id = u.team_id AND u.captain_flag = 1
         `;
     const result = await query(sql, [], false);
     return result;

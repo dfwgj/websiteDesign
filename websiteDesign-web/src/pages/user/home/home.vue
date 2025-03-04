@@ -41,7 +41,7 @@
             <!-- 页面 3：赛程及方向 -->
             <div class="page" data-index="3" ref="page3">
                 <div class="h-[90dvh] flex flex-col lg:flex-row items-center justify-center lg:p-[2%] opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 3 }">
-                    <p ref="directionText" class="text-[#2C2828] lg:w-1/2 p-[2%] bg-[white] bg-opacity-80 rounded-xl mx-[5vw] lg:mx-[1vw]">
+                    <p ref="directionText" class="text-[#2C2828] lg:w-1/2 h-[60dvh] border-[2px] border-[#5295CD] p-[2%] bg-[white] bg-opacity-80 rounded-xl overflow-auto mx-[5vw] lg:mx-[1vw]">
                         <span v-for="(char, index) in contest.direction" :key="index" class="flex flex-row items-center justify-center">
                             <p class="text-2xl lg:text-4xl 2xl:text-6xl mr-[2vw] lg:mr-0 text-[#5295CD] w-[40%] my-[5%]">{{ char.name }}</p>
                             <p class="text-md lg:text-xl 2xl:text-2xl w-[70%] lg:w-[60%] my-[5%]">{{ char.txt }}</p>
@@ -74,7 +74,7 @@
                             </span>
                         </div>
                     </div>
-                    <img ref="award" src="@/assets/组合 9.svg" class="h-[20%] transition-transform ease-out" alt="奖品图标" />
+                    <img ref="award" src="@/assets/组合 9.svg" class="h-[25%] transition-transform ease-out" alt="奖品图标" />
                 </div>
             </div>
             <!-- 页面 5：主办信息 -->
@@ -203,7 +203,7 @@ export default {
                 ease: 'power1.out',
                 duration: 1.5,
                 stagger: {
-                    each: 0.05,
+                    each: 0.005,
                     from: 'random'
                 }
             });
