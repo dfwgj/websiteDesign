@@ -14,7 +14,6 @@ export class ErrorFilter {
    * @returns 返回错误响应对象
    */
   async catch(err: Error, ctx: Context) {
-    console.error(err);
     let statusCode = 500; // 默认是服务器错误
     let message = 'Internal Server Error'; // 默认错误消息
     // 根据不同的错误类型进行处理
@@ -41,8 +40,8 @@ export class ErrorFilter {
     return {
       code: ctx.status,
       message,
-      //error: err.stack, // 开发模式下使用
-       error: err.message, // 生产模式下使用
+      // error: err.stack, // 开发模式下使用
+      error: err.message, // 生产模式下使用
     };
   }
 }

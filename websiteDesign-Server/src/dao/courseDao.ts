@@ -87,6 +87,8 @@ export class CourseDao {
         user ON course.user_id = user.user_id
     LEFT JOIN
         sys_dict_item t ON course.type = t.item_code AND t.dict_code = 'TYPE'
+        ORDER BY
+        course.id DESC
         `;
     const sqlParams = [];
     return await query(sql, sqlParams);

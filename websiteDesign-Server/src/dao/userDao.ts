@@ -9,6 +9,9 @@ import { InjectClient } from '@midwayjs/core';
 export class UserDao {
   @Inject()
   ctx: Context;
+  //更新用户信息
+  @InjectClient(CachingFactory, 'redis')
+  cache: MidwayCache; //redis缓存
   async findUserById(userId: UserDTO['userId']) {
     const sql = `
       SELECT
@@ -62,10 +65,6 @@ export class UserDao {
     const result = await query(sql, sqlParams, false); // 设置 throwOnEmptyResult 为 false
     return result[0].count;
   }
-
-  //更新用户信息
-  @InjectClient(CachingFactory, 'redis')
-  cache1: MidwayCache; //redis缓存
   async updateUserInfo(
     userId: UserDTO['userId'],
     updateUserDto: UpdateUserDTO
@@ -90,7 +89,8 @@ export class UserDao {
       user_id = ?
   `;
     await query(sql, sqlParams);
-    await this.cache1.del(`userId:${userId}`);
+    if (updateUserDto.validFlag === 0)
+      await this.cache.del(`userId:${userId}`);
     return true;
   }
   //管理员获取所有用户信息
@@ -120,7 +120,7 @@ export class UserDao {
       WHERE
         u.valid_flag = ? AND u.is_admin = 0
       ORDER BY
-        u.user_id
+        u.user_id DESC
       LIMIT
         ?,?
     `;
@@ -137,8 +137,9 @@ export class UserDao {
       const totalCountParams = [type];
       const total = (await query(totalCountSql, totalCountParams, false, conn))[0]
         .totalCount;
-      return {total,list };
-    })}
+      return { total, list };
+    })
+  }
   // 工具函数：驼峰命名转下划线命名
   camelToSnake(str: string): string {
     return str.replace(/([a-z0-9])([A-Z])/g, '$1_$2').toLowerCase();

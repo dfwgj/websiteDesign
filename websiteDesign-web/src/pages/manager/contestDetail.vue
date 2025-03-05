@@ -130,9 +130,9 @@
             </var-loading>
         </div>
         <!-- 修改信息弹窗 -->
-        <var-popup class="rounded-xl w-[20vw] h-[40vh]" v-model:show="showUpdateInfo">
+        <var-popup class="rounded-xl w-[20vw] h-[50vh]" v-model:show="showUpdateInfo">
             <var-loading :description="updatePopupMsg" type="circle" radius="3vw" :loading="updateLoading" color="#5295CD">
-                <div class="flex flex-col items-center justify-center h-[40vh]">
+                <div class="flex flex-col items-center justify-center h-[50vh]">
                     <var-result v-show="updateLoading == false" title="成功" description="修改比赛信息成功">
                         <template #footer>
                             需要启动该比赛使其生效吗？
@@ -437,9 +437,9 @@ export default {
             const awardsDiff = this.getArrayDiff(this.contest.awards, updatedAwards);
             const directionDiff = this.getArrayDiff(this.contest.direction, this.updateContest.direction);
             const dateDiff = this.getArrayDiff(this.contest.date, this.updateContest.date);
-            const groupDiff = this.getArrayDiff(this.contest.group, this.updateContest.group);
+            const groupDiff = this.getDiff(this.contest.group, this.updateContest.group);
             // 如果所有部分都没有修改，则提示错误
-            if (Object.keys(diffData).length === 0 && awardsDiff.length === 0 && directionDiff.length === 0 && dateDiff.length === 0 && groupDiff.length === 0) {
+            if (Object.keys(diffData).length === 0 && awardsDiff.length === 0 && directionDiff.length === 0 && dateDiff.length === 0 && Object.keys(groupDiff).length === 0) {
                 this.$api.notify.error('没有任何修改内容');
                 return;
             }
@@ -468,7 +468,7 @@ export default {
                     let res = await this.updateContestDate(this.contest.id, dateDiff);
                     if (res !== true) throw new Error('比赛流程信息更新失败');
                 }
-                if (groupDiff.length > 0) {
+                if (Object.keys(groupDiff).length > 0) {
                     this.updatePopupMsg = '比赛组别信息修改中...';
                     let res = await this.updateGroupRemark(groupDiff);
                     if (res !== true) throw new Error('比赛组别信息更新失败');

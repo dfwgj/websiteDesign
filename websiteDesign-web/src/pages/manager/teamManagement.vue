@@ -7,7 +7,7 @@
                 <h2 class="text-3xl text-[#5295CD]">队伍管理</h2>
             </div>
             <!-- 历史记录表格 -->
-            <div class="bg-white p-4 rounded-lg shadow-md mx-auto border-[1px] border-[#5295CD]">
+            <div class="bg-white p-1 rounded-lg shadow-md mx-auto border-[1px] border-[#5295CD]">
                 <var-tabs indicator-color="#5295CD" active-color="#5295CD" v-model:active="activeTab">
                     <!-- 点击切换显示正常和禁用的队伍，正常为1，禁用为0 -->
                     <var-tab>正常</var-tab>
@@ -197,6 +197,9 @@ export default {
     },
     async mounted() {
         await this.getTeam();
+        if (this.$store.contest.direction.length === 0) {
+            await this.$store.contest.getContest();
+        }
         this.directions = this.contest.direction;
     },
     computed: {

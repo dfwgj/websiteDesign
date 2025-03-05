@@ -5,17 +5,17 @@
             <div class="grid grid-cols-3 gap-[2vw] my-[2vh]">
                 <var-card class="border-2 border-[#5295CD] p-[5%] bg-white">
                     <h2 class="text-xl font-semibold text-[#0B0808]">今日访问量</h2>
-                    <p class="text-2xl text-[#0B0808]">{{ statisticsData[6]?.pageViews }}</p>
+                    <p class="text-2xl text-[#0B0808]">{{ statisticsData[statisticsData.length - 1]?.pageViews }}</p>
                     <p class="text-[#0B0808]">总数：{{ totals.totalPageViews }}</p>
                 </var-card>
                 <var-card class="border-2 border-[#5295CD] p-[5%] bg-white">
                     <h2 class="text-xl font-semibold text-[#0B0808]">今日新增用户数</h2>
-                    <p class="text-2xl text-[#0B0808]">{{ statisticsData[6]?.newUsers }}</p>
+                    <p class="text-2xl text-[#0B0808]">{{ statisticsData[statisticsData.length - 1]?.newUsers }}</p>
                     <p class="text-[#0B0808]">总数：{{ totals.totalUsers }}</p>
                 </var-card>
                 <var-card class="border-2 border-[#5295CD] p-[5%] bg-white">
                     <h2 class="text-xl font-semibold text-[#0B0808]">今日新增队伍数</h2>
-                    <p class="text-2xl text-[#0B0808]">{{ statisticsData[6]?.newTeams }}</p>
+                    <p class="text-2xl text-[#0B0808]">{{ statisticsData[statisticsData.length - 1]?.newTeams }}</p>
                     <p class="text-[#0B0808]">总数：{{ totals.totalTeams }}</p>
                 </var-card>
             </div>
@@ -55,7 +55,7 @@ export default {
         // 初始化日期
         const today = dayjs(); // 使用 dayjs 获取当前日期
         this.endDate = today.format('YYYY-MM-DD'); // 格式化为 YYYY-MM-DD
-        this.startDate = today.subtract(7, 'day').format('YYYY-MM-DD'); // 获取一周前的日期
+        this.startDate = today.subtract(6, 'day').format('YYYY-MM-DD'); // 获取一周前的日期
         // 首次获取数据
         this.getStatistics();
         // 开启 10 秒轮询

@@ -211,18 +211,29 @@ export class ContestController {
       ContestDirectionDto
     );
   }
-  /**
-   * @name updateGroupRemark 管理员修改组别信息
-   * @description PUT /contest/updateGroupRemark
-   * @param {object} - 更改组别信息
-   * @returns {boolean} - 修改成功的信息
-   */
-  @UseGuard(AuthGuard)
-  @Put('/updateGroupRemark')
-  async updateGroupRemark(
-    @Body() ContestGroupDto: ContestGroupDTO[]
-  ): Promise<boolean> {
-    console.log(ContestGroupDto);
-    return await this.contestService.updateGroupRemark(ContestGroupDto);
+ /**
+ * @name updateGroupRemark 管理员修改组别信息
+ * @description PUT /contest/updateGroupRemark
+ * @param {object} - 更改组别信息
+ * @returns {boolean} - 修改成功的信息
+ */
+@UseGuard(AuthGuard)
+@Put('/updateGroupRemark')
+async updateGroupRemark(
+  @Body() ContestGroupDto: ContestGroupDTO[]
+): Promise<boolean> {
+  // 过滤掉空值或 undefined 的元素
+  const filteredContestGroupDto = ContestGroupDto.filter(
+    (group) => group !== null && group !== undefined
+  );
+  // 进一步检查每个元素是否包含必要的属性（例如 groupCode 和 groupRemark）
+  const isValid = filteredContestGroupDto.every(
+    (group) => group.groupCode && group.groupRemark
+  );
+  if (!isValid) {
+    throw new Error('组别信息不完整');
   }
+  // 调用服务层方法
+  return await this.contestService.updateGroupRemark(filteredContestGroupDto);
+}
 }

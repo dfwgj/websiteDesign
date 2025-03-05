@@ -14,7 +14,13 @@
     <div v-else class="w-full h-5/6 border-2 rounded-xl border-[#5295CD] bg-[#FFFFFF] bg-opacity-70">
         <!-- 队伍名称栏 -->
         <div class="h-1/6 w-full border-b-2 border-[#5295CD] flex justify-center items-center">
-            <div class="w-1/2 h-full text-2xl lg:text-3xl flex items-center justify-center">
+            <img 
+                class="w-1/6 h-[40%] lg:h-[50%]" 
+                src="@/assets/重新生成.svg" 
+                :class="{ 'spin': isAgain }" 
+                @click="getUserInfo" 
+            />
+            <div class="w-2/6 h-full text-2xl lg:text-3xl flex items-center justify-center">
                 {{ team.teamName }}
             </div>
             <div class="w-1/2 h-full lg:text-2xl text-[#5295CD] flex items-center justify-center">
@@ -98,6 +104,7 @@ export default {
             ZunjingImg: ZunjingImg,
             team: [],
             teamImg: teamImg,
+            isAgain: false,
             teamState: null // 当前进程状态
         };
     },
@@ -111,8 +118,37 @@ export default {
         this.team = this.user.team;
     }, // 组件的生命周期钩子，挂载时调用
     updated() {}, // 组件的生命周期钩子，更新时调用
-    methods: {} // 定义组件的方法
+    methods: {
+        async getUserInfo() {
+            this.isAgain = true;
+            const res = await this.$api.user.getUserInfo();
+            if (res.success) {
+                localStorage.setItem('token', res.data);
+                this.$store.user.clearUserInfo();
+                this.$store.user.decodeToken();
+                this.$api.notify.success('更新成功');
+                this.isAgain = false;
+                return this.$store.user;
+            } else {
+                this.isAgain = false;
+                this.$api.notify.error(res.error);
+            }
+        }
+    } // 定义组件的方法
 };
 </script>
 <!-- css样式 -->
-<style scoped></style>
+<style scoped>
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+</style>

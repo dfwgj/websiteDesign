@@ -87,6 +87,8 @@ export class MaterialsDao {
         user ON materials.user_id = user.user_id
     LEFT JOIN
         sys_dict_item t ON materials.type = t.item_code AND t.dict_code = 'TYPE'
+      ORDER BY
+      materials.id DESC
         `;
     const sqlParams = [];
     return await query(sql, sqlParams);

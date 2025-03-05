@@ -6,7 +6,7 @@
             <div class="w-full h-[10dvh] py-4 flex items-center">
                 <p class="flex w-[25%] justify-center text-2xl xl:text-3xl font-black text-[#71A9D7]">{{ contest.name }}</p>
                 <div class="flex-grow"></div>
-                <p v-if="user.userRole == 1" class="flex w-[10%] justify-center text-lg text-[#71A9D7] border-2 border-[#5295CD]" @click="goManager">进入管理员后台</p>
+                <p v-if="user.userRole == 1" class="flex w-[15%] justify-center text-lg text-[#71A9D7] border-2 border-[#5295CD]" @click="goManager">进入管理员后台</p>
                 <p class="flex w-[8%] justify-center text-lg text-[#71A9D7]" @click="goHome">首页</p>
                 <p class="flex w-[8%] justify-center text-lg text-[#71A9D7]" @click="goDetail">大赛详细</p>
                 <p class="flex w-[8%] justify-center text-lg text-[#71A9D7]" @click="goResource">课程资料</p>

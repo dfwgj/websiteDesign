@@ -94,20 +94,4 @@ export class AuthService {
       }
     );
   }
-  // Token 验证方法
-  async tokenVerify(token: string) {
-    const decoded: any = await this.jwtService.verify(
-      token,
-      this.jwtConfig.secret,
-      { complete: true }
-    );
-    return decoded.payload;
-  }
-  //设置管理员
-  async setAdmin(userId: UserDTO['userId']) {
-    return await this.authDao.setAdmin(userId);
-  }
-  //删除用户
-  async delUser(userId: UserDTO['userId']) {
-    return true;
-}}
+}
