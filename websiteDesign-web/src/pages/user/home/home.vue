@@ -1,7 +1,8 @@
 <template>
     <div class="w-full overflow-hidden opacity-0" :class="{ 'title-visible': isMounted }">
         <!-- 固定背景图（非第一页时显示） -->
-        <div class="fixed top-[10dvh] w-full h-[90dvh] opacity-0 transition-opacity duration-100 bg-contain bg-center bg-no-repeat z-0" :class="{ 'opacity-100': currentPage !== 0 }" :style="{ backgroundImage: `url(${bgImage})` }"></div>
+        <div class="fixed top-[10dvh] w-full h-[90dvh] opacity-0 transition-opacity duration-100 bg-contain bg-center bg-no-repeat z-0"
+            :class="{ 'opacity-100': currentPage !== 0 }" :style="{ backgroundImage: `url(${bgImage})` }"></div>
         <!-- 滚动容器，使用 CSS Scroll Snap 实现全屏吸附 -->
         <div class="scroll-container relative z-1">
             <!-- 页面 0：封面 -->
@@ -35,19 +36,36 @@
                             <p class="lg:h-[80%]  text-lg lg:text-2xl 2xl:text-3xl text-[#2C2828]">{{ char.groupRemark }}</p>
                         </span>
                     </p>
-                    <img ref="gourp2" src="@/assets/组合 7.svg" class="mt-[5dvh] lg:hidden transition-transform ease-out w-3/5" alt="分组图标" />
+                    <img ref="gourp2" src="@/assets/组合 7.svg"
+                        class="mt-[5dvh] lg:hidden transition-transform ease-out w-3/5" alt="分组图标" />
                 </div>
             </div>
             <!-- 页面 3：赛程及方向 -->
             <div class="page" data-index="3" ref="page3">
-                <div class="h-[90dvh] flex flex-col lg:flex-row items-center justify-center p-[2%] opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 3 }">
-                    <p ref="directionText" class="text-[#2C2828] lg:w-1/2 h-[65dvh] border-[2px] border-[#5295CD] bg-[white] bg-opacity-80 rounded-xl overflow-auto mx-[5vw] lg:mx-[3vw]">
-                        <span v-for="(char, index) in contest.direction" :key="index" class="flex flex-row items-center px-[2%] justify-center">
-                            <p class="text-xl lg:text-4xl 2xl:text-5xl ml-[2vw] lg:mr-0 text-[#5295CD] w-[30%] lg:w-[30%] my-[3%]">{{ char.name }}</p>
-                            <p class="text-md lg:text-2xl 2xl:text-2xl w-[70%] lg:w-[70%] my-[3%]">{{ char.txt }}</p>
-                        </span>
+                <div class="relative h-[90dvh] flex flex-col lg:flex-row lg:items-center lg:justify-center lg:p-[2%] opacity-0 transition-opacity duration-0"
+                    :class="{ 'opacity-100': currentPage === 3 }">
+                    <p ref="directionText" class="text-[#2C2828] lg:w-1/2 h-[60dvh]">
+                    <div v-for="(char, index) in contest.direction" :key="index"
+                        class="w-[60vw] lg:w-[36vw] h-[25vh] lg:h-[37vh] flex flex-col items-center justify-center opacity-100 transition-opacity duration-1000  border-[#5295CD] shadow-2xl bg-[white] bg-opacity-100 pt-0 p-[6px] lg:p-[4%] 2xl:p-[3%]  border-2 rounded-2xl lg:rounded-3xl"
+                        :style="cardStyle(index)" :data-index="index" @click="handleCardClick(index)">
+                        <div class="w-full flex justify-between">
+                            <div class="w-full lg:mt-[2vh] flex flex-col justify-start">
+                                <img src="@/assets/threecolor.svg" alt="三色图标" class="w-[35%] lg:w-[5vw]" />
+                                <p class="text-xl lg:text-4xl 2xl:text-5xl text-[#5295CD] my-[10px] lg:my-[20px]">
+                                    {{ char.name }}
+                                </p>
+                            </div>
+                            <div class="w-full flex justify-end items-center">
+                                <img src="@/assets/post-stamp.svg" alt="邮票图标" class="w-[32%]" />
+                            </div>
+                        </div>
+                        <p class="text-sm h-[50%] lg:text-lg 2xl:text-2xl w-[90%] lg:w-[88%] lg:my-[5%] overflow-auto">
+                            {{ char.txt }}
+                        </p>
+                    </div>
                     </p>
-                    <img ref="direction" src="@/assets/组合 6.svg" class="transition-transform lg:place-self-center lg:ml-[5vw] order-2 self-end w-2/5 lg:w-1/4 ease-out" alt="方向图标" />
+                    <img ref="direction" src="@/assets/组合 6.svg"
+                        class="transition-transform lg:ml-[8vw] self-end w-2/5 lg:w-1/4 ease-out" alt="方向图标" />
                 </div>
             </div>
             <!-- 页面 4：奖品设置（分两组渲染） -->
@@ -58,7 +76,8 @@
                             <!-- 遍历经过排序的组（两组） -->
                             <span v-for="group in sortedGroups" :key="group.groupCode" :ref="groupItemRef">
                                 <div class="flex flex-col items-center justify-center">
-                                    <p class="text-3xl lg:text-5xl 2xl:text-7xl mb-[1dvh] text-[#5295CD]">{{ group.groupName }}</p>
+                                    <p class="text-3xl lg:text-5xl 2xl:text-7xl mb-[1dvh] text-[#5295CD]">{{
+                                        group.groupName }}</p>
                                     <div class="flex flex-col lg:flex-row mb-[8dvh] lg:mb-0 items-center">
                                         <!-- 显示该组对应的奖项设置（例如：一等奖、二等奖、三等奖各自的数量） -->
                                         <span v-for="(award, index) in getAwardsByGroup(group.groupCode)" :key="award.id" class="mb-[2dvh] lg:mb-[10dvh] flex flex-row text-lg lg:text-2xl 2xl:text-4xl text-[#2C2828] items-center">
@@ -79,17 +98,22 @@
             </div>
             <!-- 页面 5：主办信息 -->
             <div class="page" data-index="5" ref="page5">
-                <div class="h-[100dvh] flex flex-col items-center justify-center p-8 opacity-0 transition-opacity duration-1000" :class="{ 'opacity-100': currentPage === 5 }">
+                <div class="h-[100dvh] flex flex-col items-center justify-center p-8 opacity-0 transition-opacity duration-1000"
+                    :class="{ 'opacity-100': currentPage === 5 }">
                     <div class="h-[70dvh] lg:grid lg:grid-cols-2 gap-[5vw] lg:gap-[30vw]">
                         <!-- 左边区域 -->
                         <div class="flex flex-col items-center justify-center">
-                            <img class="w-[50vw] lg:w-[25vw] border-2 rounded-xl shadow-xl max-w-full" :src="contest.qrLink" alt="咨询群二维码" />
-                            <p class="text-[#2C2828] mt-[2dvh] mb-[2dvh] text-center text-lg lg:text-xl 2xl:text-2xl">更多赛事相关问题，可加入官方咨询群进行答疑</p>
+                            <img class="w-[50vw] lg:w-[25vw] border-2 rounded-xl shadow-xl max-w-full"
+                                :src="contest.qrLink" alt="咨询群二维码" />
+                            <p class="text-[#2C2828] mt-[2dvh] mb-[2dvh] text-center text-lg lg:text-xl 2xl:text-2xl">
+                                更多赛事相关问题，可加入官方咨询群进行答疑</p>
                         </div>
                         <!-- 右边区域 -->
                         <div class="flex flex-col items-center justify-center">
-                            <img class="w-[50vw] lg:w-[25vw] border-2 rounded-xl shadow-xl max-w-full" :src="contest.userLink" alt="比赛负责人二维码" />
-                            <p class="text-[#2C2828] mt-[2dvh] mb-[2dvh] text-center text-lg lg:text-xl 2xl:text-2xl">比赛负责人联系方式</p>
+                            <img class="w-[50vw] lg:w-[25vw] border-2 rounded-xl shadow-xl max-w-full"
+                                :src="contest.userLink" alt="比赛负责人二维码" />
+                            <p class="text-[#2C2828] mt-[2dvh] mb-[2dvh] text-center text-lg lg:text-xl 2xl:text-2xl">
+                                比赛负责人联系方式</p>
                         </div>
                     </div>
                     <div>
@@ -112,6 +136,10 @@ export default {
             bgImage,
             groupRefs: [],
             isMounted: false,
+            windowWidth: window.innerWidth,
+            isShow: false,
+            isChange: false,
+            isPhone: window.innerWidth <= 1024 ? 1 : 0,
             currentPage: 0
         };
     },
@@ -123,14 +151,23 @@ export default {
         sortedGroups() {
             return this.contest.group
                 ? this.contest.group.slice().sort((a, b) => {
-                      if (a.groupCode === 'WZKF') return -1;
-                      if (b.groupCode === 'WZKF') return 1;
-                      return 0;
-                  })
+                    if (a.groupCode === 'WZKF') return -1;
+                    if (b.groupCode === 'WZKF') return 1;
+                    return 0;
+                })
                 : [];
         }
     },
+    watch: {
+        // 监听 windowWidth 变化，动态更新 isPhone
+        windowWidth(newWidth, oldWidth) {
+            if (newWidth !== oldWidth) {
+                this.isPhone = newWidth <= 1024 ? 1 : 0;
+            }
+        }
+    },
     mounted() {
+        window.addEventListener('resize', this.handleResize); // 
         // 使用 IntersectionObserver 监听各页面的进入状态
         setTimeout(() => {
             this.isMounted = true;
@@ -154,7 +191,69 @@ export default {
             observer.observe(page);
         });
     },
+    beforeDestroy() {
+        window.removeEventListener('resize', this.handleResize);
+    },
     methods: {
+        handleResize() {
+            this.windowWidth = window.innerWidth;
+        },
+        cardStyle(index) { //切换手机端和电脑端的卡片样式
+            if (!this.isShow && !this.isChange) {
+                return {
+                    transform: 'translateX(0) translateY(0px) rotate(0deg)', // 未展开页面时，卡片的初始位置
+                    position: 'absolute',
+                    opacity: 0
+                };
+            } else if (!this.isPhone &&!this.isChange) {
+                return {
+                    transition: 'transform 1s ease',
+                    transform: `rotate(${-10 + index * 10}deg) translateY(${30 + index * -15}vh) translateX(${-10 + index * 13}vh)`, // 旋转、位移
+                    position: 'absolute', // （子元素）绝对定位
+                    zIndex: this.contest.direction.length - index, // 调整卡片层级
+                    opacity: 100 // 透明度
+                };
+            } else if (this.isPhone && !this.isChange) {
+                return {
+                    transition: 'transform 1s ease',
+                    transform: `rotate(${-10 + index * 10}deg) translateY(${40 + index * -12}vh) translateX(${-5 + index * 8}vh)`, // 旋转、位移
+                    position: 'absolute', // （子元素）绝对定位
+                    zIndex: this.contest.direction.length - index, // 调整卡片层级
+                    opacity: 100 // 透明度
+                };
+            }else if (this.isPhone && this.isChange) {
+                return {
+                    transition: 'transform 0.4s ease, opacity 0.4s ease',
+                    transform: 'translateX(40px) translateY(220px) rotate(0deg)', 
+                    position: 'absolute', // （子元素）绝对定位
+                    zIndex: this.contest.direction.length - index, // 调整卡片层级
+                    opacity: 0 // 透明度
+                };
+            } else {
+                return {
+                    transition: 'transform 0.4s ease ,opacity 0.4s ease',
+                    transform: 'translateX(0) translateY(100px) rotate(0deg)', 
+                    position: 'absolute', // （子元素）绝对定位
+                    zIndex: this.contest.direction.length - index, // 调整卡片层级
+                    opacity: 0 // 透明度
+                };
+            }
+        },
+        handleCardClick(index) {
+            if (index === 0) {
+                this.isChange = true;
+                setTimeout(() => {
+                    this.rotateCards(); // 1秒后执行卡片轮换
+                    this.isChange = false; // 重新显示卡片
+                }, 400);
+            }
+        },
+        rotateCards() {
+            if (this.contest.direction?.length) {
+                const firstCard = this.contest.direction.shift();
+                this.contest.direction.push(firstCard);
+            }
+        },
         groupItemRef(el) {
             if (el) {
                 this.groupRefs.push(el);
@@ -173,15 +272,21 @@ export default {
                 case 1:
                     this.playIntroAnimation();
                     this.playTextAnimation();
+                    this.isShow = false;
                     break;
                 case 2:
+                    this.isShow = false;
                     this.playSecondPageAnimation();
                     break;
                 case 3:
                     this.playThirdPageAnimation();
+                    setTimeout(() => {
+                        this.isShow = true;
+                    }, 200);
                     break;
                 case 4:
                     this.playFourthPageAnimation();
+                    this.isShow = false;
                     break;
                 default:
                     break;
@@ -303,6 +408,7 @@ export default {
     height: 100dvh;
     scroll-snap-align: start;
 }
+
 .title-visible {
     opacity: 1;
     transition: opacity 0.4s ease-in;
