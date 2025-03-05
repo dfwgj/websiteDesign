@@ -5,12 +5,14 @@ import { LoginDTO, UserDTO } from '../dto/user';
 import { UserDao } from './userDao';
 import { uuidv7 } from 'uuidv7';
 import { CachingFactory, MidwayCache } from '@midwayjs/cache-manager';
-//import { Caching} from "@midwayjs/cache-manager";
+
 
 @Provide()
 export class AuthDao {
   @Inject()
   userDao: UserDao;
+  @InjectClient(CachingFactory, 'redis')
+  cache: MidwayCache; //redis缓存
   // 新注册用户
   async register(
     name: UserDTO['name'],
@@ -73,27 +75,8 @@ export class AuthDao {
         u.student_id = ?AND u.valid_flag = 1
 `;
     const sqlParams = [studentId];
-    return (await query(sql, sqlParams))[0];
-  }
-  //设置管理员
-  @InjectClient(CachingFactory, 'redis')
-  cache: MidwayCache; //redis缓存
-  async setAdmin(userId: UserDTO['userId']) {
-    // 更新数据库中的用户角色为管理员
-    const sql = `
-      UPDATE
-        user
-      SET
-        is_admin = 1
-      WHERE
-        student_id = ?
-    `;
-    const sqlParams = [userId];
-    const result = await query(sql, sqlParams);
-    // 如果更新成功，更新 Redis 缓存
-    if (result.affectedRows > 0) {
-      await this.cache.del(`findUserId:${userId}`);
-      return await this.userDao.findUserById(userId);
-    }
+    const user = (await query(sql, sqlParams))[0];
+    await this.cache.set(`userId:${user.userId}`, true, 86400000); // 设置缓存
+    return user;
   }
 }
