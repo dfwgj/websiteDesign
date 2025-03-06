@@ -7,7 +7,6 @@ export class FormatMiddleware implements IMiddleware<Context, NextFunction> {
   // 解析方法，返回一个中间件函数
   resolve() {
     return async (ctx: Context, next: NextFunction) => {
-      console.error("999999");
       const result = await next();
         return {
           code: 0,

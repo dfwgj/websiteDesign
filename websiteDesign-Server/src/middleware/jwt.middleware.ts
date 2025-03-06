@@ -56,6 +56,8 @@ export class JwtMiddleware {
           }
           if (error.name === 'TokenExpiredError') {
             throw new httpError.UnauthorizedError('Token 已过期');
+          } else {
+            throw error;
           }
         }
       } else {
