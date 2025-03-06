@@ -142,7 +142,7 @@
                     <div :key="content + '-mobile'">
                         <div v-if="content === 'theme'" class="w-full h-full">
                             <div class="text-2xl text-center">本届大赛主题为：</div>
-                            <div class="text-[#5D9CD0] text-2xl pt-3 text-center">为我设计，为我所用</div>
+                            <div class="text-[#5D9CD0] text-2xl pt-3 text-center">{{ contest?.topic }}</div>
                             <div class="text-xl pt-3 px-2">选手可以选择以下四个方向进行创作：</div>
                             <div class="flex flex-wrap justify-center gap-4 pt-4">
                                 <div v-for="theme in contest.direction" :key="theme.id" @click="changeTheme(theme)" :class="{ 'bg-[#E8F3FF]': currentTheme === theme.name }" class="w-[30vw] flex items-center justify-center border-4 border-[#5D9CD0] rounded-[1.25rem] text-xl p-1 text-[#5D9CD0]">
