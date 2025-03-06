@@ -3,11 +3,11 @@
         <!-- 右侧内容区域 -->
         <div class="flex-1 p-4">
             <!-- 标题 -->
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl text-[#5295CD]">用户管理</h2>
             </div>
             <!-- 历史记录表格 -->
-            <div class="bg-white p-1 rounded-lg shadow-md mx-auto border-[1px] border-[#5295CD]">
+            <div class="bg-white p-4 rounded-lg shadow-md mx-auto border-[1px] border-[#5295CD]">
                 <var-tabs indicator-color="#5295CD" active-color="#5295CD" v-model:active="activeTab">
                     <var-tab>正常</var-tab>
                     <var-tab>封禁</var-tab>
