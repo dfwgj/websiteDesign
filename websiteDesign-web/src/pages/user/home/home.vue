@@ -17,8 +17,10 @@
             </div>
             <!-- 页面 1：大赛简介 -->
             <div class="page" data-index="1" ref="page1">
-                <div class="h-screen flex flex-col lg:flex-row items-center justify-center opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 1 }">
-                    <img ref="poeme" class="ml-[0vw] lg:ml-[10vw] w-[80%] lg:w-[40%] mt-[-15dvh] lg:mt-[-20dvh]" src="@/assets/大赛简介.svg" alt="大赛简介" />
+                <div class="h-screen flex flex-col lg:flex-row items-center justify-center opacity-0 transition-opacity duration-0"
+                    :class="{ 'opacity-100': currentPage === 1 }">
+                    <img ref="poeme" class="ml-[0vw] lg:ml-[10vw] w-[80%] lg:w-[40%] mt-[-15dvh] lg:mt-[-20dvh]"
+                        src="@/assets/大赛简介.svg" alt="大赛简介" />
                     <p ref="introText" class="text-[#5295CD] p-10 mt-[80px] lg:mt-0 text-3xl lg:text-3xl 2xl:text-5xl">
                         <span v-for="(char, index) in contest.introduce" :key="index" class="inline-block">
                             {{ char }}
@@ -28,12 +30,17 @@
             </div>
             <!-- 页面 2：分组展示 -->
             <div class="page" data-index="2" ref="page2">
-                <div class="h-[90dvh] flex flex-col lg:flex-row justify-center lg:p-[2%] opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 2 }">
-                    <img ref="gourp1" src="@/assets/组合 7.svg" class="transition-transform ease-out hidden lg:block w-1/3 ml-[8vw]" alt="分组图标" />
-                    <p ref="groupText" class="text-[#5295CD] flex flex-col lg:flex-row items-center justify-center mx-[5vw] sm:mt-10dvh">
-                        <span v-for="(char, index) in contest.group" :key="index" class="flex lg:flex-col lg:w-[25dvw] lg:h-[45dvh] items-center bg-[white] bg-opacity-80 justify-center border-[#5295CD] p-[2%] my-[1dvh] border-2 rounded-xl lg:mx-4">
+                <div class="h-[90dvh] flex flex-col lg:flex-row justify-center lg:p-[2%] opacity-0 transition-opacity duration-0"
+                    :class="{ 'opacity-100': currentPage === 2 }">
+                    <img ref="gourp1" src="@/assets/组合 7.svg"
+                        class="transition-transform ease-out hidden lg:block w-1/3 ml-[8vw]" alt="分组图标" />
+                    <p ref="groupText"
+                        class="text-[#5295CD] flex flex-col lg:flex-row items-center justify-center mx-[5vw] sm:mt-10dvh">
+                        <span v-for="(char, index) in contest.group" :key="index"
+                            class="flex lg:flex-col lg:w-[25dvw] lg:h-[45dvh] items-center bg-[white] bg-opacity-80 justify-center border-[#5295CD] p-[2%] my-[1dvh] border-2 rounded-xl lg:mx-4">
                             <p class=" lg:h-[20%] text-2xl lg:text-4xl 2xl:text-5xl ">{{ char.groupName }}</p>
-                            <p class="lg:h-[80%]  text-lg lg:text-2xl 2xl:text-3xl text-[#2C2828]">{{ char.groupRemark }}</p>
+                            <p class="lg:h-[80%]  text-lg lg:text-2xl 2xl:text-3xl text-[#2C2828]">{{ char.groupRemark
+                                }}</p>
                         </span>
                     </p>
                     <img ref="gourp2" src="@/assets/组合 7.svg"
@@ -70,7 +77,8 @@
             </div>
             <!-- 页面 4：奖品设置（分两组渲染） -->
             <div class="page" data-index="4" ref="page4">
-                <div class="h-[90dvh] lg:h-[100dvh] flex flex-col items-center justify-center p-5 lg:p-8 opacity-0 transition-opacity duration-0" :class="{ 'opacity-100': currentPage === 4 }">
+                <div class="h-[90dvh] lg:h-[100dvh] flex flex-col items-center justify-center p-5 lg:p-8 opacity-0 transition-opacity duration-0"
+                    :class="{ 'opacity-100': currentPage === 4 }">
                     <div class="h-[70%] w-full lg:p-[2%]">
                         <div class="grid grid-cols-2 gap-[5vw] lg:gap-[20vw] lg:p-8">
                             <!-- 遍历经过排序的组（两组） -->
@@ -80,14 +88,19 @@
                                         group.groupName }}</p>
                                     <div class="flex flex-col lg:flex-row mb-[8dvh] lg:mb-0 items-center">
                                         <!-- 显示该组对应的奖项设置（例如：一等奖、二等奖、三等奖各自的数量） -->
-                                        <span v-for="(award, index) in getAwardsByGroup(group.groupCode)" :key="award.id" class="mb-[2dvh] lg:mb-[10dvh] flex flex-row text-lg lg:text-2xl 2xl:text-4xl text-[#2C2828] items-center">
+                                        <span v-for="(award, index) in getAwardsByGroup(group.groupCode)"
+                                            :key="award.id"
+                                            class="mb-[2dvh] lg:mb-[10dvh] flex flex-row text-lg lg:text-2xl 2xl:text-4xl text-[#2C2828] items-center">
                                             {{ award.name }}{{ award.quantity }}组
-                                            <span class="hidden lg:block" v-if="index !== getAwardsByGroup(group.groupCode).length - 1">、</span>
+                                            <span class="hidden lg:block"
+                                                v-if="index !== getAwardsByGroup(group.groupCode).length - 1">、</span>
                                         </span>
                                     </div>
                                     <p class="text-3xl lg:text-5xl 2xl:text-7xl mb-[1dvh] text-[#5295CD]">奖品划分</p>
                                     <div class="flex flex-col items-center">
-                                        <span v-for="award in getAwardsByGroup(group.groupCode)" :key="award.id" class="mb-[2dvh] flex flex-row text-md lg:text-3xl 2xl:text-4xl text-[#2C2828] items-center">{{ award.name }}: {{ award.prize }}</span>
+                                        <span v-for="award in getAwardsByGroup(group.groupCode)" :key="award.id"
+                                            class="mb-[2dvh] flex flex-row text-md lg:text-3xl 2xl:text-4xl text-[#2C2828] items-center">{{
+                                                award.name }}: {{ award.prize }}</span>
                                     </div>
                                 </div>
                             </span>
@@ -140,7 +153,8 @@ export default {
             isShow: false,
             isChange: false,
             isPhone: window.innerWidth <= 1024 ? 1 : 0,
-            currentPage: 0
+            currentPage: 0,
+            lastClick: 0 // 记录上次点击时间戳
         };
     },
     computed: {
@@ -205,7 +219,7 @@ export default {
                     position: 'absolute',
                     opacity: 0
                 };
-            } else if (!this.isPhone &&!this.isChange) {
+            } else if (!this.isPhone && !this.isChange) {
                 return {
                     transition: 'transform 1s ease',
                     transform: `rotate(${-10 + index * 10}deg) translateY(${30 + index * -15}vh) translateX(${-10 + index * 13}vh)`, // 旋转、位移
@@ -221,10 +235,10 @@ export default {
                     zIndex: this.contest.direction.length - index, // 调整卡片层级
                     opacity: 100 // 透明度
                 };
-            }else if (this.isPhone && this.isChange) {
+            } else if (this.isPhone && this.isChange) {
                 return {
                     transition: 'transform 0.4s ease, opacity 0.4s ease',
-                    transform: 'translateX(40px) translateY(220px) rotate(0deg)', 
+                    transform: 'translateX(40px) translateY(220px) rotate(0deg)',
                     position: 'absolute', // （子元素）绝对定位
                     zIndex: this.contest.direction.length - index, // 调整卡片层级
                     opacity: 0 // 透明度
@@ -232,7 +246,7 @@ export default {
             } else {
                 return {
                     transition: 'transform 0.4s ease ,opacity 0.4s ease',
-                    transform: 'translateX(0) translateY(100px) rotate(0deg)', 
+                    transform: 'translateX(0) translateY(100px) rotate(0deg)',
                     position: 'absolute', // （子元素）绝对定位
                     zIndex: this.contest.direction.length - index, // 调整卡片层级
                     opacity: 0 // 透明度
@@ -240,10 +254,25 @@ export default {
             }
         },
         handleCardClick(index) {
+            // 如果距离上次点击不足 1 秒，则阻止执行
+            if (Date.now() - this.lastClick < 1000) return
+            this.lastClick = Date.now() // 更新最后点击时间
+            
             if (index === 0) {
                 this.isChange = true;
                 setTimeout(() => {
                     this.rotateCards(); // 1秒后执行卡片轮换
+                    this.isChange = false; // 重新显示卡片
+                }, 400);
+            } else if (index > 0 && this.contest.direction?.length) {
+                this.isChange = true;
+                // 交换被点击卡片与最顶上的卡片
+                const topCard = this.contest.direction[0]; // 获取最顶上的卡片
+                const clickedCard = this.contest.direction[index]; // 获取被点击的卡片
+                // 交换位置
+                this.contest.direction[0] = clickedCard;
+                this.contest.direction[index] = topCard;
+                setTimeout(() => {
                     this.isChange = false; // 重新显示卡片
                 }, 400);
             }
