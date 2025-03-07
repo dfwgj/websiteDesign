@@ -66,7 +66,7 @@
                                 <img src="@/assets/post-stamp.svg" alt="邮票图标" class="w-[32%]" />
                             </div>
                         </div>
-                        <p class="text-sm h-[50%] lg:text-lg 2xl:text-2xl w-[90%] lg:w-[88%] lg:my-[5%] overflow-auto">
+                        <p class="text-sm h-[50%] lg:text-lg 2xl:text-2xl w-[90%] lg:w-[88%] lg:my-[1%] overflow-auto">
                             {{ char.txt }}
                         </p>
                     </div>
@@ -113,25 +113,27 @@
             <div class="page" data-index="5" ref="page5">
                 <div class="h-[100dvh] flex flex-col items-center justify-center p-8 opacity-0 transition-opacity duration-1000"
                     :class="{ 'opacity-100': currentPage === 5 }">
-                    <div class="h-[70dvh] lg:grid lg:grid-cols-2 gap-[5vw] lg:gap-[30vw]">
+                    <div class="h-[80dvh] lg:grid lg:grid-cols-2 gap-[5vw] lg:gap-[30vw]">
                         <!-- 左边区域 -->
                         <div class="flex flex-col items-center justify-center">
-                            <img class="w-[50vw] lg:w-[25vw] border-2 rounded-xl shadow-xl max-w-full"
+                            <img class="w-[50dvw] lg:w-[25dvw] border-2 rounded-xl shadow-xl max-w-full"
                                 :src="contest.qrLink" alt="咨询群二维码" />
                             <p class="text-[#2C2828] mt-[2dvh] mb-[2dvh] text-center text-lg lg:text-xl 2xl:text-2xl">
                                 更多赛事相关问题，可加入官方咨询群进行答疑</p>
                         </div>
                         <!-- 右边区域 -->
                         <div class="flex flex-col items-center justify-center">
-                            <img class="w-[50vw] lg:w-[25vw] border-2 rounded-xl shadow-xl max-w-full"
+                            <img class="w-[50dvw] lg:w-[25dvw] border-2 rounded-xl shadow-xl max-w-full"
                                 :src="contest.userLink" alt="比赛负责人二维码" />
                             <p class="text-[#2C2828] mt-[2dvh] mb-[2dvh] text-center text-lg lg:text-xl 2xl:text-2xl">
                                 比赛负责人联系方式</p>
                         </div>
                     </div>
                     <div>
-                        <p class="text-[#2C2828] text-lg lg:text-xl 2xl:text-2xl">主办单位：{{ contest.organizers }}</p>
-                        <p class="text-[#2C2828] text-lg lg:text-xl 2xl:text-2xl">承办单位：{{ contest.contractors }}</p>
+                        <div class="h-[18dvh]">
+                            <p class="text-[#2C2828] text-lg lg:text-xl 2xl:text-2xl">主办单位：{{ contest.organizers }}</p>
+                            <p class="text-[#2C2828] text-lg lg:text-xl 2xl:text-2xl">承办单位：{{ contest.contractors }}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -373,13 +375,9 @@ export default {
                 opacity: 0,
                 ease: 'power1.out',
                 duration: 1.5,
-                stagger: {
-                    each: 0.05,
-                    from: 'random'
-                }
             });
             gsap.from(this.$refs.direction, {
-                x: -300,
+                x: -200,
                 opacity: 0,
                 duration: 1.5,
                 ease: 'power2.out'
