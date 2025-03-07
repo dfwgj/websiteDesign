@@ -31,8 +31,8 @@ export default {
       redis: {
         store: createRedisStore('redis'), // 使用 createRedisStore 方法创建 Redis 存储
         options: {
-          ttl: 43200000, // 设置缓存的过期时间为 12 小时
-          refreshThreshold: 21600000, // 设置刷新阈值为 6 小时
+          ttl: 86400000, // 设置缓存的过期时间为 24 小时
+          refreshThreshold: 43200000, // 设置刷新阈值为 12 小时
         },
       },
     },
@@ -44,6 +44,7 @@ export default {
         port: 6379,
         password: '',
         db: 0,
+        keepAlive: 10000,
       },
     },
   },
@@ -77,7 +78,7 @@ export default {
   },
   jwtConfig: {
     secret: '',// JWT 密钥,自定义
-    expiresIn: '12h',
+    expiresIn: '24h',
   },
   cors: {
     origin: '*',
