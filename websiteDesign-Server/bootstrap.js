@@ -30,7 +30,7 @@ process.on('SIGTERM', () => {
 // 启动 Midway 应用
 const { Bootstrap } = require('@midwayjs/bootstrap');
 Bootstrap.configure(/**/).run();
-//   resource: 包含服务的资源信息，例如服务名称、使用的SDK、进程信息等。
+// resource: 包含服务的资源信息，例如服务名称、使用的SDK、进程信息等。
 // service.name: 服务名称，这里显示为 unknown_service。
 // telemetry.sdk.language: SDK 的编程语言，这里是 nodejs。
 // telemetry.sdk.name: SDK 的名称，这里是 opentelemetry。

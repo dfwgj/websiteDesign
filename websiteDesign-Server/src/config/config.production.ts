@@ -9,7 +9,7 @@ export default {
   keys: '1',
   koa: {
     port: 7001, // 设置 Koa 服务器的端口
-    hostname: '127.0.0.1', // 设置 Koa 服务器的主机名
+    hostname: '0.0.0.0', // 设置 Koa 服务器的主机名
     globalPrefix: 'api', // 设置全局路由前缀，默认为 api
   },
   // 数据库配置，改成 databaseConfig

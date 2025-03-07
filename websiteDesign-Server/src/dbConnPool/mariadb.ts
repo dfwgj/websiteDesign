@@ -1,7 +1,7 @@
 import { Pool, PoolConnection } from 'mariadb';
 import { Config } from '../dto/config'; // 引入类型
 import { httpError } from '@midwayjs/core';
-import dbConfig from '../config/config.default'; // 引入数据库配置
+import dbConfig from '../config/config.production'; // 引入数据库配置
 const mariadb = require('mariadb');
 const config = dbConfig as Config; // dbConfig 已经是正确的类型
 
