@@ -30,7 +30,7 @@
             </div>
         </div>
         <!-- 队伍成员栏 -->
-        <div class="w-full h-[70px] flex items-center text-lg lg:text-xl ml-4 lg:ml-8">队伍成员：</div>
+        <div class="w-[90%] h-[70px] flex items-center text-lg lg:text-xl ml-4 lg:ml-8">队伍成员：</div>
         <div v-for="(player, index) in team.players" :key="index" class="w-full flex justify-center items-center mb-2">
             <div class="w-full h-[6dvh] lg:h-[8dvh] flex justify-center items-center border-2 border-[#5295CD] rounded-[30px] mx-1 lg:mx-8">
                 <div class="w-1/12 h-full flex justify-center items-center">
@@ -52,7 +52,7 @@
             <div v-if="team.model == '网页设计组'" class="w-full h-[12dvh] lg:h-[16dvh] mt-4 transition-all duration-300"></div>
         </div>
         <!-- 队伍流程栏 -->
-        <div class="w-full h-[5dvh] mt-[2dvh] flex items-center text-lg lg:text-xl ml-4 lg:ml-8">队伍流程：</div>
+        <div class="w-[90%] h-[5dvh] mt-[2dvh] flex items-center text-lg lg:text-xl ml-4 lg:ml-8">队伍流程：</div>
         <div class="h-[18dvh] mt-[2dvh] lg:h-[8dvh] flex justify-center items-center">
             <div class="w-[90%] h-full flex justify-center items-center relative">
                 <div class="w-[18vw] lg:w-full h-full border-2 border-[#5295CD] rounded-full lg:rounded-[40px] flex items-center justify-center" :class="{ 'bg-[#E8F3FF]': team.teamState == '0' }">

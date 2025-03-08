@@ -9,7 +9,7 @@ export default {
   keys: '1',
   koa: {
     port: 7001, // 设置 Koa 服务器的端口
-    hostname: '127.0.0.1', // 设置 Koa 服务器的主机名
+    hostname: '0.0.0.0', // 设置 Koa 服务器的主机名
     globalPrefix: 'api', // 设置全局路由前缀，默认为 api
   },
   // 数据库配置，改成 databaseConfig
@@ -26,8 +26,8 @@ export default {
       redis: {
         store: createRedisStore('redis'), // 使用 createRedisStore 方法创建 Redis 存储
         options: {
-          ttl: 43200000, // 设置缓存的过期时间为 12 小时
-          refreshThreshold: 21600000, // 设置刷新阈值为 6 小时
+          ttl: 86400000, // 设置缓存的过期时间为 24 小时
+          refreshThreshold: 43200000, // 设置刷新阈值为 12 小时
         },
       },
     },
@@ -39,6 +39,7 @@ export default {
         port: 6379,
         password: '',
         db: 0,
+        keepAlive: 10000,
       },
     },
   },
@@ -72,7 +73,7 @@ export default {
   },
   jwtConfig: {
     secret: '',// JWT 密钥,自定义
-    expiresIn: '12h',
+    expiresIn: '24h',
   },
   cors: {
     origin: '*',

@@ -14,7 +14,7 @@
     <div v-if="!user.team.teamName" class="w-full h-5/6 border-2 rounded-xl border-[#5295CD] bg-[#FFFFFF] bg-opacity-70 overflow-auto">
         <!-- 选择赛道 -->
         <var-loading description="LOADING" color="#5295CD" :loading="loading">
-            <div class="w-full h-[5dvh] lg:h-[8dvh] flex items-end text-xl lg:text-xl ml-6 lg:mx-16 lg:p-4">请先选择赛道：</div>
+            <div class="w-[80%] h-[5dvh] lg:h-[8dvh] flex items-end text-xl lg:text-xl ml-6 lg:mx-16 lg:p-4">请先选择赛道：</div>
             <div class="w-full h-[8dvh] grid grid-cols-2">
                 <div v-for="group in groups" class="w-full h-full flex justify-center items-center">
                     <div class="w-[80%] lg:w-[40%] h-4/5 flex justify-center items-center text-xl lg:text-2xl text-[#5295CD] border-2 border-[#5295CD] rounded-2xl" :class="{ 'bg-[#E8F3FF]': type === group.groupCode }" @click="changeGroup(group.groupCode)">{{ group.groupName }}</div>
