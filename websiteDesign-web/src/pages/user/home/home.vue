@@ -131,8 +131,8 @@
                     </div>
                     <div>
                         <div class="h-[18dvh]">
-                            <p class="text-[#2C2828] text-lg lg:text-xl 2xl:text-2xl">主办单位：{{ contest.organizers }}</p>
-                            <p class="text-[#2C2828] text-lg lg:text-xl 2xl:text-2xl">承办单位：{{ contest.contractors }}</p>
+                            <p class="text-[#2C2828] text-lg text-center lg:text-xl 2xl:text-2xl">主办单位：{{ contest.organizers }}</p>
+                            <p class="text-[#2C2828] text-lg text-center lg:text-xl 2xl:text-2xl">承办单位：{{ contest.contractors }}</p>
                         </div>
                     </div>
                 </div>
