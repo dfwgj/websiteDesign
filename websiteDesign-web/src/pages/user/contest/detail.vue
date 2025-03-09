@@ -58,7 +58,7 @@
                             <footer class="text-xl 2xl:text-3xl text-gray-500 px-5 py-[1%] 2xl:py-[2%]">注意：每名同学只能选择一个组别参赛</footer>
                         </div>
                         <!-- 奖项设置 -->
-                        <div v-else-if="content === 'awards'" class="flex flex-col h-full space-y-[3%] overflow-auto">
+                        <div v-else-if="content === 'awards'" class="flex flex-col h-full space-y-[3%]">
                             <header class="space-y-4 px-5 pt-[2%] text-2xl 2xl:text-4xl">
                                 <p>在这场创意与技术的盛宴中，我们为获奖者设置了以下奖项：</p>
                                 <p>致敬每一位不懈追求卓越的参赛者！</p>
@@ -136,7 +136,7 @@
                 </div>
             </div>
             <!-- 内容 -->
-            <div class="w-[88%] h-[74dvh] border-4 border-[#5D9CD0] rounded-[15px] flex justify-center p-4 mx-auto overflow-auto">
+            <div class="w-[88%] h-[74dvh] border-4 border-[#5D9CD0] rounded-[15px] flex justify-center mx-auto overflow-auto">
                 <!-- 主题内容 -->
                 <transition name="fade" mode="out-in" :duration="300">
                     <div :key="content + '-mobile'">
@@ -173,18 +173,17 @@
                             </footer>
                         </div>
                         <!-- 奖项设置 -->
-                        <div v-else-if="content === 'awards'" class="w-full h-full">
+                        <div v-else-if="content === 'awards'" class="w-full h-full overflow-x-hidden">
                             <div class="text-xl p-2 leading-relaxed">
                                 <p>在这场创意与技术的盛宴中，我们为获奖者设置了以下奖项：</p>
-                                <p>致敬每一位不懈追求卓越的参赛者！</p>
                             </div>
                             <div v-for="awardGroup in groupedAwards" :key="awardGroup.name" class="flex flex-col items-start">
-                                <div class="text-xl text-[#70A7D6] w-full px-1 pt-2">
+                                <div class="text-xl text-[#70A7D6] w-full px-2 pt-2">
                                     {{ awardGroup.name }}
                                     <!-- 奖项设置 -->
                                     <div class="flex pt-2">
-                                        <div class="w-[30vw] text-lg text-[#70A7D6]">奖项设置：</div>
-                                        <div class="w-[50vw] flex-grow text-lg text-[#2C2828C2]">
+                                        <div class="w-[30dvw] text-lg text-[#70A7D6]">奖项设置：</div>
+                                        <div class="w-[50dvw] flex-grow text-lg text-[#2C2828C2]">
                                             <template v-for="(group, index) in sortedGroups" :key="group.groupCode">
                                                 {{ index === 0 ? '' : '、' }}{{ group.groupName }}
                                                 {{ getAwardQuantity(group.groupCode, awardGroup.awards) }}
@@ -195,8 +194,8 @@
                                     </div>
                                     <!-- 奖品 -->
                                     <div class="flex pt-2">
-                                        <div class="w-[30vw] text-lg text-[#70A7D6]">奖品：</div>
-                                        <div class="w-[50vw] flex-grow text-lg text-[#2C2828C2]">
+                                        <div class="w-[30dvw] text-lg text-[#70A7D6]">奖品：</div>
+                                        <div class="w-[50dvw] flex-grow text-lg text-[#2C2828C2]">
                                             <template v-for="(group, index) in sortedGroups" :key="group.groupCode">
                                                 {{ group.groupName }}每位队员将获得价值
                                                 {{ getAwardAmount(group.groupCode, awardGroup.awards) }}
@@ -216,11 +215,11 @@
                                     <div class="w-[45%] pt-[5%]">
                                         <template v-for="(processStep, index) in dates" :key="processStep.id">
                                             <!-- 方块元素 -->
-                                            <div @click="changeProcess(processStep)" :class="{ 'bg-[#E8F3FF]': currentProcess === processStep.name }" class="w-[25vw] h-[7dvh] flex justify-center items-center border-4 border-[#5D9CD0] rounded-[25px] text-[#5D9CD0E6] text-xl relative">
+                                            <div @click="changeProcess(processStep)" :class="{ 'bg-[#E8F3FF]': currentProcess === processStep.name }" class="w-[25dvw] h-[7dvh] flex justify-center items-center border-4 border-[#5D9CD0] rounded-[25px] text-[#5D9CD0E6] text-xl relative">
                                                 {{ processStep.name }}
                                             </div>
                                             <!-- 在方块之间添加连接线 -->
-                                            <div v-if="index !== dates.length - 1" class="w-[25vw] flex justify-center items-center">
+                                            <div v-if="index !== dates.length - 1" class="w-[25dvw] flex justify-center items-center">
                                                 <div class="w-[4px] h-[4dvh] bg-[#5D9CD0]"></div>
                                             </div>
                                         </template>
