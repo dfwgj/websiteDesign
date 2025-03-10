@@ -12,15 +12,13 @@
                     <var-tab>正常</var-tab>
                     <var-tab>封禁</var-tab>
                 </var-tabs>
+                <div class="max-h-[484px] overflow-y-auto relative">
                 <table class="min-w-full">
                     <thead>
                         <tr>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">学号</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">姓名</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">队伍名称</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">学院</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">注册时间</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">操作</th>
+                            <th v-for="header in headers" :key="header" class="sticky top-0 z-10 px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">
+                            {{ header }}
+                        </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -46,9 +44,10 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
                 <!-- 分页组件 -->
                 <div class="flex justify-center mt-4">
-                    <var-pagination :current="currentPage" :total="total" :size-option="[10]" :simple="true" @change="handlePageChange" style="color: #5295cd" />
+                    <var-pagination :current="currentPage" :total="total" :size-option="[10, 20, 30]" :simple="true" @change="handlePageChange" style="color: #5295cd" />
                 </div>
             </div>
         </div>
@@ -136,6 +135,7 @@ export default {
     name: 'managerUser',
     data() {
         return {
+            headers: ['学号', '姓名', '队伍', '学院', '注册时间', '操作'],
             searchValue: '', // 搜索框的值
             list: [],
             currentPage: 1, // 当前页码
@@ -290,12 +290,16 @@ export default {
             this.showCenterPopup = true;
         },
         // 处理分页变化
-        handlePageChange(page) {
-            if (page === this.currentPage) {
-                return;
+        handlePageChange(page, pageSize) {
+            if (page !== this.currentPage) {
+                this.currentPage = page;
+                this.getAllUser();
             }
-            this.currentPage = page;
-            this.getAllUser();
+            if (this.pageSize !== pageSize) {
+                this.pageSize = pageSize;
+                this.currentPage = 1; // 切换分页大小时重置到第一页
+                this.getAllUser();
+            }
         }
     }
 };

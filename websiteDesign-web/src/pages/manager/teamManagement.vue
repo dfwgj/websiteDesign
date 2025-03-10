@@ -13,16 +13,13 @@
                     <var-tab>正常</var-tab>
                     <var-tab>禁用</var-tab>
                 </var-tabs>
+                <div class="max-h-[484px] overflow-y-auto relative">
                 <table class="min-w-full">
                     <thead>
                         <tr>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">队伍名称</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">队长</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">大赛分组</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">比赛进程</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">注册时间</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">查看队伍成员</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">操作</th>
+                            <th v-for="header in headers" :key="header" class="sticky top-0 z-10 px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">
+                                {{ header }}
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,9 +64,10 @@
                         </tr>
                     </tbody>
                 </table>
+                </div>
                 <!-- 分页组件 -->
                 <div class="flex justify-center mt-6">
-                    <var-pagination :current="currentPage" :total="total" :size-option="[10]" :simple="true" @change="handlePageChange" style="color: #5295cd" />
+                    <var-pagination v-model:current="currentPage" v-model:size="pageSize" :total="total" :size-option="[10, 20, 30]" :simple="true" @change="handlePageChange" style="color: #5295cd" />
                 </div>
             </div>
         </div>
@@ -171,7 +169,9 @@ export default {
     name: 'managerUser',
     data() {
         return {
+            headers: ['队伍名称', '队长', '大赛分组', '比赛进程', '注册时间', '查看队伍成员', '操作'],  
             listLoading: false, // 列表加载状态
+            deleteLoading: false, // 删除加载状态
             teamList: [], // 原始队伍列表
             teamListByValid: [], // 根据 teamValid 分组后的队伍列表
             currentPage: 1, // 当前页码
@@ -323,8 +323,14 @@ export default {
             this.showMemberPopup = true; // 显示弹窗
             this.getTeamPlayers(); // 当点击查看队伍成员时，请求队伍成员信息
         },
-        handlePageChange(page) {
-            this.currentPage = page; // 更新当前页码
+        handlePageChange(page, pageSize) {
+            if (page !== this.currentPage) {
+                this.currentPage = page;
+            }
+            if (this.pageSize !== pageSize) {
+                this.pageSize = pageSize;
+                this.currentPage = 1; // 切换分页大小时重置到第一页
+            }
         }
     }
 };

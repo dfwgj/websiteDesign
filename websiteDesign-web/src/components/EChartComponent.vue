@@ -17,13 +17,13 @@ export default {
             myChart: null,
             option: {
                 title: {
-                    text: '最近一周统计数据'
+                    text: '统计数据'
                 },
                 tooltip: {
                     trigger: 'axis'
                 },
                 legend: {
-                    data: ['访问量', '新增用户数', '新增队伍数']
+                    data: []
                 },
                 grid: {
                     left: '3%',
@@ -46,17 +46,7 @@ export default {
                 },
                 series: [
                     {
-                        name: '访问量',
-                        type: 'line',
-                        data: []
-                    },
-                    {
-                        name: '新增用户数',
-                        type: 'line',
-                        data: []
-                    },
-                    {
-                        name: '新增队伍数',
+                        name: '',
                         type: 'line',
                         data: []
                     }
@@ -79,10 +69,15 @@ export default {
     methods: {
         updateChart(data) {
             if (!this.myChart || !data.length) return;
+            // 动态设置图表标题和系列名称
+            const seriesName = Object.keys(data[0]).find((key) => key !== 'date');
+            this.option.title.text = seriesName ? `最近一周 ${seriesName}` : '统计数据';
+            this.option.legend.data = seriesName ? [seriesName] : [];
+
+            // 更新数据
             this.option.xAxis.data = data.map((item) => new Date(item.date).toLocaleDateString());
-            this.option.series[0].data = data.map((item) => item.pageViews);
-            this.option.series[1].data = data.map((item) => item.newUsers);
-            this.option.series[2].data = data.map((item) => item.newTeams);
+            this.option.series[0].data = data.map((item) => item[seriesName]);
+
             this.myChart.setOption(this.option);
         }
     }

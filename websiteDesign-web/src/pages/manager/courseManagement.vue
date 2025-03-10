@@ -13,43 +13,43 @@
                     <var-tab>正常</var-tab>
                     <var-tab>禁用</var-tab>
                 </var-tabs>
-                <table class="min-w-full">
-                    <thead>
-                        <tr>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">课程名称</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">课程分类</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">创建者</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">创建时间</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-if="listLoading">
-                            <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">
-                                <var-loading description="LOADING" color="#5295CD" />
-                            </td>
-                        </tr>
-                        <tr v-if="courseListByValid.length === 0 && listLoading === false">
-                            <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">暂无数据</td>
-                        </tr>
-                        <tr v-for="(record, index) in pagedCourse" :key="index" class="odd:bg-white even:bg-gray-50" v-hover="{ color: 'var(--color-on-primary)', background: '#F0F0F0' }">
-                            <!-- 队伍名称 -->
-                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.courseName }}</td>
-                            <!-- 队长 -->
-                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.type }}</td>
-                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.userName }}</td>
-                            <!-- 时间 -->
-                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ formatDate(record.createdAt) }}</td>
-                            <!-- 操作 -->
-                            <td class="px-6 py-1 text-center text-base text-blue-500 hover:text-blue-800">
-                                <var-button class="inline-block w-35" color="#5295CD" text-color="white" @click="viewRecord(record)" style="border-radius: 8px">修 改</var-button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="max-h-[484px] overflow-y-auto relative">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr>
+                                <th v-for="header in headers" :key="header" class="sticky top-0 z-10 px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">
+                                    {{ header }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-if="listLoading">
+                                <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">
+                                    <var-loading description="LOADING" color="#5295CD" />
+                                </td>
+                            </tr>
+                            <tr v-if="courseListByValid.length === 0 && listLoading === false">
+                                <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">暂无数据</td>
+                            </tr>
+                            <tr v-for="(record, index) in pagedCourse" :key="index" class="odd:bg-white even:bg-gray-50" v-hover="{ color: 'var(--color-on-primary)', background: '#F0F0F0' }">
+                                <!-- 队伍名称 -->
+                                <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.courseName }}</td>
+                                <!-- 队长 -->
+                                <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.type }}</td>
+                                <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.userName }}</td>
+                                <!-- 时间 -->
+                                <td class="px-6 py-1 text-center text-base text-gray-500">{{ formatDate(record.createdAt) }}</td>
+                                <!-- 操作 -->
+                                <td class="px-6 py-1 text-center text-base text-blue-500 hover:text-blue-800">
+                                    <var-button class="inline-block w-35" color="#5295CD" text-color="white" @click="viewRecord(record)" style="border-radius: 8px">修 改</var-button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <!-- 分页组件 -->
                 <div class="flex justify-center mt-6">
-                    <var-pagination :current="currentPage" :total="total" :size-option="[10]" :simple="true" @change="handlePageChange" style="color: #5295cd" />
+                    <var-pagination v-model:current="currentPage" v-model:size="pageSize" :total="total" :size-option="[10, 20, 30]" :simple="true" @change="handlePageChange" style="color: #5295cd" />
                 </div>
             </div>
         </div>
@@ -158,6 +158,7 @@ export default {
     name: 'managerUser',
     data() {
         return {
+            headers: ['课程名称', '课程分类', '课程创建人', '创建时间', '操作'],
             deleteLoading: false, // 删除课程加载状态
             recoverLoading: false, // 恢复课程加载状态
             listLoading: false, // 列表加载状态
@@ -193,7 +194,6 @@ export default {
     },
     computed: {
         pagedCourse() {
-            // 计算当前页显示的课程
             const startIndex = (this.currentPage - 1) * this.pageSize;
             const endIndex = this.currentPage * this.pageSize;
             return this.courseListByValid.slice(startIndex, endIndex);
@@ -319,8 +319,14 @@ export default {
             this.courseInfo = { ...record };
             this.showCenterPopup = true;
         },
-        handlePageChange(page) {
-            this.currentPage = page; // 更新当前页码
+        handlePageChange(page, pageSize) {
+            if (page !== this.currentPage) {
+                this.currentPage = page;
+            }
+            if (this.pageSize !== pageSize) {
+                this.pageSize = pageSize;
+                this.currentPage = 1; // 切换分页大小时重置到第一页
+            }
         }
     }
 };

@@ -13,43 +13,43 @@
                     <var-tab>正常</var-tab>
                     <var-tab>禁用</var-tab>
                 </var-tabs>
-                <table class="min-w-full">
-                    <thead>
-                        <tr>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">资料名称</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">资料分类</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">创建者</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">创建时间</th>
-                            <th class="px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">操作</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-if="listLoading">
-                            <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">
-                                <var-loading description="LOADING" color="#5295CD" />
-                            </td>
-                        </tr>
-                        <tr v-if="materialsListByValid.length === 0 && listLoading === false">
-                            <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">暂无数据</td>
-                        </tr>
-                        <tr v-for="(record, index) in pagedMaterials" :key="index" class="odd:bg-white even:bg-gray-50" v-hover="{ color: 'var(--color-on-primary)', background: '#F0F0F0' }">
-                            <!-- 队伍名称 -->
-                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.materialsName }}</td>
-                            <!-- 队长 -->
-                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.type }}</td>
-                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.userName }}</td>
-                            <!-- 时间 -->
-                            <td class="px-6 py-1 text-center text-base text-gray-500">{{ formatDate(record.createdAt) }}</td>
-                            <!-- 操作 -->
-                            <td class="px-6 py-1 text-center text-base text-blue-500 hover:text-blue-800">
-                                <var-button class="inline-block w-35" color="#5295CD" text-color="white" @click="viewRecord(record)" style="border-radius: 8px">修 改</var-button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="max-h-[484px] overflow-y-auto relative">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr>
+                                <th v-for="header in headers" :key="header" class="sticky top-0 z-10 px-6 py-2 bg-gray-50 text-center text-xl text-[#5295CD]">
+                                    {{ header }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-if="listLoading">
+                                <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">
+                                    <var-loading description="LOADING" color="#5295CD" />
+                                </td>
+                            </tr>
+                            <tr v-if="materialsListByValid.length === 0 && listLoading === false">
+                                <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">暂无数据</td>
+                            </tr>
+                            <tr v-for="(record, index) in pagedMaterials" :key="index" class="odd:bg-white even:bg-gray-50" v-hover="{ color: 'var(--color-on-primary)', background: '#F0F0F0' }">
+                                <!-- 队伍名称 -->
+                                <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.materialsName }}</td>
+                                <!-- 队长 -->
+                                <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.type }}</td>
+                                <td class="px-6 py-1 text-center text-base text-gray-500">{{ record.userName }}</td>
+                                <!-- 时间 -->
+                                <td class="px-6 py-1 text-center text-base text-gray-500">{{ formatDate(record.createdAt) }}</td>
+                                <!-- 操作 -->
+                                <td class="px-6 py-1 text-center text-base text-blue-500 hover:text-blue-800">
+                                    <var-button class="inline-block w-35" color="#5295CD" text-color="white" @click="viewRecord(record)" style="border-radius: 8px">修 改</var-button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <!-- 分页组件 -->
                 <div class="flex justify-center mt-6">
-                    <var-pagination :current="currentPage" :total="total" :size-option="[10]" :simple="true" @change="handlePageChange" style="color: #5295cd" />
+                    <var-pagination v-model:current="currentPage" v-model:size="pageSize" :total="total" :size-option="[10, 20, 30]" :simple="true" @change="handlePageChange" style="color: #5295cd" />
                 </div>
             </div>
         </div>
@@ -158,6 +158,7 @@ export default {
     name: 'managerUser',
     data() {
         return {
+            headers: ['资料名称', '资料分类', '上传人', '上传时间', '操作'],
             loading: false,
             createLoading: false, // 新增资料加载状态
             deleteLoading: false, // 删除资料加载状态
@@ -212,7 +213,6 @@ export default {
         async getMaterials() {
             this.listLoading = true;
             const res = await this.$api.materials.getAllMaterialsList();
-            console.log(res);
             if (res.success) {
                 this.materialsList = res.data; // 提取数组字段
                 this.toggleTab(this.activeTab); // 默认显示正常队伍
@@ -315,15 +315,18 @@ export default {
         },
         // 查看课资料信息
         viewRecord(record) {
-            console.log(record);
             this.selectedRecord = record;
-            console.log(this.selectedRecord);
             this.materialsInfo = { ...record };
-            console.log(this.materialsInfo);
             this.showCenterPopup = true;
         },
-        handlePageChange(page) {
-            this.currentPage = page; // 更新当前页码
+        handlePageChange(page, pageSize) {
+            if (page !== this.currentPage) {
+                this.currentPage = page;
+            }
+            if (this.pageSize !== pageSize) {
+                this.pageSize = pageSize;
+                this.currentPage = 1; // 切换分页大小时重置到第一页
+            }
         }
     }
 };

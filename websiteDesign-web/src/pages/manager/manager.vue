@@ -14,7 +14,7 @@
                 </div>
             </div>
         </div>
-        <div class="bg-white h-[100vh] w-[85vw] float-right">
+        <div class="bg-white h-[100vh] w-[85vw] float-right overflow-auto">
             <span>
                 <router-view></router-view>
             </span>
