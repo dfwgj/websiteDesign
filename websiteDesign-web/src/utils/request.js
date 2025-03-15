@@ -17,7 +17,7 @@ const request = {
                 if (res.code === 401) {
                     localStorage.removeItem('token');
                     const user = userStore();
-                    user.decodeToken(); 
+                    user.clearUserInfo(); 
                     return { success: false, error: '请重新登录' }; // 返回具体的错误信息
                 }
                 if (res.code !== 0) {
