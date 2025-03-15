@@ -61,7 +61,7 @@ export const query = async (
     if (throwOnEmptyResult && (!rows || rows.length === 0)) {
       throw new httpError.ForbiddenError('Query result is empty');
     }
-    return rows.length > 0 ? rows : null; // 返回查询结果或 null
+    return rows.length > 0 ? rows : []; // 返回查询结果或 null
   } catch (err) {
     console.error('Database query error:', err);
     console.error('SQL:', sql); // 输出出错的 SQL 查询

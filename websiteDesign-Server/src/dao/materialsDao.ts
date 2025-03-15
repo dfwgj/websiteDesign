@@ -91,7 +91,7 @@ export class MaterialsDao {
       materials.id DESC
         `;
     const sqlParams = [];
-    return await query(sql, sqlParams);
+    return await query(sql, sqlParams,false);
   }
   @Caching('redis', 'materialsList')
   //用户获取课程信息
@@ -111,7 +111,7 @@ export class MaterialsDao {
         materials.valid_flag = 1
         `;
     const sqlParams = [];
-    return await query(sql, sqlParams);
+    return await query(sql, sqlParams,false);
   }
   // 工具函数：驼峰命名转下划线命名
   camelToSnake(str: string): string {

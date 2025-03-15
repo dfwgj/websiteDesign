@@ -218,6 +218,7 @@ export default {
                 this.toggleTab(this.activeTab); // 默认显示正常队伍
                 this.listLoading = false;
             } else {
+                this.$api.notify.error(res.error || '获取资料列表失败');
                 this.materialsList = [];
                 this.total = 0;
                 this.listLoading = false;

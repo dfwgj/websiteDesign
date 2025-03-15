@@ -1,4 +1,5 @@
 const apiUrl = import.meta.env.VITE_API_URL;
+import { userStore } from '../stores/user';
 
 // 封装常规请求函数
 const request = {
@@ -13,6 +14,12 @@ const request = {
                 return res.json();
             })
             .then((res) => {
+                if (res.code === 401) {
+                    localStorage.removeItem('token');
+                    const user = userStore();
+                    user.decodeToken(); 
+                    return { success: false, error: '请重新登录' }; // 返回具体的错误信息
+                }
                 if (res.code !== 0) {
                     console.error('Request error: Code', res.code);
                     return { success: false, error: res.error }; // 返回具体的错误信息

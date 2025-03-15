@@ -24,12 +24,12 @@
                     </thead>
                     <tbody>
                         <tr v-if="listLoading">
-                            <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">
+                            <td colspan="7" class="px-6 py-1.4 text-center text-base text-gray-500">
                                 <var-loading description="LOADING" color="#5295CD" />
                             </td>
                         </tr>
                         <tr v-if="teamListByValid.length === 0 && listLoading === false">
-                            <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">暂无数据</td>
+                            <td colspan="7" class="px-6 py-1.4 text-center text-base text-gray-500">暂无数据</td>
                         </tr>
                         <tr v-for="(record, index) in pagedTeamList" :key="index" class="odd:bg-white even:bg-gray-50" v-hover="{ color: 'var(--color-on-primary)', background: '#F0F0F0' }">
                             <!-- 队伍名称 -->
@@ -44,10 +44,10 @@
                             <!-- 比赛进程 -->
                             <td class="px-6 py-1 text-center text-base text-gray-900">
                                 <span v-if="record.teamState === '0'" class="text-red-500">信息审核中</span>
-                                <span v-if="record.teamState === '1'" class="text-green-500">报名成功</span>
-                                <span v-if="record.teamState === '2'" class="text-[#5D9CD0]">作品已提交</span>
-                                <span v-if="record.teamState === '3'" class="text-[#5295CD]">初赛</span>
-                                <span v-if="record.teamState === '4'" class="text-blue-500">决赛</span>
+                                <span v-if="record.teamState === '1'" class="text-[#5ec1e2]">报名成功</span>
+                                <span v-if="record.teamState === '2'" class="text-[#35d59d]">作品已提交</span>
+                                <span v-if="record.teamState === '3'" class="text-[#c752cd]">初赛</span>
+                                <span v-if="record.teamState === '4'" class="text-[#dcbf3f]">决赛</span>
                             </td>
                             <!-- 注册时间 -->
                             <td class="px-6 py-1 text-center text-base text-gray-500">{{ formatDate(record.teamCreated) }}</td>

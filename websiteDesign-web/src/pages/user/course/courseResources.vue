@@ -16,6 +16,14 @@
             <!-- 课程部分 -->
             <var-loading description="LOADING" :loading="loading" color="#5295CD">
                 <div v-if="!ismaterials" class="space-y-[0.5%]">
+                    <div v-if="coursesByType.length === 0" :key="index" class="w-full flex justify-between items-center">
+                        <div class="w-full h-[9dvh] p-4 lg:p-2 border-2 border-[#5295CD] rounded-[10px] flex justify-center items-center">
+                            <div class="lg:text-xl text-[#5295CD] font-bold flex justify-center items-center">
+                                <p>暂无该课程信息，请等待赛前培训阶段管理员上传</p>
+                                <img class="h-[5dvh] lg:h-[7dvh]":src="ZunjingImg" />
+                            </div>
+                        </div>
+                    </div>
                     <div v-for="(course, index) in coursesByType" :key="index" class="w-full flex justify-between items-center">
                         <div @click="openNewTab(course.link)" class="w-full h-[9dvh] p-4 lg:p-2 border-2 border-[#5295CD] rounded-[10px]">
                             <div class="h-1/2 flex justify-between items-center">
@@ -76,6 +84,7 @@ import springbootIcon from '@/assets/springboot.svg';
 import mysqlIcon from '@/assets/mysql.svg';
 import linuxIcon from '@/assets/linux.svg';
 import resourcesIcon from '@/assets/resources.svg';
+import ZunjingImg from '@/assets/尊敬.svg';
 
 export default {
     name: 'CourseResourcesPage', // 组件的名称
@@ -84,6 +93,10 @@ export default {
         // 定义组件的响应式数据
         return {
             icons: [
+                {
+                    type: '课程资料',
+                    iconLink: resourcesIcon
+                },
                 {
                     type: 'UI设计',
                     iconLink: photoshopIcon
@@ -104,11 +117,9 @@ export default {
                     type: '服务器部署',
                     iconLink: linuxIcon
                 },
-                {
-                    type: '课程资料',
-                    iconLink: resourcesIcon
-                }
+
             ],
+            ZunjingImg: ZunjingImg,
             courses: [], // 原始的课程信息
             coursesByType: [], // 某个分类的课程信息
             openCollapse: 0, // 课程资料折叠面板
@@ -141,7 +152,7 @@ export default {
         this.loading = true;
         await this.getCourses();
         await this.getMaterials();
-        this.loadCourseByType(this.title || 'UI设计');
+        this.loadCourseByType(this.title || '课程资料');
         this.loading = false;
     }, // 组件的生命周期钩子，挂载时调用
     updated() {}, // 组件的生命周期钩子，更新时调用

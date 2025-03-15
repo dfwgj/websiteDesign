@@ -85,7 +85,7 @@ export default {
                     '访问量': item.pageViews
                 }));
             } else {
-                this.$notify.error(res.error);
+                this.$api.notify.error(res.error);
             }
             this.loading = false;
         },

@@ -90,8 +90,6 @@
                                 <var-option label="前端开发" value="QDKF" />
                                 <var-option label="数据库设计" value="SJK" />
                                 <var-option label="UI设计" value="UISJ" />
-                                <var-option label="网站设计大赛宣传网站" value="WZSJDSXCWZ" />
-                                <var-option label="其他" value="QT" />
                             </var-select>
                         </var-space>
                     </div>
@@ -130,8 +128,6 @@
                                     <var-option label="前端开发" value="QDKF" />
                                     <var-option label="数据库设计" value="SJK" />
                                     <var-option label="UI设计" value="UISJ" />
-                                    <var-option label="网站设计大赛宣传网站" value="WZSJDSXCWZ" />
-                                    <var-option label="其他" value="QT" />
                                 </var-select>
                             </var-space>
                         </div>
@@ -221,6 +217,7 @@ export default {
                 this.courseList = [];
                 this.total = 0;
                 this.listLoading = false;
+                this.$api.notify.error(res.error || '获取课程列表失败');
             }
         },
         // 管理员保存队伍信息

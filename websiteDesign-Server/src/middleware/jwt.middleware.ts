@@ -41,7 +41,6 @@ export class JwtMiddleware {
               throw new Error('Token 无效');
             }
           } catch (error) {
-            console.log(error);
             throw new httpError.UnauthorizedError('Token 无效');
           }
           await next();

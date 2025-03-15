@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="lg:hidden fixed bottom-[15dvh] left-0 right-0 flex justify-center bg-white bg-opacity-90">
-            <button class="py-2 rounded-full w-[60vw] font-bold border-[#5295CD] border text-[#5295CD] text-lg bg-[#E8F3FF]" @click="handleMouseClick('网页设计')">获取比赛资料 ></button>
+            <button class="py-2 rounded-full w-[60vw] font-bold border-[#5295CD] border text-[#5295CD] text-lg bg-[#E8F3FF]" @click="handleMouseClick('课程资料')">获取比赛资料 ></button>
         </div>
     </div>
     <var-popup v-model:show="LoginShow" class="w-3/4 lg:w-1/3 rounded-2xl border-2 border-[#5295CD] lg:block">

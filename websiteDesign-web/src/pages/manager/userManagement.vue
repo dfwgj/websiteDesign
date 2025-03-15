@@ -27,7 +27,7 @@
                                 <var-loading description="LOADING" color="#5295CD" />
                             </td>
                         </tr>
-                        <tr v-if="total == 0 && listLoading == false">
+                        <tr v-if="list.length == 0 && listLoading == false">
                             <td colspan="6" class="px-6 py-1.4 text-center text-base text-gray-500">暂无数据</td>
                         </tr>
                         <tr v-for="(record, index) in list" :key="index" class="odd:bg-white even:bg-gray-50" v-hover="{ color: 'var(--color-on-primary)', background: '#F0F0F0' }">
@@ -202,6 +202,7 @@ export default {
                 this.list = [];
                 this.total = 0;
                 this.listLoading = false;
+                this.$api.notify.error(res.error);
             }
         },
         //管理员保存用户信息
