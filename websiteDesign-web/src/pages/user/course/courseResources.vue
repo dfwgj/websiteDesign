@@ -16,7 +16,7 @@
             <!-- 课程部分 -->
             <var-loading description="LOADING" :loading="loading" color="#5295CD">
                 <div v-if="!ismaterials" class="space-y-[0.5%]">
-                    <div v-if="coursesByType.length === 0" :key="index" class="w-full flex justify-between items-center">
+                    <div v-if="coursesByType.length === 0 &&!loading" :key="index" class="w-full flex justify-between items-center">
                         <div class="w-full h-[9dvh] p-4 lg:p-2 border-2 border-[#5295CD] rounded-[10px] flex justify-center items-center">
                             <div class="lg:text-xl text-[#5295CD] font-bold flex justify-center items-center">
                                 <p>暂无该课程信息，请等待赛前培训阶段管理员上传</p>
